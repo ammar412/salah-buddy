@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Prayer Tracking App - Best Practices Research</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+        .metadata {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #667eea;
+            margin-top: 0;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .section h3 {
+            color: #764ba2;
+            margin-top: 25px;
+        }
+        .priority-high {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .priority-medium {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .priority-low {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .recommendation {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+            margin: 15px 0;
+        }
+        .tool-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .tool-card h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        .pros, .cons {
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .pros {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .cons {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .pros h4, .cons h4 {
+            margin-top: 0;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-right: 8px;
+        }
+        .link-box {
+            background: #fff3e0;
+            border: 1px solid #ffe0b2;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .link-box a {
+            color: #f57c00;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .link-box a:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><span class="emoji">🕌</span>Salah Buddy - Best Practices Research</h1>
+        <div class="metadata">
+            <strong>Project:</strong> Kids Prayer Tracking Mobile App (Ages 7-10)<br>
+            <strong>Research Date:</strong> December 12, 2025<br>
+            <strong>Tech Stack:</strong> React Native + Expo
+        </div>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="section">
+        <h2><span class="emoji">📋</span>Executive Summary</h2>
+        <p>This comprehensive research report covers best practices for building a kids' prayer tracking mobile app using React Native and Expo. The research spans six critical areas: React Native/Expo best practices for children's apps, offline-first architecture, data persistence strategies, prayer times API integration, gamification patterns, and accessibility considerations.</p>
+
+        <div class="recommendation">
+            <strong><span class="emoji">🎯</span>Key Recommendation:</strong> Build with Expo Router for file-based navigation, WatermelonDB for offline-first data persistence, integrate Aladhan API for prayer times, and implement age-appropriate gamification with intrinsic reward loops.
+        </div>
+    </div>
+
+    <!-- 1. React Native + Expo Best Practices -->
+    <div class="section">
+        <h2><span class="emoji">⚛️</span>1. React Native + Expo Best Practices (Kids Apps)</h2>
+
+        <h3>Why Expo in 2025</h3>
+        <div class="priority-high">
+            <strong>MUST HAVE:</strong> Expo remains the top choice for 2025 due to:
+            <ul>
+                <li><strong>Zero-build configuration</strong> - Start building without Android Studio or Xcode</li>
+                <li><strong>Over-the-air (OTA) updates</strong> - Push updates instantly without App Store approval</li>
+                <li><strong>Expo Application Services (EAS)</strong> - Build, ship, and iterate efficiently</li>
+                <li><strong>Rich device API access</strong> - Camera, location, notifications via Expo SDK</li>
+            </ul>
+        </div>
+
+        <h3>Modern Tech Stack (2025)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Recommended Tool</th>
+                    <th>Why (vs. Alternatives)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>State Management</strong></td>
+                    <td>Zustand</td>
+                    <td>Lightweight, minimalistic - replaced Redux as the go-to in 2025</td>
+                </tr>
+                <tr>
+                    <td><strong>Navigation</strong></td>
+                    <td>Expo Router</td>
+                    <td>File-based routing, typed routes, universal deep linking, bundle splitting</td>
+                </tr>
+                <tr>
+                    <td><strong>Storage (Simple)</strong></td>
+                    <td>MMKV</td>
+                    <td>~30x faster than AsyncStorage for key-value storage</td>
+                </tr>
+                <tr>
+                    <td><strong>Storage (Complex)</strong></td>
+                    <td>WatermelonDB</td>
+                    <td>Optimized for large datasets, offline-first, reactive</td>
+                </tr>
+                <tr>
+                    <td><strong>UI Components</strong></td>
+                    <td>React Native Paper</td>
+                    <td>Material Design, accessibility-first, interaction animations</td>
+                </tr>
+                <tr>
+                    <td><strong>Lists</strong></td>
+                    <td>FlashList</td>
+                    <td>Efficient rendering for large lists of data</td>
+                </tr>
+                <tr>
+                    <td><strong>Animations</strong></td>
+                    <td>Reanimated 3.0</td>
+                    <td>Smooth, performant animations redefining app experiences</td>
+                </tr>
+                <tr>
+                    <td><strong>Forms</strong></td>
+                    <td>React Hook Form</td>
+                    <td>Performant, flexible form handling with hooks</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Kids Apps Specific Considerations</h3>
+        <div class="priority-high">
+            <strong>CRITICAL:</strong> Privacy compliance for children's apps
+            <ul>
+                <li><strong>COPPA Compliance (US)</strong> - Children's Online Privacy Protection Act</li>
+                <li><strong>SSL Pinning</strong> - Secure data transmission</li>
+                <li><strong>No data collection without parental consent</strong></li>
+                <li><strong>Secure credential storage</strong> - Use expo-secure-storage or react-native-keychain</li>
+            </ul>
+        </div>
+
+        <div class="recommendation">
+            <strong>Age 7-10 Specific Design:</strong>
+            <ul>
+                <li>Simple rewards and bright visuals (younger kids prefer cartoon characters and sound effects)</li>
+                <li>Interactive financial lessons and games (apps like Bloom use this successfully)</li>
+                <li>Active learning through games and rewards</li>
+            </ul>
+        </div>
+
+        <h3>Folder Structure Best Practice</h3>
+        <div class="code-block">
+// Feature-based (Vertical) Structure - Recommended for scalability
+salah-buddy/
+├── src/
+│   ├── app/                    # Expo Router - file-based routes
+│   │   ├── (tabs)/            # Tab navigation group
+│   │   │   ├── index.tsx      # Home/Dashboard
+│   │   │   ├── prayers.tsx    # Prayer tracker
+│   │   │   └── rewards.tsx    # Rewards/Gamification
+│   │   ├── _layout.tsx        # Root layout
+│   │   └── index.tsx          # Redirect to default route
+│   ├── features/              # Feature-based modules
+│   │   ├── prayer-tracker/
+│   │   │   ├── components/
+│   │   │   ├── hooks/
+│   │   │   └── store/
+│   │   ├── gamification/
+│   │   │   ├── components/
+│   │   │   ├── hooks/
+│   │   │   └── store/
+│   │   └── prayer-times/
+│   │       ├── api/
+│   │       ├── components/
+│   │       └── utils/
+│   ├── components/            # Shared UI components
+│   │   ├── Button.tsx
+│   │   └── Card.tsx
+│   ├── hooks/                 # Shared custom hooks
+│   ├── store/                 # Zustand global state
+│   ├── utils/                 # Helper functions
+│   └── types/                 # TypeScript types
+├── assets/                    # Images, fonts, etc.
+└── app.json                   # Expo config
+        </div>
+
+        <div class="link-box">
+            <strong><span class="emoji">🔗</span>Official Documentation:</strong><br>
+            <a href="https://docs.expo.dev/" target="_blank">Expo Documentation</a> |
+            <a href="https://docs.expo.dev/router/introduction/" target="_blank">Expo Router Guide</a> |
+            <a href="https://github.com/pmndrs/zustand" target="_blank">Zustand GitHub</a> |
+            <a href="https://reactnativepaper.com/" target="_blank">React Native Paper</a>
+        </div>
+    </div>
+
+    <!-- 2. Offline-First Architecture -->
+    <div class="section">
+        <h2><span class="emoji">📶</span>2. Offline-First Mobile App Architecture</h2>
+
+        <h3>What is Offline-First?</h3>
+        <div class="recommendation">
+            <strong>Definition:</strong> Offline-first apps function seamlessly without an active internet connection by storing data locally first and syncing with servers when online. Local data storage is the source of truth.
+        </div>
+
+        <h3>Why Offline-First for Prayer Tracking?</h3>
+        <div class="priority-high">
+            <strong>CRITICAL for Prayer Apps:</strong>
+            <ul>
+                <li><strong>Prayer times must work offline</strong> - Kids need access even in low connectivity areas</li>
+                <li><strong>Track prayers anytime</strong> - Mark prayers as complete without internet</li>
+                <li><strong>Improved UX</strong> - No loading spinners, instant interactions</li>
+                <li><strong>Airplane mode support</strong> - Works during travel</li>
+            </ul>
+        </div>
+
+        <h3>Core Components</h3>
+        <ol>
+            <li><strong>Local Database</strong> - Store and query data instantly (WatermelonDB, MMKV, SQLite)</li>
+            <li><strong>Sync Engine</strong> - Queue user actions/updates, sync with server in background</li>
+            <li><strong>Network Detection</strong> - Use @react-native-community/netinfo to detect connectivity changes</li>
+            <li><strong>Conflict Resolution</strong> - Handle optimistic or pessimistic locking for offline modifications</li>
+        </ol>
+
+        <h3>Architecture Pattern</h3>
+        <div class="code-block">
+// Offline-First Data Flow
+
+1. USER ACTION (e.g., mark prayer as complete)
+   ↓
+2. UPDATE LOCAL DATABASE (instant response to user)
+   ↓
+3. ADD TO SYNC QUEUE (store pending server update)
+   ↓
+4. NETWORK DETECTION
+   ├─→ ONLINE: Sync queue to server → Clear queue
+   └─→ OFFLINE: Keep in queue until online
+
+// Libraries to Consider:
+- React Native Offline
+- Redux Offline (if using Redux)
+- React Query + AsyncStorage (for caching)
+        </div>
+
+        <h3>Implementation with React Query</h3>
+        <div class="code-block">
+// Example: Offline-First Prayer Tracking with React Query
+
+import { useQuery, useMutation } from '@tanstack/react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
+
+// Hook to track prayer completion
+const usePrayerTracker = () => {
+  // Query prayers from local storage first
+  const { data: prayers } = useQuery({
+    queryKey: ['prayers'],
+    queryFn: async () => {
+      const local = await AsyncStorage.getItem('prayers');
+      return local ? JSON.parse(local) : [];
+    },
+    staleTime: Infinity, // Local data never goes stale
+  });
+
+  // Mutation to mark prayer as complete
+  const markComplete = useMutation({
+    mutationFn: async (prayerId) => {
+      // Update local storage immediately
+      const updated = prayers.map(p =>
+        p.id === prayerId ? { ...p, completed: true } : p
+      );
+      await AsyncStorage.setItem('prayers', JSON.stringify(updated));
+
+      // Check if online
+      const netInfo = await NetInfo.fetch();
+      if (netInfo.isConnected) {
+        // Sync to server
+        await api.updatePrayer(prayerId, { completed: true });
+      } else {
+        // Add to sync queue
+        await addToSyncQueue({ type: 'prayer_complete', prayerId });
+      }
+    },
+  });
+
+  return { prayers, markComplete };
+};
+        </div>
+
+        <div class="priority-medium">
+            <strong>RECOMMENDED APPROACH:</strong> For a prayer tracking app, use React Query + AsyncStorage for simple offline-first functionality. If you need complex queries or large datasets (100+ records), upgrade to WatermelonDB.
+        </div>
+
+        <div class="link-box">
+            <strong><span class="emoji">🔗</span>Learn More:</strong><br>
+            <a href="https://tanstack.com/query/latest" target="_blank">React Query Documentation</a> |
+            <a href="https://github.com/react-native-netinfo/react-native-netinfo" target="_blank">NetInfo GitHub</a> |
+            <a href="https://github.com/jevakallio/redux-offline" target="_blank">Redux Offline</a>
+        </div>
+    </div>
+
+    <!-- 3. Data Persistence Strategies -->
+    <div class="section">
+        <h2><span class="emoji">💾</span>3. Data Persistence Strategies</h2>
+
+        <h3>Decision Guide</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Use Case</th>
+                    <th>Recommended Solution</th>
+                    <th>Why</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Simple key-value (settings, theme)</td>
+                    <td>MMKV</td>
+                    <td>30x faster than AsyncStorage, simple API</td>
+                </tr>
+                <tr>
+                    <td>Sensitive data (auth tokens)</td>
+                    <td>expo-secure-storage</td>
+                    <td>Encrypted storage, dedicated secure place</td>
+                </tr>
+                <tr>
+                    <td>Small datasets (&lt;100 records)</td>
+                    <td>AsyncStorage / MMKV</td>
+                    <td>Simple, no overhead, easy to use</td>
+                </tr>
+                <tr>
+                    <td>Large datasets (100+ records)</td>
+                    <td>WatermelonDB</td>
+                    <td>Fast queries, lazy loading, reactive</td>
+                </tr>
+                <tr>
+                    <td>Complex relational data</td>
+                    <td>SQLite or WatermelonDB</td>
+                    <td>SQL queries, relationships, indexing</td>
+                </tr>
+                <tr>
+                    <td>NoSQL large datasets</td>
+                    <td>Realm</td>
+                    <td>10x faster than SQLite, object-oriented</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>AsyncStorage Best Practices</h3>
+        <div class="priority-medium">
+            <strong>WHEN TO USE:</strong>
+            <ul>
+                <li>Small data that needs serialization</li>
+                <li>Language or theme settings</li>
+                <li>Offline mode support (cached API responses)</li>
+                <li>Limit: 6 MB on Android, unlimited on iOS (design for 6 MB cross-platform)</li>
+            </ul>
+        </div>
+
+        <div class="code-block">
+// AsyncStorage Best Practices
+
+// ✅ DO: Create a repository pattern
+class SettingsRepository {
+  async getTheme() {
+    const theme = await AsyncStorage.getItem('theme');
+    return theme ? JSON.parse(theme) : 'light';
+  }
+
+  async setTheme(theme) {
+    await AsyncStorage.setItem('theme', JSON.stringify(theme));
+  }
+}
+
+// ✅ DO: Always serialize/deserialize
+const settings = { language: 'ar', notifications: true };
+await AsyncStorage.setItem('settings', JSON.stringify(settings));
+const retrieved = JSON.parse(await AsyncStorage.getItem('settings'));
+
+// ❌ DON'T: Store sensitive data (tokens, passwords)
+// Use expo-secure-storage instead
+
+// ❌ DON'T: Store large datasets
+// One app slowed down with 100+ records - use SQLite/WatermelonDB
+        </div>
+
+        <h3>WatermelonDB for Offline-First</h3>
+        <div class="priority-high">
+            <strong>RECOMMENDED for Prayer Tracking:</strong> WatermelonDB is ideal for apps that need to work offline and sync later. It's optimized for mobile devices and 10x faster than traditional approaches.
+        </div>
+
+        <div class="tool-card">
+            <h4><span class="emoji">🍉</span>WatermelonDB - Reactive Offline-First Database</h4>
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✅ Pros</h4>
+                    <ul>
+                        <li>Lazy loading - only loads data when needed</li>
+                        <li>Fast queries on SQLite (separate native thread)</li>
+                        <li>Reactive - auto-rerenders on data changes</li>
+                        <li>Offline-first with built-in sync</li>
+                        <li>Multiplatform (iOS, Android, web, Node.js)</li>
+                        <li>Scales from 100s to 10,000s of records</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>❌ Cons</h4>
+                    <ul>
+                        <li>Not available in Expo managed workflow (requires EAS build)</li>
+                        <li>Requires setup plugin for Expo</li>
+                        <li>Steeper learning curve than AsyncStorage</li>
+                        <li>Overkill for very simple apps</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h3>WatermelonDB Schema Example (Prayer Tracker)</h3>
+        <div class="code-block">
+// model/schema.js
+import { appSchema, tableSchema } from '@nozbe/watermelondb';
+
+export default appSchema({
+  version: 1,
+  tables: [
+    tableSchema({
+      name: 'prayers',
+      columns: [
+        { name: 'name', type: 'string' },           // Fajr, Dhuhr, etc.
+        { name: 'time', type: 'number' },           // Unix timestamp
+        { name: 'completed', type: 'boolean' },
+        { name: 'completed_at', type: 'number', isOptional: true },
+        { name: 'points_earned', type: 'number' },
+        { name: 'date', type: 'string', isIndexed: true }, // For queries
+      ],
+    }),
+    tableSchema({
+      name: 'rewards',
+      columns: [
+        { name: 'title', type: 'string' },
+        { name: 'description', type: 'string' },
+        { name: 'points_required', type: 'number' },
+        { name: 'unlocked', type: 'boolean' },
+      ],
+    }),
+  ],
+});
+
+// model/Prayer.js
+import { Model } from '@nozbe/watermelondb';
+import { field, date } from '@nozbe/watermelondb/decorators';
+
+export default class Prayer extends Model {
+  static table = 'prayers';
+
+  @field('name') name;
+  @date('time') time;
+  @field('completed') completed;
+  @date('completed_at') completedAt;
+  @field('points_earned') pointsEarned;
+  @field('date') date;
+}
+        </div>
+
+        <h3>SQLite for Encryption</h3>
+        <div class="priority-low">
+            <strong>OPTIONAL:</strong> If you need encrypted local storage, use SQLite with SQLCipher extension. SQLite doesn't encrypt by default, but SQLCipher adds AES-128/256 encryption.
+        </div>
+
+        <div class="link-box">
+            <strong><span class="emoji">🔗</span>Resources:</strong><br>
+            <a href="https://github.com/Nozbe/WatermelonDB" target="_blank">WatermelonDB GitHub</a> |
+            <a href="https://nozbe.github.io/WatermelonDB/" target="_blank">WatermelonDB Docs</a> |
+            <a href="https://docs.expo.dev/guides/using-libraries/#using-third-party-libraries" target="_blank">Expo + Native Libraries</a> |
+            <a href="https://react-native-async-storage.github.io/async-storage/" target="_blank">AsyncStorage Docs</a>
+        </div>
+    </div>
+
+    <!-- 4. Prayer Times API Integration -->
+    <div class="section">
+        <h2><span class="emoji">🕌</span>4. Prayer Times API Integration</h2>
+
+        <h3>Top Prayer Times APIs (2025)</h3>
+
+        <div class="tool-card">
+            <h4><span class="emoji">⭐</span>1. Aladhan API - RECOMMENDED</h4>
+            <p><strong>URL:</strong> <a href="https://aladhan.com/prayer-times-api" target="_blank">https://aladhan.com/prayer-times-api</a></p>
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✅ Pros</h4>
+                    <ul>
+                        <li><strong>Free and open-source</strong></li>
+                        <li><strong>No API key required</strong></li>
+                        <li><strong>No authentication</strong></li>
+                        <li>Returns JSON with five prayer times</li>
+                        <li>Supports location (city, country, address)</li>
+                        <li>Monthly prayer times endpoint</li>
+                        <li>Multiple calculation methods</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>⚠️ Considerations</h4>
+                    <ul>
+                        <li>Rate limits (check docs for current limits)</li>
+                        <li>Requires internet for initial fetch</li>
+                        <li>Cache responses for offline use</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <h4>2. IslamicAPI.com</h4>
+            <p><strong>URL:</strong> <a href="https://islamicapi.com/doc/prayer-time/" target="_blank">https://islamicapi.com/doc/prayer-time/</a></p>
+            <ul>
+                <li>Prayer times, Qibla direction, prohibited times</li>
+                <li>Multiple calculation methods (Jafari, Karachi, ISNA, MWL, Umm Al-Qura, Egyptian)</li>
+                <li>Supports regional methods</li>
+            </ul>
+        </div>
+
+        <div class="tool-card">
+            <h4>3. MuslimSalat.com API</h4>
+            <p><strong>URL:</strong> <a href="http://www.muslimsalat.com/api/" target="_blank">http://www.muslimsalat.com/api/</a></p>
+            <ul>
+                <li>Requires API key (registration needed)</li>
+                <li>Location-based prayer times</li>
+            </ul>
+        </div>
+
+        <h3>Calculation Method Support</h3>
+        <div class="priority-high">
+            <strong>CRITICAL:</strong> Accommodate differences in prayer timing across Islamic schools of thought
+            <ul>
+                <li><strong>Standard Method</strong> - Shafi, Maliki, Hanbali</li>
+                <li><strong>Hanafi Method</strong></li>
+                <li><strong>Regional Methods:</strong>
+                    <ul>
+                        <li>Umm Al-Qura (Makkah) - Recommended for Saudi Arabia</li>
+                        <li>Islamic Society of North America (ISNA)</li>
+                        <li>University of Islamic Sciences, Karachi</li>
+                        <li>Egyptian General Authority of Survey</li>
+                        <li>Muslim World League (MWL)</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <h3>Best Practices for Islamic App Development</h3>
+
+        <div class="recommendation">
+            <strong>1. Location and Time Handling</strong>
+            <ul>
+                <li>Support Daylight Saving Time adjustments</li>
+                <li>Auto-sync with user's device location or allow manual input</li>
+                <li>Sync prayer times with device's time zone</li>
+                <li>Option for city-specific time zone (account for regional differences)</li>
+            </ul>
+        </div>
+
+        <div class="recommendation">
+            <strong>2. Offline Functionality</strong>
+            <ul>
+                <li>Fetch prayer times for entire month and cache locally</li>
+                <li>Real-time location updates when online</li>
+                <li>Fallback to cached data when offline</li>
+                <li>Reliable even in remote or low-connectivity areas</li>
+            </ul>
+        </div>
+
+        <div class="recommendation">
+            <strong>3. Customization</strong>
+            <ul>
+                <li>Automatic default settings or manual customization</li>
+                <li>High level of customization for each of five daily prayer notifications</li>
+                <li>Ability to adjust prayer time offsets (±15 minutes)</li>
+                <li>Manual prayer logging or automatic based on time</li>
+            </ul>
+        </div>
+
+        <h3>Implementation Example (Aladhan API)</h3>
+        <div class="code-block">
+// services/prayerTimes.js
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const ALADHAN_API = 'https://api.aladhan.com/v1';
+
+class PrayerTimesService {
+  // Fetch prayer times for entire month
+  async fetchMonthlyPrayerTimes(latitude, longitude, method = 4) {
+    try {
+      const date = new Date();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+
+      const response = await fetch(
+        `${ALADHAN_API}/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${method}`
+      );
+      const data = await response.json();
+
+      // Cache for offline use
+      await AsyncStorage.setItem(
+        'monthly_prayer_times',
+        JSON.stringify(data.data)
+      );
+
+      return data.data;
+    } catch (error) {
+      // Fallback to cached data
+      const cached = await AsyncStorage.getItem('monthly_prayer_times');
+      return cached ? JSON.parse(cached) : null;
+    }
+  }
+
+  // Get today's prayer times
+  async getTodayPrayerTimes() {
+    const monthlyData = await this.fetchMonthlyPrayerTimes(
+      24.7136, 46.6753 // Riyadh coordinates - get from device location
+    );
+
+    const today = new Date().getDate();
+    const todayData = monthlyData.find(day =>
+      parseInt(day.date.gregorian.day) === today
+    );
+
+    return {
+      fajr: todayData.timings.Fajr,
+      dhuhr: todayData.timings.Dhuhr,
+      asr: todayData.timings.Asr,
+      maghrib: todayData.timings.Maghrib,
+      isha: todayData.timings.Isha,
+    };
+  }
+}
+
+export default new PrayerTimesService();
+        </div>
+
+        <h3>Alternative: Adhan.js Library</h3>
+        <div class="recommendation">
+            <strong>OPTION:</strong> Use the <code>adhan</code> npm library for local prayer time calculation (no API required)
+            <ul>
+                <li>Install: <code>npm install adhan</code></li>
+                <li>Calculate prayer times locally based on coordinates</li>
+                <li>No internet required after installation</li>
+                <li>Smaller app size (no API dependency)</li>
+            </ul>
+        </div>
+
+        <div class="code-block">
+// Using adhan.js library (offline calculation)
+import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+
+const coordinates = new Coordinates(24.7136, 46.6753); // Riyadh
+const params = CalculationMethod.UmmAlQura(); // Saudi method
+const date = new Date();
+const prayerTimes = new PrayerTimes(coordinates, date, params);
+
+console.log(prayerTimes.fajr);
+console.log(prayerTimes.dhuhr);
+console.log(prayerTimes.asr);
+console.log(prayerTimes.maghrib);
+console.log(prayerTimes.isha);
+        </div>
+
+        <div class="link-box">
+            <strong><span class="emoji">🔗</span>Resources:</strong><br>
+            <a href="https://aladhan.com/prayer-times-api" target="_blank">Aladhan API Docs</a> |
+            <a href="https://islamicapi.com/doc/prayer-time/" target="_blank">IslamicAPI Docs</a> |
+            <a href="https://www.npmjs.com/package/adhan" target="_blank">Adhan.js npm</a> |
+            <a href="https://github.com/batoulapps/adhan-js" target="_blank">Adhan.js GitHub</a>
+        </div>
+    </div>
+
+    <!-- 5. Gamification Patterns -->
+    <div class="section">
+        <h2><span class="emoji">🎮</span>5. Gamification for Children (Ages 7-10)</h2>
+
+        <h3>Key Principles</h3>
+        <div class="priority-high">
+            <strong>CRITICAL SUCCESS FACTORS:</strong>
+            <ul>
+                <li><strong>Fun-to-Learning Ratio</strong> - Too much gamification = focus on points, not learning. Too little = lose interest.</li>
+                <li><strong>Align with Learning Objectives</strong> - Game mechanics must support lesson goals (prayer consistency, understanding importance)</li>
+                <li><strong>Age-Appropriate Design</strong> - Simple rewards, bright visuals, cartoon characters, sound effects</li>
+                <li><strong>Intrinsic Reward Loops</strong> - Unlock more content by playing and learning</li>
+            </ul>
+        </div>
+
+        <h3>Effective Gamification Elements</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Element</th>
+                    <th>Description</th>
+                    <th>Implementation for Prayer Tracking</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Points</strong></td>
+                    <td>Numeric rewards for completing actions</td>
+                    <td>Earn 10 points per prayer completed, 50 bonus for completing all 5 daily prayers</td>
+                </tr>
+                <tr>
+                    <td><strong>Badges</strong></td>
+                    <td>Visual achievements for milestones</td>
+                    <td>"7-Day Streak", "Early Bird (Fajr)", "Consistency Champion" badges</td>
+                </tr>
+                <tr>
+                    <td><strong>Levels</strong></td>
+                    <td>Progression tiers with increasing difficulty</td>
+                    <td>Level 1: Beginner (0-100 pts), Level 2: Committed (100-500 pts), etc.</td>
+                </tr>
+                <tr>
+                    <td><strong>Streaks</strong></td>
+                    <td>Consecutive days of achievement</td>
+                    <td>Prayer streak counter - resets if miss a day</td>
+                </tr>
+                <tr>
+                    <td><strong>Progress Bars</strong></td>
+                    <td>Visual representation of completion</td>
+                    <td>Daily progress (5 prayers), weekly progress, monthly progress</td>
+                </tr>
+                <tr>
+                    <td><strong>Unlockables</strong></td>
+                    <td>New content unlocked by progress</td>
+                    <td>Avatar customizations, new prayer mat designs, Islamic stories</td>
+                </tr>
+                <tr>
+                    <td><strong>Leaderboards</strong></td>
+                    <td>Friendly competition (use carefully)</td>
+                    <td>Family leaderboard only - avoid public comparisons for kids</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Research-Backed Benefits</h3>
+        <div class="recommendation">
+            <strong>Why Gamification Works for Ages 7-10:</strong>
+            <ul>
+                <li><strong>Accelerated Learning</strong> - Kids achieve in weeks what might take months with traditional methods</li>
+                <li><strong>Brain Synapse Creation</strong> - Dr. Karyn Purvis research: 400 repetitions → 20 repetitions when learning is done in play</li>
+                <li><strong>Reduced Stress</strong> - Gamification reduces learning-associated stress</li>
+                <li><strong>Cognitive Development</strong> - Develops cognitive functions through interactive engagement</li>
+            </ul>
+        </div>
+
+        <h3>Best Subject Areas for Gamification</h3>
+        <div class="priority-medium">
+            <strong>OPTIMAL FOR:</strong> Skills that need lots of practice
+            <ul>
+                <li>Prayer times memorization (Fajr, Dhuhr, Asr, Maghrib, Isha)</li>
+                <li>Prayer movements (Rakat practice)</li>
+                <li>Arabic vocabulary (prayer recitations)</li>
+                <li>Consistency habits (daily prayer tracking)</li>
+            </ul>
+        </div>
+
+        <h3>Reward System Design</h3>
+        <div class="code-block">
+// Reward System Structure
+
+const REWARD_SYSTEM = {
+  // Daily Points
+  points_per_prayer: 10,
+  bonus_all_five_prayers: 50,
+  bonus_on_time: 5,
+  bonus_early_fajr: 10,
+
+  // Streaks
+  streak_7_days: { badge: 'Week Warrior', points: 100 },
+  streak_30_days: { badge: 'Month Master', points: 500 },
+  streak_100_days: { badge: 'Century Champion', points: 2000 },
+
+  // Levels
+  levels: [
+    { name: 'Beginner', min: 0, max: 100, unlocks: ['basic_avatar'] },
+    { name: 'Committed', min: 100, max: 500, unlocks: ['prayer_mat_blue'] },
+    { name: 'Dedicated', min: 500, max: 1500, unlocks: ['avatar_accessories'] },
+    { name: 'Champion', min: 1500, max: 5000, unlocks: ['special_badges'] },
+    { name: 'Master', min: 5000, max: Infinity, unlocks: ['all_content'] },
+  ],
+
+  // Achievements
+  achievements: [
+    { id: 'early_bird', name: 'Early Bird', description: 'Pray Fajr 7 days in a row', icon: '🌅' },
+    { id: 'perfect_week', name: 'Perfect Week', description: 'Complete all prayers for 7 days', icon: '⭐' },
+    { id: 'ramadan_champ', name: 'Ramadan Champion', description: 'Complete all prayers in Ramadan', icon: '🌙' },
+    { id: 'family_star', name: 'Family Star', description: 'Top of family leaderboard for a week', icon: '👨‍👩‍👧‍👦' },
+  ],
+};
+        </div>
+
+        <h3>Age-Appropriate Visual Design</h3>
+        <div class="recommendation">
+            <strong>Visual Elements for Ages 7-10:</strong>
+            <ul>
+                <li><strong>Bright, vibrant colors</strong> - Primary colors, high contrast</li>
+                <li><strong>Cartoon characters</strong> - Friendly mascot to guide journey</li>
+                <li><strong>Animated feedback</strong> - Celebrations when prayer marked complete</li>
+                <li><strong>Sound effects</strong> - Positive audio feedback (keep volume adjustable)</li>
+                <li><strong>Simple icons</strong> - Large, clear, recognizable symbols</li>
+                <li><strong>Progress visualization</strong> - Stars filling up, trees growing, etc.</li>
+            </ul>
+        </div>
+
+        <h3>Balance and Safety</h3>
+        <div class="priority-high">
+            <strong>CRITICAL CONSIDERATIONS:</strong>
+            <ul>
+                <li><strong>Screen Time Balance</strong> - Encourage offline prayer activities, not just app usage</li>
+                <li><strong>No Public Leaderboards</strong> - Family-only comparisons to avoid social pressure</li>
+                <li><strong>Inclusive Design</strong> - Customization for different learning styles and abilities</li>
+                <li><strong>Parental Controls</strong> - Parents can view progress, adjust difficulty</li>
+                <li><strong>No In-App Purchases</strong> - All unlocks earned through prayer completion</li>
+            </ul>
+        </div>
+
+        <div class="link-box">
+            <strong><span class="emoji">🔗</span>Research Sources:</strong><br>
+            <a href="https://slejournal.springeropen.com/articles/10.1186/s40561-019-0085-2" target="_blank">Engaging Children with Educational Content via Gamification (Research Paper)</a> |
+            <a href="https://yukaichou.com/gamification-examples/top-ten-learning-games-kids/" target="_blank">Yu-kai Chou - Top Learning Games for Kids</a> |
+            <a href="https://www.edtechdigest.com/2023/01/04/how-can-gamification-help-children-learn/" target="_blank">How Gamification Helps Children Learn (EdTech Digest)</a>
+        </div>
+    </div>
+
+    <!-- 6. Accessibility -->
+    <div class="section">
+        <h2><span class="emoji">♿</span>6. Accessibility for Young Users</h2>
+
+        <h3>WCAG Standards for Mobile Apps</h3>
+        <div class="priority-high">
+            <strong>LEGAL REQUIREMENT:</strong> WCAG 2.1 Level AA is the compliance standard for ADA (Americans with Disabilities Act)
+            <ul>
+                <li>Originally for web, now applies to mobile apps (hybrid and native)</li>
+                <li>Mobile-specific guidelines introduced in WCAG 2.1 (June 2018)</li>
+                <li>17 new success criteria for mobile accessibility</li>
+            </ul>
+        </div>
+
+        <h3>The Four POUR Principles</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Principle</th>
+                    <th>Description</th>
+                    <th>Implementation for Kids App</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Perceivable</strong></td>
+                    <td>Information must be presentable to users in ways they can perceive</td>
+                    <td>
+                        • Sufficient color contrast (4.5:1 for normal text)<br>
+                        • Text resizing and reflow support<br>
+                        • Visual + audio feedback for actions
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Operable</strong></td>
+                    <td>UI components must be operable by all users</td>
+                    <td>
+                        • Large touch targets (min 44x44 points)<br>
+                        • Clear instructions for gestures<br>
+                        • Consistent navigation
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Understandable</strong></td>
+                    <td>Information and UI must be understandable</td>
+                    <td>
+                        • Simple language (age 7-10 reading level)<br>
+                        • Clear button labels<br>
+                        • Immediate feedback on actions
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Robust</strong></td>
+                    <td>Content must work with assistive technologies</td>
+                    <td>
+                        • Screen reader support<br>
+                        • Semantic labels for all elements<br>
+                        • Works with TalkBack/VoiceOver
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Key Technical Requirements</h3>
+
+        <div class="recommendation">
+            <strong>1. Color Contrast</strong>
+            <ul>
+                <li><strong>Normal text (&lt;18pt or 14pt bold):</strong> 4.5:1 contrast ratio</li>
+                <li><strong>Large text (≥18pt or 14pt bold):</strong> 3:1 contrast ratio</li>
+                <li>Test with tools like WebAIM Contrast Checker</li>
+            </ul>
+        </div>
+
+        <div class="recommendation">
+            <strong>2. Touch Targets</strong>
+            <ul>
+                <li><strong>Minimum size:</strong> 44x44 points (iOS) / 48x48 dp (Android)</li>
+                <li>Larger is better for young children (consider 60x60 points)</li>
+                <li>Adequate spacing between interactive elements</li>
+            </ul>
+        </div>
+
+        <div class="recommendation">
+            <strong>3. Screen Reader Support</strong>
+            <ul>
+                <li>Add <code>accessibilityLabel</code> to all interactive elements</li>
+                <li>Use <code>accessibilityHint</code> to explain what happens</li>
+                <li>Group related content with <code>accessibilityRole</code></li>
+            </ul>
+        </div>
+
+        <div class="code-block">
+// React Native Accessibility Example
+
+import { TouchableOpacity, Text, View } from 'react-native';
+
+const PrayerButton = ({ prayerName, onPress, completed }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    accessible={true}
+    accessibilityLabel={`${prayerName} prayer`}
+    accessibilityHint={completed ? "Already completed" : "Double tap to mark as completed"}
+    accessibilityRole="button"
+    accessibilityState={{ checked: completed }}
+    style={{
+      minHeight: 60, // Large touch target for kids
+      minWidth: 60,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: completed ? '#4caf50' : '#f0f0f0',
+    }}
+  >
+    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+      {prayerName}
+    </Text>
+  </TouchableOpacity>
+);
+        </div>
+
+        <div class="recommendation">
+            <strong>4. Orientation Support</strong>
+            <ul>
+                <li>Don't restrict to portrait or landscape unless essential</li>
+                <li>Content should adapt to both orientations</li>
+            </ul>
+        </div>
+
+        <div class="recommendation">
+            <strong>5. Text Descriptions</strong>
+            <ul>
+                <li>Provide text descriptions for images, icons, buttons</li>
+                <li>Screen readers should describe all non-text elements</li>
+            </ul>
+        </div>
+
+        <h3>Accessibility for Children Specifically</h3>
+        <div class="priority-medium">
+            <strong>ADDITIONAL CONSIDERATIONS:</strong>
+            <ul>
+                <li><strong>Larger UI elements</strong> - Kids have less precise touch than adults</li>
+                <li><strong>Simple language</strong> - Avoid complex words, use age-appropriate vocabulary</li>
+                <li><strong>Visual + audio feedback</strong> - Multiple sensory confirmations</li>
+                <li><strong>Forgiving interactions</strong> - Easy to undo mistakes</li>
+                <li><strong>Reduced cognitive load</strong> - One primary action per screen</li>
+            </ul>
+        </div>
+
+        <h3>Current State of Mobile Accessibility</h3>
+        <div class="priority-high">
+            <strong>INDUSTRY STATS (2025):</strong>
+            <ul>
+                <li>72% of mobile apps tested had accessibility barriers (State of Mobile App Accessibility report)</li>
+                <li>Common issues: poor screen reader support, low contrast, small touch targets, motion-triggered problems</li>
+                <li>Your app can stand out by being accessibility-first from day one</li>
+            </ul>
+        </div>
+
+        <h3>Testing Checklist</h3>
+        <div class="code-block">
+✅ ACCESSIBILITY TESTING CHECKLIST
+
+[ ] Color contrast meets 4.5:1 minimum (use WebAIM checker)
+[ ] All interactive elements are 44x44 points minimum
+[ ] Screen reader (VoiceOver/TalkBack) can navigate entire app
+[ ] All buttons have accessibilityLabel and accessibilityHint
+[ ] Images have meaningful accessibilityLabel
+[ ] App works in both portrait and landscape
+[ ] Text can be resized up to 200%
+[ ] No information conveyed by color alone
+[ ] Haptic/audio feedback for important actions
+[ ] Forms have clear labels and error messages
+[ ] Kids can complete tasks without adult help
+        </div>
+
+        <div class="link-box">
+            <strong><span class="emoji">🔗</span>Official Resources:</strong><br>
+            <a href="https://www.w3.org/TR/mobile-accessibility-mapping/" target="_blank">W3C Mobile Accessibility Mapping</a> |
+            <a href="https://reactnative.dev/docs/accessibility" target="_blank">React Native Accessibility Docs</a> |
+            <a href="https://webaim.org/resources/contrastchecker/" target="_blank">WebAIM Contrast Checker</a> |
+            <a href="https://www.ada.gov/resources/small-entity-compliance-guide/" target="_blank">ADA Compliance Guide</a>
+        </div>
+    </div>
+
+    <!-- Summary & Action Plan -->
+    <div class="section">
+        <h2><span class="emoji">🎯</span>Recommended Tech Stack & Action Plan</h2>
+
+        <h3>Core Technology Stack</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Technology</th>
+                    <th>Justification</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Framework</strong></td>
+                    <td>React Native + Expo (SDK 50+)</td>
+                    <td>Zero-build config, OTA updates, rich ecosystem</td>
+                </tr>
+                <tr>
+                    <td><strong>Navigation</strong></td>
+                    <td>Expo Router</td>
+                    <td>File-based routing, typed routes, universal deep linking</td>
+                </tr>
+                <tr>
+                    <td><strong>State Management</strong></td>
+                    <td>Zustand</td>
+                    <td>Lightweight, modern replacement for Redux</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Persistence</strong></td>
+                    <td>WatermelonDB (primary)<br>MMKV (settings)</td>
+                    <td>Offline-first, reactive, fast queries<br>30x faster than AsyncStorage</td>
+                </tr>
+                <tr>
+                    <td><strong>Prayer Times</strong></td>
+                    <td>Aladhan API + adhan.js</td>
+                    <td>Free, no auth, multiple methods + offline calculation</td>
+                </tr>
+                <tr>
+                    <td><strong>UI Components</strong></td>
+                    <td>React Native Paper</td>
+                    <td>Material Design, accessibility-first</td>
+                </tr>
+                <tr>
+                    <td><strong>Animations</strong></td>
+                    <td>Reanimated 3.0</td>
+                    <td>Smooth, performant animations for kids</td>
+                </tr>
+                <tr>
+                    <td><strong>Forms</strong></td>
+                    <td>React Hook Form</td>
+                    <td>Performant, flexible form handling</td>
+                </tr>
+                <tr>
+                    <td><strong>Testing</strong></td>
+                    <td>Jest + React Native Testing Library</td>
+                    <td>Industry standard for React Native</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Implementation Phases</h3>
+
+        <div class="priority-high">
+            <strong>Phase 1: Foundation (Week 1-2)</strong>
+            <ol>
+                <li>Set up Expo project with Expo Router</li>
+                <li>Configure WatermelonDB for offline-first data</li>
+                <li>Implement prayer times API integration (Aladhan + adhan.js)</li>
+                <li>Create basic navigation structure (tabs: Home, Prayers, Rewards)</li>
+                <li>Set up Zustand state management</li>
+            </ol>
+        </div>
+
+        <div class="priority-medium">
+            <strong>Phase 2: Core Features (Week 3-4)</strong>
+            <ol>
+                <li>Build prayer tracking UI (mark prayers complete)</li>
+                <li>Implement offline-first sync for prayer logs</li>
+                <li>Add location-based prayer times</li>
+                <li>Create calculation method selection (Umm Al-Qura for Saudi)</li>
+                <li>Build basic gamification (points, streaks)</li>
+            </ol>
+        </div>
+
+        <div class="priority-medium">
+            <strong>Phase 3: Gamification (Week 5-6)</strong>
+            <ol>
+                <li>Implement reward system (badges, levels, achievements)</li>
+                <li>Create unlockable content (avatars, prayer mats)</li>
+                <li>Build progress visualizations (daily/weekly/monthly)</li>
+                <li>Add family leaderboard (local only)</li>
+                <li>Implement celebratory animations</li>
+            </ol>
+        </div>
+
+        <div class="priority-low">
+            <strong>Phase 4: Polish & Accessibility (Week 7-8)</strong>
+            <ol>
+                <li>Accessibility audit (WCAG 2.1 Level AA)</li>
+                <li>Screen reader optimization</li>
+                <li>Color contrast verification</li>
+                <li>Touch target sizing for kids (60x60 points)</li>
+                <li>Add haptic/audio feedback</li>
+                <li>Performance optimization</li>
+                <li>COPPA compliance review</li>
+            </ol>
+        </div>
+
+        <h3>Quick Start Commands</h3>
+        <div class="code-block">
+# Create new Expo project with Expo Router
+npx create-expo-app salah-buddy --template tabs
+
+# Install core dependencies
+cd salah-buddy
+npx expo install zustand
+npx expo install react-native-mmkv
+npx expo install react-native-paper
+npx expo install react-native-reanimated
+npx expo install @react-native-community/netinfo
+npm install adhan
+
+# Install WatermelonDB (requires EAS build)
+npx expo install @nozbe/watermelondb
+
+# Install dev dependencies
+npm install --save-dev jest @testing-library/react-native
+
+# Start development server
+npx expo start
+        </div>
+
+        <h3>Key Success Metrics</h3>
+        <ul>
+            <li><strong>Engagement:</strong> Daily active users, prayer completion rate</li>
+            <li><strong>Retention:</strong> 7-day retention, 30-day retention</li>
+            <li><strong>Learning:</strong> Prayer time memorization accuracy</li>
+            <li><strong>Accessibility:</strong> WCAG 2.1 Level AA compliance</li>
+            <li><strong>Performance:</strong> App loads in &lt;2s, smooth 60fps animations</li>
+            <li><strong>Privacy:</strong> COPPA compliant, no personal data without consent</li>
+        </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="color: white; border-bottom: 3px solid white;"><span class="emoji">📚</span>Additional Resources</h2>
+
+        <h3 style="color: white;">Official Documentation</h3>
+        <ul style="color: white;">
+            <li><a href="https://docs.expo.dev/" style="color: #fff3e0;">Expo Documentation</a></li>
+            <li><a href="https://reactnative.dev/" style="color: #fff3e0;">React Native Documentation</a></li>
+            <li><a href="https://nozbe.github.io/WatermelonDB/" style="color: #fff3e0;">WatermelonDB Documentation</a></li>
+            <li><a href="https://aladhan.com/prayer-times-api" style="color: #fff3e0;">Aladhan Prayer Times API</a></li>
+        </ul>
+
+        <h3 style="color: white;">Open Source Examples</h3>
+        <ul style="color: white;">
+            <li>Search GitHub for: "react native prayer times", "react native islamic app", "react native adhan"</li>
+            <li>Expo Examples Gallery: <a href="https://expo.dev/examples" style="color: #fff3e0;">expo.dev/examples</a></li>
+        </ul>
+
+        <h3 style="color: white;">Accessibility Testing Tools</h3>
+        <ul style="color: white;">
+            <li><a href="https://webaim.org/resources/contrastchecker/" style="color: #fff3e0;">WebAIM Contrast Checker</a></li>
+            <li>iOS: VoiceOver (Settings → Accessibility → VoiceOver)</li>
+            <li>Android: TalkBack (Settings → Accessibility → TalkBack)</li>
+        </ul>
+
+        <p style="text-align: center; margin-top: 30px; font-size: 0.9em; opacity: 0.9;">
+            <strong>Research compiled on December 12, 2025</strong><br>
+            For Salah Buddy - Kids Prayer Tracking Mobile App
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salah Buddy - Technical Documentation Research</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 4px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 5px solid #3498db;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        h4 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .metadata {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        pre code {
+            background: transparent;
+            color: #ecf0f1;
+            padding: 0;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-bottom 0.2s;
+        }
+
+        a:hover {
+            border-bottom: 1px solid #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .benchmark {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .benchmark-item {
+            flex: 1;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .benchmark-fast {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .benchmark-slow {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+
+        .benchmark-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .resource-link {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin: 5px 5px 5px 0;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .resource-link:hover {
+            background: #2980b9;
+            border-bottom: none;
+        }
+
+        .section-divider {
+            border-top: 2px solid #ecf0f1;
+            margin: 50px 0 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Salah Buddy - React Native Technical Documentation</h1>
+
+        <div class="metadata">
+            <strong>Generated:</strong> December 12, 2025<br>
+            <strong>Purpose:</strong> Comprehensive technical documentation for building a React Native prayer times app<br>
+            <strong>Target Platform:</strong> iOS & Android via Expo
+        </div>
+
+        <!-- ================== EXPO SDK 52 ================== -->
+        <h2>1️⃣ Expo SDK 52 - Project Setup</h2>
+
+        <div class="info">
+            <strong>Latest Version:</strong> SDK 52 (Released November 2024)<br>
+            <strong>React Native:</strong> 0.76+ (with 0.77 support added January 2025)<br>
+            <strong>Key Change:</strong> New Architecture enabled by default for all new projects
+        </div>
+
+        <h3>Creating a New Project</h3>
+        <pre><code># Create new Expo app with SDK 52
+npx create-expo-app salah-buddy
+
+# Navigate to project
+cd salah-buddy
+
+# Install dependencies using Expo CLI
+npx expo install</code></pre>
+
+        <h3>Key Features in SDK 52</h3>
+        <ul>
+            <li><strong>New Architecture by Default:</strong> <code>newArchEnabled: true</code> in <code>app.json</code> for all new projects</li>
+            <li><strong>React Native DevTools:</strong> Replaces the old JavaScript debugger</li>
+            <li><strong>expo/fetch:</strong> WinterCG-compliant Fetch API with download streaming support</li>
+            <li><strong>React Navigation v7:</strong> Automatic upgrade if using Expo Router</li>
+            <li><strong>Expo Go for SDK 52+:</strong> Only supports New Architecture (create development build to opt-out)</li>
+        </ul>
+
+        <h3>Installing Expo SDK Packages</h3>
+        <pre><code># Use expo install instead of npm/yarn to ensure version compatibility
+npx expo install expo-location
+npx expo install expo-av
+npx expo install expo-font
+npx expo install @expo/vector-icons</code></pre>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Important: Incremental Upgrades</div>
+            When upgrading existing projects, Expo recommends upgrading SDK versions one at a time. The New Architecture is NOT automatically enabled for existing projects in SDK 52.
+        </div>
+
+        <h3>Configuration Files</h3>
+
+        <h4>app.json / app.config.js</h4>
+        <pre><code>{
+  "expo": {
+    "name": "Salah Buddy",
+    "slug": "salah-buddy",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Salah Buddy to access your location for accurate prayer times."
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/CustomFont.ttf"
+          ]
+        }
+      ]
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.salahbuddy"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.yourcompany.salahbuddy",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "newArchEnabled": true
+  }
+}</code></pre>
+
+        <h3>Official Resources</h3>
+        <a href="https://docs.expo.dev" class="resource-link" target="_blank">📚 Expo Documentation</a>
+        <a href="https://expo.dev/changelog/2024-11-12-sdk-52" class="resource-link" target="_blank">📝 SDK 52 Changelog</a>
+        <a href="https://docs.expo.dev/workflow/upgrading-expo-sdk-walkthrough/" class="resource-link" target="_blank">🔄 Upgrade Guide</a>
+
+        <div class="section-divider"></div>
+
+        <!-- ================== REACT NAVIGATION ================== -->
+        <h2>2️⃣ React Navigation v6/v7 - Tab & Stack Navigation</h2>
+
+        <div class="info">
+            <strong>Current Version:</strong> v6.x (v7 available with Expo Router in SDK 52)<br>
+            <strong>Architecture:</strong> Component-based API with improved TypeScript support
+        </div>
+
+        <h3>Installation</h3>
+        <pre><code># Core dependencies
+npm install @react-navigation/native
+
+# Expo-specific dependencies
+npx expo install react-native-screens react-native-safe-area-context
+
+# Navigators
+npm install @react-navigation/native-stack
+npm install @react-navigation/bottom-tabs</code></pre>
+
+        <h3>Bottom Tab Navigator Example</h3>
+        <pre><code>import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+const Tab = createBottomTabNavigator();
+
+export default function App() {
+  return (
+    &lt;NavigationContainer&gt;
+      &lt;Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Prayer Times') {
+              iconName = focused ? 'time' : 'time-outline';
+            } else if (route.name === 'Qibla') {
+              iconName = focused ? 'compass' : 'compass-outline';
+            } else if (route.name === 'Videos') {
+              iconName = focused ? 'play-circle' : 'play-circle-outline';
+            }
+
+            return &lt;Ionicons name={iconName} size={size} color={color} /&gt;;
+          },
+          tabBarActiveTintColor: '#2ecc71',
+          tabBarInactiveTintColor: 'gray',
+          headerShown: true,
+        })}
+      &gt;
+        &lt;Tab.Screen name="Prayer Times" component={PrayerTimesScreen} /&gt;
+        &lt;Tab.Screen name="Qibla" component={QiblaScreen} /&gt;
+        &lt;Tab.Screen name="Videos" component={VideosScreen} /&gt;
+      &lt;/Tab.Navigator&gt;
+    &lt;/NavigationContainer&gt;
+  );
+}</code></pre>
+
+        <h3>Nesting Stack Inside Tabs</h3>
+        <pre><code>import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
+
+function VideosStackNavigator() {
+  return (
+    &lt;Stack.Navigator&gt;
+      &lt;Stack.Screen
+        name="VideosList"
+        component={VideosListScreen}
+        options={{ headerShown: false }}
+      /&gt;
+      &lt;Stack.Screen
+        name="VideoPlayer"
+        component={VideoPlayerScreen}
+        options={{ title: 'Watch Video' }}
+      /&gt;
+    &lt;/Stack.Navigator&gt;
+  );
+}
+
+// In your Tab Navigator
+&lt;Tab.Screen
+  name="Videos"
+  component={VideosStackNavigator}
+  options={{ headerShown: false }} // Hide tab header, use stack header
+/&gt;</code></pre>
+
+        <h3>Key Changes in v6+</h3>
+        <ul>
+            <li><strong>Options over Props:</strong> <code>tabBarOptions</code> moved to screen <code>options</code></li>
+            <li><strong>Headers by Default:</strong> Screens in drawer and bottom tabs now show headers by default</li>
+            <li><strong>Better TypeScript:</strong> No need to annotate <code>useNavigation</code> for type checking</li>
+            <li><strong>Component-Based:</strong> All configuration through components and props</li>
+        </ul>
+
+        <div class="success">
+            <strong>✅ Native Bottom Tabs (New in 2025)</strong><br>
+            React Navigation now supports native tab primitives via <code>react-native-bottom-tabs</code>, using iOS's TabView and Android's BottomNavigationView for truly native feel.
+        </div>
+
+        <h3>Official Resources</h3>
+        <a href="https://reactnavigation.org/docs/bottom-tab-navigator/" class="resource-link" target="_blank">📚 Bottom Tabs Docs</a>
+        <a href="https://reactnavigation.org/docs/native-stack-navigator/" class="resource-link" target="_blank">📚 Native Stack Docs</a>
+        <a href="https://reactnavigation.org/blog/2025/01/29/using-react-navigation-with-native-bottom-tabs/" class="resource-link" target="_blank">📝 Native Tabs Blog</a>
+
+        <div class="section-divider"></div>
+
+        <!-- ================== DATA PERSISTENCE ================== -->
+        <h2>3️⃣ Data Persistence - MMKV vs AsyncStorage</h2>
+
+        <h3>Performance Benchmark Comparison</h3>
+        <div class="benchmark">
+            <div class="benchmark-item benchmark-fast">
+                <div><strong>MMKV</strong></div>
+                <div class="benchmark-value">12ms</div>
+                <div>1000 read operations</div>
+            </div>
+            <div class="benchmark-item benchmark-slow">
+                <div><strong>AsyncStorage</strong></div>
+                <div class="benchmark-value">242ms</div>
+                <div>1000 read operations</div>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Performance Improvement:</strong> 95% faster with MMKV<br>
+            <strong>Read Operations:</strong> 80% faster<br>
+            <strong>Write Operations:</strong> 500% faster
+        </div>
+
+        <h3>Recommendation: Use MMKV</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>MMKV ✅</th>
+                    <th>AsyncStorage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Speed</td>
+                    <td><strong>~30x faster</strong></td>
+                    <td>Baseline</td>
+                </tr>
+                <tr>
+                    <td>API Style</td>
+                    <td>Synchronous</td>
+                    <td>Async/Promise-based</td>
+                </tr>
+                <tr>
+                    <td>Encryption</td>
+                    <td><strong>Built-in</strong></td>
+                    <td>Not available</td>
+                </tr>
+                <tr>
+                    <td>Storage Method</td>
+                    <td>Memory-mapped</td>
+                    <td>Bridge-based</td>
+                </tr>
+                <tr>
+                    <td>Expo Go Support</td>
+                    <td>Requires dev build</td>
+                    <td>Works in Expo Go</td>
+                </tr>
+                <tr>
+                    <td>Setup Complexity</td>
+                    <td>Native build required</td>
+                    <td>Works out-of-box</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>MMKV Installation & Setup</h3>
+        <pre><code># Install MMKV (requires native build, not available in Expo Go)
+npx expo install react-native-mmkv
+
+# Create a development build
+npx expo prebuild
+npx expo run:ios  # or run:android</code></pre>
+
+        <h3>MMKV Usage Example</h3>
+        <pre><code>import { MMKV } from 'react-native-mmkv';
+
+// Create storage instance
+export const storage = new MMKV({
+  id: 'salah-buddy-storage',
+  encryptionKey: 'your-encryption-key-here' // Optional but recommended
+});
+
+// Store data (synchronous!)
+storage.set('user.favoriteVideos', JSON.stringify(favoriteVideos));
+storage.set('settings.notificationsEnabled', true);
+storage.set('prayer.lastLocation', JSON.stringify({ lat, lng }));
+
+// Retrieve data
+const favorites = JSON.parse(storage.getString('user.favoriteVideos') || '[]');
+const notificationsEnabled = storage.getBoolean('settings.notificationsEnabled');
+const location = JSON.parse(storage.getString('prayer.lastLocation') || '{}');
+
+// Delete data
+storage.delete('user.favoriteVideos');
+
+// Clear all data
+storage.clearAll();</code></pre>
+
+        <h3>React Hook for MMKV</h3>
+        <pre><code>import { useMMKVString, useMMKVObject } from 'react-native-mmkv';
+
+function PrayerSettingsScreen() {
+  const [calculationMethod, setCalculationMethod] = useMMKVString('prayer.method');
+  const [userSettings, setUserSettings] = useMMKVObject('user.settings');
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Method: {calculationMethod}&lt;/Text&gt;
+      &lt;Button
+        title="Set to North America"
+        onPress={() => setCalculationMethod('NorthAmerica')}
+      /&gt;
+    &lt;/View&gt;
+  );
+}</code></pre>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Important Limitations</div>
+            MMKV is in-memory storage. Don't use it for large datasets (videos, images, etc.) as it will consume memory and slow down your app. Use it for small key-value data like settings, preferences, and cached prayer times.
+        </div>
+
+        <h3>When to Use AsyncStorage</h3>
+        <ul>
+            <li>Rapid prototyping with Expo Go (no native build required)</li>
+            <li>Small, simple projects where performance isn't critical</li>
+            <li>Teams without native development experience</li>
+            <li>When you need promise-based API consistency across your codebase</li>
+        </ul>
+
+        <h3>AsyncStorage Example (Fallback)</h3>
+        <pre><code>import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Store data
+await AsyncStorage.setItem('prayer.method', 'NorthAmerica');
+await AsyncStorage.setItem('user.favorites', JSON.stringify(favorites));
+
+// Retrieve data
+const method = await AsyncStorage.getItem('prayer.method');
+const favorites = JSON.parse(await AsyncStorage.getItem('user.favorites') || '[]');
+
+// Remove data
+await AsyncStorage.removeItem('prayer.method');
+
+// Clear all
+await AsyncStorage.clear();</code></pre>
+
+        <h3>Official Resources</h3>
+        <a href="https://github.com/mrousavy/react-native-mmkv" class="resource-link" target="_blank">📚 MMKV GitHub</a>
+        <a href="https://github.com/mrousavy/StorageBenchmark" class="resource-link" target="_blank">📊 Storage Benchmark</a>
+        <a href="https://react-native-async-storage.github.io/async-storage/" class="resource-link" target="_blank">📚 AsyncStorage Docs</a>
+
+        <div class="section-divider"></div>
+
+        <!-- ================== VIDEO PLAYBACK ================== -->
+        <h2>4️⃣ Video Playback - Expo Video (expo-av deprecated)</h2>
+
+        <div class="warning">
+            <div class="warning-title">⚠️ Breaking Change</div>
+            <strong>expo-av is deprecated</strong> and will be removed in SDK 55. Use <code>expo-video</code> and <code>expo-audio</code> instead.
+        </div>
+
+        <h3>Expo Video Installation</h3>
+        <pre><code># Install expo-video (recommended)
+npx expo install expo-video</code></pre>
+
+        <h3>Basic Video Player Example</h3>
+        <pre><code>import { useVideoPlayer, VideoView } from 'expo-video';
+import { useEffect, useRef } from 'react';
+import { StyleSheet, View, Button } from 'react-native';
+
+const videoSource = 'https://example.com/salah-tutorial.mp4';
+
+export default function VideoPlayerScreen() {
+  const player = useVideoPlayer(videoSource, player => {
+    player.loop = false;
+    player.play();
+  });
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;VideoView
+        style={styles.video}
+        player={player}
+        allowsFullscreen
+        allowsPictureInPicture
+      /&gt;
+      &lt;View style={styles.controls}&gt;
+        &lt;Button
+          title={player.playing ? "Pause" : "Play"}
+          onPress={() => {
+            if (player.playing) {
+              player.pause();
+            } else {
+              player.play();
+            }
+          }}
+        /&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  video: {
+    width: '100%',
+    height: 300,
+  },
+  controls: {
+    padding: 20,
+  },
+});</code></pre>
+
+        <h3>Key Features</h3>
+        <ul>
+            <li><strong>Picture-in-Picture (PiP):</strong> Automatic start when app backgrounds (requires config plugin setup)</li>
+            <li><strong>Background Playback:</strong> Continue playing after app enters background</li>
+            <li><strong>Multiple Tracks:</strong> Access audio tracks, subtitle tracks, and video tracks</li>
+            <li><strong>Cross-Platform:</strong> Works on iOS, Android, and Web</li>
+            <li><strong>Native Performance:</strong> Uses native video players under the hood</li>
+        </ul>
+
+        <h3>Configuration for Picture-in-Picture</h3>
+        <pre><code>// app.json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-video",
+        {
+          "supportsPictureInPicture": true
+        }
+      ]
+    ]
+  }
+}</code></pre>
+
+        <h3>Video Player with Custom Controls</h3>
+        <pre><code>import { useVideoPlayer, VideoView } from 'expo-video';
+import { useState, useEffect } from 'react';
+import { View, TouchableOpacity, Text, Slider } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+export default function CustomVideoPlayer({ videoUrl }) {
+  const player = useVideoPlayer(videoUrl);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(player.currentTime);
+      setDuration(player.duration);
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [player]);
+
+  const togglePlayPause = () => {
+    if (isPlaying) {
+      player.pause();
+    } else {
+      player.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const seek = (value) => {
+    player.seekTo(value);
+  };
+
+  return (
+    &lt;View style={{ flex: 1 }}&gt;
+      &lt;VideoView
+        style={{ width: '100%', height: 250 }}
+        player={player}
+        nativeControls={false}
+      /&gt;
+
+      &lt;View style={{ padding: 20 }}&gt;
+        {/* Progress Bar */}
+        &lt;Slider
+          minimumValue={0}
+          maximumValue={duration}
+          value={currentTime}
+          onValueChange={seek}
+          minimumTrackTintColor="#2ecc71"
+          maximumTrackTintColor="#ccc"
+        /&gt;
+
+        {/* Play/Pause Button */}
+        &lt;TouchableOpacity onPress={togglePlayPause} style={{ alignItems: 'center' }}&gt;
+          &lt;Ionicons
+            name={isPlaying ? "pause-circle" : "play-circle"}
+            size={60}
+            color="#2ecc71"
+          /&gt;
+        &lt;/TouchableOpacity&gt;
+
+        {/* Time Display */}
+        &lt;Text&gt;{formatTime(currentTime)} / {formatTime(duration)}&lt;/Text&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}</code></pre>
+
+        <h3>Playlist Implementation</h3>
+        <pre><code>const videos = [
+  { id: 1, title: 'How to Pray Fajr', url: 'https://...' },
+  { id: 2, title: 'How to Pray Dhuhr', url: 'https://...' },
+  { id: 3, title: 'How to Pray Asr', url: 'https://...' },
+];
+
+function VideoPlaylistScreen() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const player = useVideoPlayer(videos[currentIndex].url);
+
+  const playNext = () => {
+    if (currentIndex < videos.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const playPrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  return (
+    &lt;View&gt;
+      &lt;Text style={{ fontSize: 20, textAlign: 'center', margin: 10 }}&gt;
+        {videos[currentIndex].title}
+      &lt;/Text&gt;
+
+      &lt;VideoView style={{ width: '100%', height: 250 }} player={player} /&gt;
+
+      &lt;View style={{ flexDirection: 'row', justifyContent: 'space-around', padding: 20 }}&gt;
+        &lt;Button title="Previous" onPress={playPrevious} disabled={currentIndex === 0} /&gt;
+        &lt;Button title="Next" onPress={playNext} disabled={currentIndex === videos.length - 1} /&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}</code></pre>
+
+        <h3>Official Resources</h3>
+        <a href="https://docs.expo.dev/versions/latest/sdk/video/" class="resource-link" target="_blank">📚 Expo Video Docs</a>
+        <a href="https://docs.expo.dev/versions/latest/sdk/video-av/" class="resource-link" target="_blank">📚 expo-av (Legacy)</a>
+        <a href="https://github.com/ihmpavel/expo-video-player" class="resource-link" target="_blank">🎬 Custom Video Player</a>
+
+        <div class="section-divider"></div>
+
+        <!-- ================== LOCATION & PRAYER TIMES ================== -->
+        <h2>5️⃣ Location Services & Prayer Times Calculation</h2>
+
+        <h3>Expo Location Installation</h3>
+        <pre><code>npx expo install expo-location</code></pre>
+
+        <h3>Getting User Location</h3>
+        <pre><code>import * as Location from 'expo-location';
+import { useEffect, useState } from 'react';
+
+export default function PrayerTimesScreen() {
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      // Request permission
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      // Get current position
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+
+      setLocation(location);
+    })();
+  }, []);
+
+  if (errorMsg) {
+    return &lt;Text&gt;{errorMsg}&lt;/Text&gt;;
+  }
+
+  if (!location) {
+    return &lt;Text&gt;Getting location...&lt;/Text&gt;;
+  }
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Latitude: {location.coords.latitude}&lt;/Text&gt;
+      &lt;Text&gt;Longitude: {location.coords.longitude}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}</code></pre>
+
+        <h3>Location Accuracy Levels</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Accuracy Level</th>
+                    <th>Precision</th>
+                    <th>Use Case</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Lowest</td>
+                    <td>~3 km</td>
+                    <td>City-level location</td>
+                </tr>
+                <tr>
+                    <td>Low</td>
+                    <td>~1 km</td>
+                    <td>Neighborhood-level</td>
+                </tr>
+                <tr>
+                    <td>Balanced ✅</td>
+                    <td>~100 m</td>
+                    <td>Prayer times (recommended)</td>
+                </tr>
+                <tr>
+                    <td>High</td>
+                    <td>~10 m</td>
+                    <td>Precise location</td>
+                </tr>
+                <tr>
+                    <td>Highest</td>
+                    <td>Best available</td>
+                    <td>Maximum accuracy</td>
+                </tr>
+                <tr>
+                    <td>BestForNavigation</td>
+                    <td>Highest + sensors</td>
+                    <td>Turn-by-turn navigation</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Prayer Times Calculation with adhan.js</h3>
+        <pre><code># Install adhan library
+npm install adhan</code></pre>
+
+        <h3>Complete Prayer Times Implementation</h3>
+        <pre><code>import { Coordinates, CalculationMethod, PrayerTimes, Prayer } from 'adhan';
+import * as Location from 'expo-location';
+import { useEffect, useState } from 'react';
+
+export default function PrayerTimesCalculator() {
+  const [prayerTimes, setPrayerTimes] = useState(null);
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      // Get location
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') return;
+
+      let userLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+
+      setLocation(userLocation.coords);
+
+      // Calculate prayer times
+      const coordinates = new Coordinates(
+        userLocation.coords.latitude,
+        userLocation.coords.longitude
+      );
+
+      const date = new Date();
+
+      // Use appropriate calculation method for your region
+      const params = CalculationMethod.NorthAmerica();
+
+      const prayers = new PrayerTimes(coordinates, date, params);
+
+      setPrayerTimes(prayers);
+    })();
+  }, []);
+
+  if (!prayerTimes) {
+    return &lt;Text&gt;Calculating prayer times...&lt;/Text&gt;;
+  }
+
+  return (
+    &lt;View style={{ padding: 20 }}&gt;
+      &lt;Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}&gt;
+        Prayer Times
+      &lt;/Text&gt;
+
+      &lt;PrayerTimeRow name="Fajr" time={prayerTimes.fajr} /&gt;
+      &lt;PrayerTimeRow name="Sunrise" time={prayerTimes.sunrise} /&gt;
+      &lt;PrayerTimeRow name="Dhuhr" time={prayerTimes.dhuhr} /&gt;
+      &lt;PrayerTimeRow name="Asr" time={prayerTimes.asr} /&gt;
+      &lt;PrayerTimeRow name="Maghrib" time={prayerTimes.maghrib} /&gt;
+      &lt;PrayerTimeRow name="Isha" time={prayerTimes.isha} /&gt;
+
+      {location && (
+        &lt;Text style={{ marginTop: 20, color: 'gray' }}&gt;
+          Location: {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
+        &lt;/Text&gt;
+      )}
+    &lt;/View&gt;
+  );
+}
+
+function PrayerTimeRow({ name, time }) {
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  return (
+    &lt;View style={{
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: '#eee'
+    }}&gt;
+      &lt;Text style={{ fontSize: 18 }}&gt;{name}&lt;/Text&gt;
+      &lt;Text style={{ fontSize: 18, fontWeight: 'bold' }}&gt;{formatTime(time)}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}</code></pre>
+
+        <h3>Calculation Methods Available</h3>
+        <ul>
+            <li><code>MuslimWorldLeague</code> - Muslim World League</li>
+            <li><code>Egyptian</code> - Egyptian General Authority of Survey</li>
+            <li><code>Karachi</code> - University of Islamic Sciences, Karachi</li>
+            <li><code>UmmAlQura</code> - Umm al-Qura University, Makkah</li>
+            <li><code>Dubai</code> - Method used in Dubai</li>
+            <li><code>MoonsightingCommittee</code> - Moonsighting Committee</li>
+            <li><code>NorthAmerica</code> - Islamic Society of North America</li>
+            <li><code>Kuwait</code> - Kuwait</li>
+            <li><code>Qatar</code> - Qatar</li>
+            <li><code>Singapore</code> - Singapore</li>
+        </ul>
+
+        <h3>Qibla Direction</h3>
+        <pre><code>import { Coordinates, Qibla } from 'adhan';
+
+const coordinates = new Coordinates(latitude, longitude);
+const qiblaDirection = Qibla(coordinates);
+
+console.log(`Qibla direction: ${qiblaDirection}° from North`);</code></pre>
+
+        <h3>Caching Prayer Times with MMKV</h3>
+        <pre><code>import { MMKV } from 'react-native-mmkv';
+
+const storage = new MMKV();
+
+// Cache prayer times for the day
+const cachePrayerTimes = (date, prayerTimes) => {
+  const cacheKey = `prayer-times-${date.toISOString().split('T')[0]}`;
+  storage.set(cacheKey, JSON.stringify({
+    fajr: prayerTimes.fajr.toISOString(),
+    sunrise: prayerTimes.sunrise.toISOString(),
+    dhuhr: prayerTimes.dhuhr.toISOString(),
+    asr: prayerTimes.asr.toISOString(),
+    maghrib: prayerTimes.maghrib.toISOString(),
+    isha: prayerTimes.isha.toISOString(),
+  }));
+};
+
+// Retrieve cached prayer times
+const getCachedPrayerTimes = (date) => {
+  const cacheKey = `prayer-times-${date.toISOString().split('T')[0]}`;
+  const cached = storage.getString(cacheKey);
+
+  if (cached) {
+    const parsed = JSON.parse(cached);
+    return {
+      fajr: new Date(parsed.fajr),
+      sunrise: new Date(parsed.sunrise),
+      dhuhr: new Date(parsed.dhuhr),
+      asr: new Date(parsed.asr),
+      maghrib: new Date(parsed.maghrib),
+      isha: new Date(parsed.isha),
+    };
+  }
+
+  return null;
+};</code></pre>
+
+        <h3>Official Resources</h3>
+        <a href="https://docs.expo.dev/versions/latest/sdk/location/" class="resource-link" target="_blank">📚 Expo Location Docs</a>
+        <a href="https://github.com/batoulapps/adhan-js" class="resource-link" target="_blank">🕌 Adhan.js GitHub</a>
+        <a href="https://www.npmjs.com/package/adhan" class="resource-link" target="_blank">📦 Adhan npm</a>
+
+        <div class="section-divider"></div>
+
+        <!-- ================== STYLING ================== -->
+        <h2>6️⃣ React Native Styling - StyleSheet & Responsive Design</h2>
+
+        <h3>Core Approach: useWindowDimensions Hook</h3>
+        <pre><code>import { useWindowDimensions, StyleSheet, View, Text } from 'react-native';
+
+export default function ResponsiveComponent() {
+  const { width, height } = useWindowDimensions();
+
+  const isTablet = width > 768;
+  const isLandscape = width > height;
+
+  return (
+    &lt;View style={[
+      styles.container,
+      { padding: isTablet ? 40 : 20 }
+    ]}&gt;
+      &lt;Text style={[
+        styles.title,
+        { fontSize: isTablet ? 32 : 24 }
+      ]}&gt;
+        Prayer Times
+      &lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontWeight: 'bold',
+    color: '#2c3e50',
+  },
+});</code></pre>
+
+        <h3>Best Practices for Styling</h3>
+
+        <h4>1. Use StyleSheet.create</h4>
+        <pre><code>// ✅ Good - StyleSheet validates styles and optimizes performance
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+});
+
+// ❌ Avoid - inline styles re-create objects on every render
+&lt;View style={{ flex: 1, padding: 20 }} /&gt;</code></pre>
+
+        <h4>2. Flexbox for Layouts</h4>
+        <pre><code>const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column', // or 'row'
+    justifyContent: 'space-between', // flex-start, flex-end, center, space-around
+    alignItems: 'center', // flex-start, flex-end, center, stretch
+  },
+  item: {
+    flex: 1, // takes up available space
+  },
+});</code></pre>
+
+        <h4>3. Percentage-Based Dimensions</h4>
+        <pre><code>const styles = StyleSheet.create({
+  halfWidth: {
+    width: '50%',
+  },
+  fullHeight: {
+    height: '100%',
+  },
+  centered: {
+    width: '90%',
+    maxWidth: 600, // cap width on tablets
+    alignSelf: 'center',
+  },
+});</code></pre>
+
+        <h4>4. Platform-Specific Styles</h4>
+        <pre><code>import { Platform, StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  text: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'System',
+        fontSize: 17,
+      },
+      android: {
+        fontFamily: 'Roboto',
+        fontSize: 16,
+      },
+      default: {
+        fontFamily: 'sans-serif',
+        fontSize: 16,
+      },
+    }),
+  },
+  shadow: {
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+});</code></pre>
+
+        <h3>Responsive Design Library: react-native-responsive-dimensions</h3>
+        <pre><code># Install
+npm install react-native-responsive-dimensions</code></pre>
+
+        <h3>Usage with Hooks</h3>
+        <pre><code>import {
+  useResponsiveHeight,
+  useResponsiveWidth,
+  useResponsiveFontSize,
+  useDimensionsChange
+} from 'react-native-responsive-dimensions';
+
+export default function ResponsiveScreen() {
+  const width = useResponsiveWidth(50); // 50% of screen width
+  const height = useResponsiveHeight(25); // 25% of screen height
+  const fontSize = useResponsiveFontSize(3); // 3% of screen height
+
+  // Responds to rotation, folding, window resizing
+  useDimensionsChange(({ window, screen }) => {
+    console.log('Dimensions changed:', window, screen);
+  });
+
+  return (
+    &lt;View style={{ width, height }}&gt;
+      &lt;Text style={{ fontSize }}&gt;Responsive Text&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}</code></pre>
+
+        <h3>Alternative: react-native-size-matters</h3>
+        <pre><code>import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: scale(10), // scales based on width
+    paddingVertical: verticalScale(10), // scales based on height
+  },
+  text: {
+    fontSize: moderateScale(14), // balanced scaling
+  },
+});</code></pre>
+
+        <h3>Custom Responsive Hook Pattern</h3>
+        <pre><code>import { useWindowDimensions } from 'react-native';
+
+export function useResponsive() {
+  const { width, height } = useWindowDimensions();
+
+  return {
+    width,
+    height,
+    isSmall: width < 375,
+    isMedium: width >= 375 && width < 768,
+    isTablet: width >= 768,
+    isLandscape: width > height,
+
+    // Utility functions
+    scale: (size) => (width / 375) * size, // base on iPhone X width
+    verticalScale: (size) => (height / 812) * size, // base on iPhone X height
+    moderateScale: (size, factor = 0.5) => {
+      const baseScale = (width / 375) * size;
+      return size + (baseScale - size) * factor;
+    },
+  };
+}
+
+// Usage
+function MyComponent() {
+  const { isTablet, scale } = useResponsive();
+
+  return (
+    &lt;View style={{ padding: scale(20) }}&gt;
+      &lt;Text style={{ fontSize: isTablet ? 24 : 18 }}&gt;
+        Responsive Component
+      &lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}</code></pre>
+
+        <h3>Safe Area Handling</h3>
+        <pre><code>import { SafeAreaView } from 'react-native-safe-area-context';
+
+export default function App() {
+  return (
+    &lt;SafeAreaView style={{ flex: 1 }}&gt;
+      {/* Your content - automatically avoids notches, status bars, home indicators */}
+    &lt;/SafeAreaView&gt;
+  );
+}</code></pre>
+
+        <h3>Media Query Pattern</h3>
+        <pre><code>import { useWindowDimensions } from 'react-native';
+
+export function useMediaQuery() {
+  const { width } = useWindowDimensions();
+
+  return {
+    isMobile: width < 768,
+    isTablet: width >= 768 && width < 1024,
+    isDesktop: width >= 1024,
+
+    // Specific breakpoints
+    xs: width < 375,
+    sm: width >= 375 && width < 768,
+    md: width >= 768 && width < 1024,
+    lg: width >= 1024,
+  };
+}
+
+// Usage
+function PrayerCard() {
+  const { isMobile, isTablet } = useMediaQuery();
+
+  const cardStyles = {
+    width: isMobile ? '100%' : isTablet ? '48%' : '30%',
+    margin: isMobile ? 10 : 15,
+  };
+
+  return &lt;View style={cardStyles}&gt;...&lt;/View&gt;;
+}</code></pre>
+
+        <h3>Official Resources</h3>
+        <a href="https://reactnative.dev/docs/stylesheet" class="resource-link" target="_blank">📚 StyleSheet Docs</a>
+        <a href="https://reactnative.dev/docs/flexbox" class="resource-link" target="_blank">📐 Flexbox Guide</a>
+        <a href="https://github.com/react-native-toolkit/react-native-responsive-dimensions" class="resource-link" target="_blank">📱 Responsive Dimensions</a>
+
+        <div class="section-divider"></div>
+
+        <!-- ================== FONTS & ICONS ================== -->
+        <h2>7️⃣ Fonts & Icons - Expo Font & Vector Icons</h2>
+
+        <h3>Google Fonts Installation</h3>
+        <pre><code># Install expo-font and specific Google Font
+npx expo install expo-font
+npx expo install @expo-google-fonts/inter
+npx expo install @expo-google-fonts/roboto</code></pre>
+
+        <h3>Using Google Fonts with useFonts Hook</h3>
+        <pre><code>import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
+import { Roboto_400Regular } from '@expo-google-fonts/roboto';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+// Prevent splash screen from auto-hiding
+SplashScreen.preventAutoHideAsync();
+
+export default function App() {
+  const [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+    Inter_700Bold,
+    Roboto_400Regular,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
+  return (
+    &lt;View&gt;
+      &lt;Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16 }}&gt;
+        Regular Text
+      &lt;/Text&gt;
+      &lt;Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18 }}&gt;
+        Bold Title
+      &lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}</code></pre>
+
+        <h3>Custom Fonts</h3>
+        <pre><code>// 1. Add .ttf or .otf files to assets/fonts/
+// 2. Load with useFonts
+
+import { useFonts } from 'expo-font';
+
+const [fontsLoaded] = useFonts({
+  'CustomFont-Regular': require('./assets/fonts/CustomFont-Regular.ttf'),
+  'CustomFont-Bold': require('./assets/fonts/CustomFont-Bold.ttf'),
+});
+
+// 3. Use in styles
+&lt;Text style={{ fontFamily: 'CustomFont-Regular' }}&gt;Custom Font&lt;/Text&gt;</code></pre>
+
+        <h3>Config Plugin for Fonts (Production Build)</h3>
+        <pre><code>// app.json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/CustomFont-Regular.ttf",
+            "./assets/fonts/CustomFont-Bold.ttf"
+          ]
+        }
+      ]
+    ]
+  }
+}</code></pre>
+
+        <h3>Expo Vector Icons</h3>
+        <pre><code># Already included with Expo - no installation needed!
+# Access 10,000+ icons from multiple icon sets</code></pre>
+
+        <h3>Using Ionicons</h3>
+        <pre><code>import Ionicons from '@expo/vector-icons/Ionicons';
+
+export default function IconExample() {
+  return (
+    &lt;View&gt;
+      {/* Basic usage */}
+      &lt;Ionicons name="home" size={24} color="black" /&gt;
+
+      {/* Outline vs Filled */}
+      &lt;Ionicons name="heart-outline" size={30} color="red" /&gt;
+      &lt;Ionicons name="heart" size={30} color="red" /&gt;
+
+      {/* In buttons */}
+      &lt;TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}&gt;
+        &lt;Ionicons name="play-circle" size={20} color="white" /&gt;
+        &lt;Text style={{ color: 'white', marginLeft: 8 }}&gt;Play Video&lt;/Text&gt;
+      &lt;/TouchableOpacity&gt;
+    &lt;/View&gt;
+  );
+}</code></pre>
+
+        <h3>Available Icon Sets</h3>
+        <pre><code>import AntDesign from '@expo/vector-icons/AntDesign';
+import Entypo from '@expo/vector-icons/Entypo';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+import Feather from '@expo/vector-icons/Feather';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Fontisto from '@expo/vector-icons/Fontisto';
+import Foundation from '@expo/vector-icons/Foundation';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Octicons from '@expo/vector-icons/Octicons';
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import Zocial from '@expo/vector-icons/Zocial';</code></pre>
+
+        <h3>Icons for Prayer App</h3>
+        <pre><code>// Prayer-related icons using Ionicons
+&lt;Ionicons name="time-outline" size={24} color="#2ecc71" /&gt;  {/* Prayer times */}
+&lt;Ionicons name="compass-outline" size={24} color="#3498db" /&gt;  {/* Qibla */}
+&lt;Ionicons name="play-circle-outline" size={24} color="#e74c3c" /&gt;  {/* Videos */}
+&lt;Ionicons name="notifications-outline" size={24} color="#f39c12" /&gt;  {/* Notifications */}
+&lt;Ionicons name="settings-outline" size={24} color="#95a5a6" /&gt;  {/* Settings */}
+&lt;Ionicons name="moon-outline" size={24} color="#34495e" /&gt;  {/* Isha prayer */}
+&lt;Ionicons name="sunny-outline" size={24} color="#f1c40f" /&gt;  {/* Fajr/Sunrise */}
+&lt;Ionicons name="calendar-outline" size={24} color="#9b59b6" /&gt;  {/* Calendar */}
+
+// Using MaterialCommunityIcons for Islamic symbols
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
+&lt;MaterialCommunityIcons name="mosque" size={30} color="#2ecc71" /&gt;
+&lt;MaterialCommunityIcons name="kaaba" size={30} color="#3498db" /&gt;
+&lt;MaterialCommunityIcons name="star-crescent" size={30} color="#f39c12" /&gt;</code></pre>
+
+        <h3>Icon Directory Search</h3>
+        <div class="info">
+            Browse all available icons at: <a href="https://icons.expo.fyi/" target="_blank">icons.expo.fyi</a><br>
+            Search by name, browse by icon set, copy-paste ready code snippets
+        </div>
+
+        <h3>Preloading Icon Fonts</h3>
+        <pre><code>// Icons are automatically loaded, but you can preload if needed
+import * as Font from 'expo-font';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+// Preload the font
+await Font.loadAsync({
+  ...Ionicons.font,
+});</code></pre>
+
+        <h3>Complete App.js Example with Fonts & Icons</h3>
+        <pre><code>import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+SplashScreen.preventAutoHideAsync();
+const Tab = createBottomTabNavigator();
+
+export default function App() {
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return (
+    &lt;NavigationContainer&gt;
+      &lt;Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Prayer Times') {
+              iconName = focused ? 'time' : 'time-outline';
+            } else if (route.name === 'Qibla') {
+              iconName = focused ? 'compass' : 'compass-outline';
+            } else if (route.name === 'Videos') {
+              iconName = focused ? 'play-circle' : 'play-circle-outline';
+            }
+
+            return &lt;Ionicons name={iconName} size={size} color={color} /&gt;;
+          },
+          tabBarActiveTintColor: '#2ecc71',
+          tabBarInactiveTintColor: 'gray',
+          tabBarLabelStyle: {
+            fontFamily: 'Inter_400Regular',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Inter_700Bold',
+          },
+        })}
+      &gt;
+        &lt;Tab.Screen name="Prayer Times" component={PrayerTimesScreen} /&gt;
+        &lt;Tab.Screen name="Qibla" component={QiblaScreen} /&gt;
+        &lt;Tab.Screen name="Videos" component={VideosScreen} /&gt;
+      &lt;/Tab.Navigator&gt;
+    &lt;/NavigationContainer&gt;
+  );
+}</code></pre>
+
+        <h3>Official Resources</h3>
+        <a href="https://docs.expo.dev/develop/user-interface/fonts/" class="resource-link" target="_blank">📚 Expo Fonts Guide</a>
+        <a href="https://github.com/expo/google-fonts" class="resource-link" target="_blank">🔤 Google Fonts Repo</a>
+        <a href="https://docs.expo.dev/guides/icons/" class="resource-link" target="_blank">🎨 Vector Icons Docs</a>
+        <a href="https://icons.expo.fyi/" class="resource-link" target="_blank">🔍 Icon Directory</a>
+
+        <div class="section-divider"></div>
+
+        <!-- ================== SUMMARY ================== -->
+        <h2>📋 Quick Reference Summary</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Technology</th>
+                    <th>Recommended Package</th>
+                    <th>Key Command</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Project Setup</td>
+                    <td>Expo SDK 52</td>
+                    <td><code>npx create-expo-app salah-buddy</code></td>
+                </tr>
+                <tr>
+                    <td>Navigation</td>
+                    <td>React Navigation v6</td>
+                    <td><code>npm install @react-navigation/native @react-navigation/bottom-tabs</code></td>
+                </tr>
+                <tr>
+                    <td>Data Storage</td>
+                    <td>react-native-mmkv ✅</td>
+                    <td><code>npx expo install react-native-mmkv</code></td>
+                </tr>
+                <tr>
+                    <td>Video Playback</td>
+                    <td>expo-video</td>
+                    <td><code>npx expo install expo-video</code></td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td>expo-location</td>
+                    <td><code>npx expo install expo-location</code></td>
+                </tr>
+                <tr>
+                    <td>Prayer Times</td>
+                    <td>adhan</td>
+                    <td><code>npm install adhan</code></td>
+                </tr>
+                <tr>
+                    <td>Responsive Design</td>
+                    <td>useWindowDimensions (built-in)</td>
+                    <td>No installation needed</td>
+                </tr>
+                <tr>
+                    <td>Fonts</td>
+                    <td>@expo-google-fonts/*</td>
+                    <td><code>npx expo install @expo-google-fonts/inter</code></td>
+                </tr>
+                <tr>
+                    <td>Icons</td>
+                    <td>@expo/vector-icons</td>
+                    <td>Included with Expo</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Next Steps</h3>
+        <ol>
+            <li>Create project: <code>npx create-expo-app salah-buddy</code></li>
+            <li>Install core dependencies (navigation, storage, location)</li>
+            <li>Set up tab navigation with three screens: Prayer Times, Qibla, Videos</li>
+            <li>Implement location services and prayer times calculation</li>
+            <li>Add video playback with custom controls</li>
+            <li>Implement responsive design and theming</li>
+            <li>Add Google Fonts and icons</li>
+            <li>Build development build: <code>npx expo prebuild</code></li>
+            <li>Test on iOS/Android: <code>npx expo run:ios</code> / <code>npx expo run:android</code></li>
+        </ol>
+
+        <div class="success">
+            <strong>✅ All documentation sourced from official 2025 resources</strong><br>
+            This guide reflects the latest APIs, best practices, and breaking changes as of December 2025.
+        </div>
+
+        <div style="margin-top: 50px; padding: 20px; background: #ecf0f1; border-radius: 5px; text-align: center; color: #555;">
+            <p>Generated for Salah Buddy React Native App</p>
+            <p style="font-size: 0.9em;">December 12, 2025</p>
+        </div>
+    </div>
+</body>
+</html>
