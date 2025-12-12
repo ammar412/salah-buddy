@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Salah Buddy - App Prototype (Ages 7-10)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            /* Core Palette */
+            --night: #0F1C2E;
+            --night-light: #1A2D45;
+            --teal: #20B2AA;
+            --teal-light: #3DD9D0;
+            --green: #4ADE80;
+            --green-dark: #22C55E;
+            --gold: #FFD700;
+            --gold-light: #FFE44D;
+            --coral: #FF6B6B;
+            --purple: #A78BFA;
+            --cream: #FFF8E7;
+
+            /* UI Specs for Ages 7-10 */
+            --button-min: 60px;
+            --touch-target: 75px;
+            --border-radius: 20px;
+            --border-radius-lg: 28px;
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+
+            /* Typography */
+            --font-body: 18px;
+            --font-large: 24px;
+            --font-heading: 32px;
+            --font-display: 48px;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--night);
+            color: white;
+            overflow: hidden;
+            font-size: var(--font-body);
+            line-height: 1.4;
+        }
+
+        /* Phone Frame */
+        .phone-frame {
+            width: 390px;
+            height: 844px;
+            background: var(--night);
+            margin: 20px auto;
+            border-radius: 45px;
+            border: 8px solid #2A3F5F;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Screen Container */
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: calc(100% - 50px - 80px);
+            overflow-y: auto;
+            padding: var(--spacing-md);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: var(--night-light);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 8px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: var(--spacing-xs);
+            min-width: 70px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: var(--teal);
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-icon {
+            font-size: 28px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ==================== HOME SCREEN ==================== */
+        .greeting {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .greeting-small {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .greeting-name {
+            font-size: var(--font-heading);
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        /* Prayer Ring */
+        .prayer-ring-container {
+            display: flex;
+            justify-content: center;
+            margin: var(--spacing-lg) 0;
+        }
+
+        .prayer-ring {
+            width: 200px;
+            height: 200px;
+            position: relative;
+        }
+
+        .prayer-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .ring-bg {
+            fill: none;
+            stroke: var(--night-light);
+            stroke-width: 15;
+        }
+
+        .ring-progress {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 15;
+            stroke-linecap: round;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 226;
+            transition: stroke-dashoffset 0.8s ease;
+        }
+
+        .ring-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .ring-count {
+            font-size: var(--font-display);
+            font-weight: 900;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .ring-label {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        /* Prayer Slots */
+        .prayer-slots {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 var(--spacing-sm);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .prayer-slot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xs);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .prayer-slot:active {
+            transform: scale(0.95);
+        }
+
+        .prayer-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 3px solid var(--night-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: var(--night);
+            transition: all 0.3s ease;
+        }
+
+        .prayer-slot.completed .prayer-circle {
+            background: linear-gradient(135deg, var(--green), var(--teal));
+            border-color: var(--green);
+            animation: completePulse 0.5s ease;
+        }
+
+        .prayer-slot.current .prayer-circle {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
+        }
+
+        @keyframes completePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .prayer-name {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .prayer-time {
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        /* Streak Card */
+        .streak-card {
+            background: linear-gradient(135deg, var(--coral) 0%, #FF8E53 100%);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: var(--spacing-md) 0;
+            box-shadow: 0 8px 32px rgba(255, 107, 107, 0.3);
+        }
+
+        .streak-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .streak-fire {
+            font-size: 48px;
+            animation: fireWiggle 1s ease infinite;
+        }
+
+        @keyframes fireWiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .streak-count {
+            font-size: 40px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .streak-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .streak-best {
+            text-align: right;
+            opacity: 0.9;
+        }
+
+        .streak-best-label {
+            font-size: 12px;
+        }
+
+        .streak-best-count {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* Companion Preview */
+        .companion-preview {
+            background: var(--night-light);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .companion-preview:active {
+            transform: scale(0.98);
+        }
+
+        .companion-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            border: 4px solid var(--gold);
+            box-shadow: 0 4px 20px rgba(167, 139, 250, 0.4);
+        }
+
+        .companion-info h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .companion-level {
+            font-size: 14px;
+            color: var(--teal-light);
+        }
+
+        .companion-xp {
+            width: 120px;
+            height: 8px;
+            background: var(--night);
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .companion-xp-fill {
+            width: 65%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--teal), var(--green));
+            border-radius: 4px;
+        }
+
+        /* ==================== DASHBOARD SCREEN ==================== */
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .dashboard-header h2 {
+            font-size: var(--font-large);
+            font-weight: 800;
+        }
+
+        .ramadan-day {
+            font-size: 16px;
+            color: var(--teal-light);
+            margin-top: 4px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-card {
+            background: var(--night-light);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 36px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Calendar */
+        .calendar-section h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            background: var(--night-light);
+            position: relative;
+        }
+
+        .calendar-day.completed {
+            background: linear-gradient(135deg, var(--green), var(--teal));
+        }
+
+        .calendar-day.partial {
+            background: linear-gradient(135deg, var(--teal), var(--night-light));
+        }
+
+        .calendar-day.today {
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .calendar-day.future {
+            opacity: 0.3;
+        }
+
+        .calendar-day .check {
+            color: white;
+            font-size: 18px;
+        }
+
+        /* ==================== LEADERBOARD SCREEN ==================== */
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .leaderboard-header h2 {
+            font-size: var(--font-large);
+            font-weight: 800;
+        }
+
+        .leaderboard-tabs {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            overflow-x: auto;
+            padding-bottom: var(--spacing-xs);
+        }
+
+        .leaderboard-tab {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--night-light);
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .leaderboard-tab.active {
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            border-color: var(--teal-light);
+        }
+
+        /* Your Rank Card */
+        .your-rank {
+            background: linear-gradient(135deg, var(--gold) 0%, #FFA500 100%);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            color: var(--night);
+        }
+
+        .your-rank-label {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .your-rank-content {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+        }
+
+        .rank-number {
+            font-size: 48px;
+            font-weight: 900;
+        }
+
+        .rank-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 3px solid white;
+        }
+
+        .rank-details {
+            flex: 1;
+        }
+
+        .rank-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .rank-points {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        /* Leaderboard List */
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--night-light);
+            border-radius: var(--border-radius);
+            transition: transform 0.2s ease;
+        }
+
+        .leaderboard-item:active {
+            transform: scale(0.98);
+        }
+
+        .leaderboard-item.top-3 {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.1));
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .position {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--night);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .position.gold { background: linear-gradient(135deg, #FFD700, #FFA500); color: var(--night); }
+        .position.silver { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: var(--night); }
+        .position.bronze { background: linear-gradient(135deg, #CD7F32, #8B4513); color: white; }
+
+        .lb-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .lb-info {
+            flex: 1;
+        }
+
+        .lb-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .lb-streak {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .lb-points {
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        /* ==================== COMPANION SCREEN ==================== */
+        .companion-screen {
+            text-align: center;
+        }
+
+        .companion-display {
+            margin: var(--spacing-xl) 0;
+            position: relative;
+        }
+
+        .companion-main {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            border: 6px solid var(--gold);
+            box-shadow: 0 0 60px rgba(167, 139, 250, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .companion-name-display {
+            font-size: var(--font-heading);
+            font-weight: 800;
+            margin-top: var(--spacing-lg);
+            color: var(--gold);
+        }
+
+        .companion-title {
+            font-size: 16px;
+            color: var(--teal-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* Level Progress */
+        .level-section {
+            background: var(--night-light);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, var(--gold), #FFA500);
+            color: var(--night);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .level-progress {
+            height: 16px;
+            background: var(--night);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .level-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--teal), var(--green));
+            border-radius: 8px;
+            width: 65%;
+            transition: width 0.5s ease;
+        }
+
+        .level-xp {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--spacing-xs);
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Badges Section */
+        .badges-section h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            text-align: left;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .badge-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--night-light);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .badge-icon:active {
+            transform: scale(0.95);
+        }
+
+        .badge-item.unlocked .badge-icon {
+            background: linear-gradient(135deg, var(--gold), #FFA500);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .badge-item.locked .badge-icon {
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
+
+        .badge-name {
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* ==================== FASTING SCREEN ==================== */
+        .fasting-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .fasting-header h2 {
+            font-size: var(--font-large);
+            font-weight: 800;
+        }
+
+        /* Sun Arc */
+        .sun-arc-container {
+            position: relative;
+            height: 200px;
+            margin: var(--spacing-xl) 0;
+        }
+
+        .arc-path {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .arc-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .arc-bg {
+            fill: none;
+            stroke: var(--night-light);
+            stroke-width: 8;
+        }
+
+        .arc-progress {
+            fill: none;
+            stroke: url(#sunGradient);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 314;
+            stroke-dashoffset: 110;
+        }
+
+        .sun-icon {
+            position: absolute;
+            font-size: 48px;
+            animation: sunPulse 2s ease infinite;
+        }
+
+        @keyframes sunPulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(1.2); }
+        }
+
+        .time-marker {
+            position: absolute;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .time-marker.suhoor {
+            left: 10%;
+            bottom: 10px;
+        }
+
+        .time-marker.iftar {
+            right: 10%;
+            bottom: 10px;
+        }
+
+        /* Fasting Status */
+        .fasting-status {
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .fasting-emoji {
+            font-size: 64px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .fasting-message {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .fasting-time-left {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Fasting Calendar */
+        .fasting-calendar {
+            background: var(--night-light);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+        }
+
+        .fasting-calendar h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .fasting-days {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+        }
+
+        .fasting-day {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--night);
+        }
+
+        .fasting-day.fasted {
+            background: linear-gradient(135deg, var(--green), var(--teal));
+        }
+
+        .fasting-day.today {
+            border: 2px solid var(--gold);
+        }
+
+        /* ==================== CONFETTI ANIMATION ==================== */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ==================== PRAYER COMPLETE MODAL ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--night-light);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+            max-width: 320px;
+            animation: modalPop 0.4s ease;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-emoji {
+            font-size: 80px;
+            margin-bottom: var(--spacing-md);
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .modal-title {
+            font-size: var(--font-large);
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .modal-message {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            border: none;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: 30px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Stars Background */
+        .stars-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .star-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <!-- Stars Background -->
+        <div class="stars-bg" id="starsBg"></div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>Salah Buddy</span>
+            <span>100%</span>
+        </div>
+
+        <!-- HOME SCREEN -->
+        <div class="screen active" id="homeScreen">
+            <div class="greeting">
+                <p class="greeting-small">Assalamu Alaikum</p>
+                <h1 class="greeting-name">Ahmad!</h1>
+            </div>
+
+            <div class="prayer-ring-container">
+                <div class="prayer-ring">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#20B2AA"/>
+                                <stop offset="100%" style="stop-color:#4ADE80"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="ring-bg" cx="100" cy="100" r="90"/>
+                        <circle class="ring-progress" id="ringProgress" cx="100" cy="100" r="90"/>
+                    </svg>
+                    <div class="ring-center">
+                        <div class="ring-count" id="prayerCount">3</div>
+                        <div class="ring-label">of 5 prayers</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prayer-slots">
+                <div class="prayer-slot completed" data-prayer="fajr" onclick="togglePrayer(this)">
+                    <div class="prayer-circle">✓</div>
+                    <span class="prayer-name">Fajr</span>
+                    <span class="prayer-time">5:12</span>
+                </div>
+                <div class="prayer-slot completed" data-prayer="dhuhr" onclick="togglePrayer(this)">
+                    <div class="prayer-circle">✓</div>
+                    <span class="prayer-name">Dhuhr</span>
+                    <span class="prayer-time">12:30</span>
+                </div>
+                <div class="prayer-slot completed" data-prayer="asr" onclick="togglePrayer(this)">
+                    <div class="prayer-circle">✓</div>
+                    <span class="prayer-name">Asr</span>
+                    <span class="prayer-time">3:45</span>
+                </div>
+                <div class="prayer-slot current" data-prayer="maghrib" onclick="togglePrayer(this)">
+                    <div class="prayer-circle"></div>
+                    <span class="prayer-name">Maghrib</span>
+                    <span class="prayer-time">6:32</span>
+                </div>
+                <div class="prayer-slot" data-prayer="isha" onclick="togglePrayer(this)">
+                    <div class="prayer-circle"></div>
+                    <span class="prayer-name">Isha</span>
+                    <span class="prayer-time">8:00</span>
+                </div>
+            </div>
+
+            <div class="streak-card">
+                <div class="streak-info">
+                    <span class="streak-fire">🔥</span>
+                    <div>
+                        <div class="streak-count" id="streakCount">12</div>
+                        <div class="streak-label">day streak!</div>
+                    </div>
+                </div>
+                <div class="streak-best">
+                    <div class="streak-best-label">Personal Best</div>
+                    <div class="streak-best-count">15 days</div>
+                </div>
+            </div>
+
+            <div class="companion-preview" onclick="showScreen('companionScreen')">
+                <div class="companion-avatar">⭐</div>
+                <div class="companion-info">
+                    <h3>Noor</h3>
+                    <p class="companion-level">Level 5 - Shining Star</p>
+                    <div class="companion-xp">
+                        <div class="companion-xp-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD SCREEN -->
+        <div class="screen" id="dashboardScreen">
+            <div class="dashboard-header">
+                <h2>Your Journey</h2>
+                <p class="ramadan-day">Day 12 of Ramadan</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🕌</div>
+                    <div class="stat-value">57</div>
+                    <div class="stat-label">Prayers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Badges</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🌙</div>
+                    <div class="stat-value">11</div>
+                    <div class="stat-label">Fasts</div>
+                </div>
+            </div>
+
+            <div class="calendar-section">
+                <h3>Ramadan Calendar</h3>
+                <div class="calendar-grid">
+                    <div class="calendar-day completed"><span class="check">✓</span></div>
+                    <div class="calendar-day completed"><span class="check">✓</span></div>
+                    <div class="calendar-day completed"><span class="check">✓</span></div>
+                    <div class="calendar-day completed"><span class="check">✓</span></div>
+                    <div class="calendar-day completed"><span class="check">✓</span></div>
+                    <div class="calendar-day partial">4</div>
+                    <div class="calendar-day completed"><span class="check">✓</span></div>
+                    <div class="calendar-day completed"><span class="check">✓</span></div>
+                    <div class="calendar-day completed"><span class="check">✓</span></div>
+                    <div class="calendar-day completed"><span class="check">✓</span></div>
+                    <div class="calendar-day partial">3</div>
+                    <div class="calendar-day today">12</div>
+                    <div class="calendar-day future">13</div>
+                    <div class="calendar-day future">14</div>
+                    <div class="calendar-day future">15</div>
+                    <div class="calendar-day future">16</div>
+                    <div class="calendar-day future">17</div>
+                    <div class="calendar-day future">18</div>
+                    <div class="calendar-day future">19</div>
+                    <div class="calendar-day future">20</div>
+                    <div class="calendar-day future">21</div>
+                    <div class="calendar-day future">22</div>
+                    <div class="calendar-day future">23</div>
+                    <div class="calendar-day future">24</div>
+                    <div class="calendar-day future">25</div>
+                    <div class="calendar-day future">26</div>
+                    <div class="calendar-day future">27</div>
+                    <div class="calendar-day future">28</div>
+                    <div class="calendar-day future">29</div>
+                    <div class="calendar-day future">30</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEADERBOARD SCREEN -->
+        <div class="screen" id="leaderboardScreen">
+            <div class="leaderboard-header">
+                <h2>Leaderboard</h2>
+            </div>
+
+            <div class="leaderboard-tabs">
+                <div class="leaderboard-tab active">Global</div>
+                <div class="leaderboard-tab">Friends</div>
+                <div class="leaderboard-tab">Family</div>
+                <div class="leaderboard-tab">Most Improved</div>
+            </div>
+
+            <div class="your-rank">
+                <div class="your-rank-label">Your Position</div>
+                <div class="your-rank-content">
+                    <div class="rank-number">#24</div>
+                    <div class="rank-avatar">⭐</div>
+                    <div class="rank-details">
+                        <div class="rank-name">Ahmad</div>
+                        <div class="rank-points">1,240 stars</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaderboard-list">
+                <div class="leaderboard-item top-3">
+                    <div class="position gold">1</div>
+                    <div class="lb-avatar" style="background: linear-gradient(135deg, #FFD700, #FFA500);">👑</div>
+                    <div class="lb-info">
+                        <div class="lb-name">Fatima</div>
+                        <div class="lb-streak">🔥 30 day streak</div>
+                    </div>
+                    <div class="lb-points">2,450</div>
+                </div>
+                <div class="leaderboard-item top-3">
+                    <div class="position silver">2</div>
+                    <div class="lb-avatar" style="background: linear-gradient(135deg, #C0C0C0, #808080);">🌟</div>
+                    <div class="lb-info">
+                        <div class="lb-name">Yusuf</div>
+                        <div class="lb-streak">🔥 28 day streak</div>
+                    </div>
+                    <div class="lb-points">2,380</div>
+                </div>
+                <div class="leaderboard-item top-3">
+                    <div class="position bronze">3</div>
+                    <div class="lb-avatar" style="background: linear-gradient(135deg, #CD7F32, #8B4513);">✨</div>
+                    <div class="lb-info">
+                        <div class="lb-name">Aisha</div>
+                        <div class="lb-streak">🔥 25 day streak</div>
+                    </div>
+                    <div class="lb-points">2,290</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="position">4</div>
+                    <div class="lb-avatar" style="background: linear-gradient(135deg, var(--purple), var(--teal));">🌙</div>
+                    <div class="lb-info">
+                        <div class="lb-name">Omar</div>
+                        <div class="lb-streak">🔥 22 day streak</div>
+                    </div>
+                    <div class="lb-points">2,150</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="position">5</div>
+                    <div class="lb-avatar" style="background: linear-gradient(135deg, var(--coral), #FF8E53);">💫</div>
+                    <div class="lb-info">
+                        <div class="lb-name">Maryam</div>
+                        <div class="lb-streak">🔥 20 day streak</div>
+                    </div>
+                    <div class="lb-points">2,080</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPANION SCREEN -->
+        <div class="screen companion-screen" id="companionScreen">
+            <div class="companion-display">
+                <div class="companion-main">⭐</div>
+                <h2 class="companion-name-display">Noor</h2>
+                <p class="companion-title">Shining Star Companion</p>
+            </div>
+
+            <div class="level-section">
+                <div class="level-header">
+                    <span>Level Progress</span>
+                    <span class="level-badge">Level 5</span>
+                </div>
+                <div class="level-progress">
+                    <div class="level-progress-fill"></div>
+                </div>
+                <div class="level-xp">
+                    <span>650 / 1000 XP</span>
+                    <span>Next: Radiant Star</span>
+                </div>
+            </div>
+
+            <div class="badges-section">
+                <h3>Badges Earned</h3>
+                <div class="badges-grid">
+                    <div class="badge-item unlocked">
+                        <div class="badge-icon">🌅</div>
+                        <span class="badge-name">Early Bird</span>
+                    </div>
+                    <div class="badge-item unlocked">
+                        <div class="badge-icon">🔥</div>
+                        <span class="badge-name">7 Day Streak</span>
+                    </div>
+                    <div class="badge-item unlocked">
+                        <div class="badge-icon">⭐</div>
+                        <span class="badge-name">Perfect Day</span>
+                    </div>
+                    <div class="badge-item unlocked">
+                        <div class="badge-icon">🕌</div>
+                        <span class="badge-name">50 Prayers</span>
+                    </div>
+                    <div class="badge-item unlocked">
+                        <div class="badge-icon">🌙</div>
+                        <span class="badge-name">Night Owl</span>
+                    </div>
+                    <div class="badge-item unlocked">
+                        <div class="badge-icon">🤝</div>
+                        <span class="badge-name">Helper</span>
+                    </div>
+                    <div class="badge-item locked">
+                        <div class="badge-icon">👑</div>
+                        <span class="badge-name">Champion</span>
+                    </div>
+                    <div class="badge-item locked">
+                        <div class="badge-icon">💎</div>
+                        <span class="badge-name">30 Days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASTING SCREEN -->
+        <div class="screen" id="fastingScreen">
+            <div class="fasting-header">
+                <h2>Fasting Tracker</h2>
+            </div>
+
+            <div class="sun-arc-container">
+                <svg class="arc-svg" viewBox="0 0 300 150">
+                    <defs>
+                        <linearGradient id="sunGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#FFD700"/>
+                            <stop offset="50%" style="stop-color:#FF8C00"/>
+                            <stop offset="100%" style="stop-color:#1A2D45"/>
+                        </linearGradient>
+                    </defs>
+                    <path class="arc-bg" d="M 30 140 A 120 120 0 0 1 270 140" />
+                    <path class="arc-progress" d="M 30 140 A 120 120 0 0 1 270 140" />
+                </svg>
+                <div class="sun-icon" style="left: 65%; top: 15%;">☀️</div>
+                <div class="time-marker suhoor">
+                    <div>🌅</div>
+                    <div>Suhoor</div>
+                    <div style="opacity: 0.7;">4:30 AM</div>
+                </div>
+                <div class="time-marker iftar">
+                    <div>🌙</div>
+                    <div>Iftar</div>
+                    <div style="opacity: 0.7;">6:45 PM</div>
+                </div>
+            </div>
+
+            <div class="fasting-status">
+                <div class="fasting-emoji">💪</div>
+                <div class="fasting-message">You're doing great!</div>
+                <div class="fasting-time-left">3 hours until Iftar</div>
+            </div>
+
+            <div class="fasting-calendar">
+                <h3>Days Fasted: 11/12</h3>
+                <div class="fasting-days">
+                    <div class="fasting-day fasted">1</div>
+                    <div class="fasting-day fasted">2</div>
+                    <div class="fasting-day fasted">3</div>
+                    <div class="fasting-day fasted">4</div>
+                    <div class="fasting-day fasted">5</div>
+                    <div class="fasting-day fasted">6</div>
+                    <div class="fasting-day fasted">7</div>
+                    <div class="fasting-day fasted">8</div>
+                    <div class="fasting-day fasted">9</div>
+                    <div class="fasting-day fasted">10</div>
+                    <div class="fasting-day fasted">11</div>
+                    <div class="fasting-day today">12</div>
+                    <div class="fasting-day">13</div>
+                    <div class="fasting-day">14</div>
+                    <div class="fasting-day">15</div>
+                    <div class="fasting-day">16</div>
+                    <div class="fasting-day">17</div>
+                    <div class="fasting-day">18</div>
+                    <div class="fasting-day">19</div>
+                    <div class="fasting-day">20</div>
+                    <div class="fasting-day">21</div>
+                    <div class="fasting-day">22</div>
+                    <div class="fasting-day">23</div>
+                    <div class="fasting-day">24</div>
+                    <div class="fasting-day">25</div>
+                    <div class="fasting-day">26</div>
+                    <div class="fasting-day">27</div>
+                    <div class="fasting-day">28</div>
+                    <div class="fasting-day">29</div>
+                    <div class="fasting-day">30</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="showScreen('homeScreen')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('dashboardScreen')">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Progress</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('leaderboardScreen')">
+                <span class="nav-icon">🏆</span>
+                <span class="nav-label">Ranks</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('fastingScreen')">
+                <span class="nav-icon">🌙</span>
+                <span class="nav-label">Fasting</span>
+            </div>
+        </div>
+
+        <!-- Confetti Container -->
+        <div class="confetti-container" id="confettiContainer"></div>
+
+        <!-- Prayer Complete Modal -->
+        <div class="modal-overlay" id="prayerModal">
+            <div class="modal-content">
+                <div class="modal-emoji">🌟</div>
+                <h3 class="modal-title">Mashallah!</h3>
+                <p class="modal-message">You completed <span id="modalPrayerName">Maghrib</span> prayer!</p>
+                <button class="modal-btn" onclick="closeModal()">Keep Going!</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate stars background
+        function generateStars() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 30; i++) {
+                const star = document.createElement('div');
+                star.className = 'star-particle';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(star);
+            }
+        }
+        generateStars();
+
+        // Screen Navigation
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            // Show selected screen
+            document.getElementById(screenId).classList.add('active');
+
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const navMap = {
+                'homeScreen': 0,
+                'dashboardScreen': 1,
+                'leaderboardScreen': 2,
+                'fastingScreen': 3,
+                'companionScreen': 1 // Maps to Progress tab
+            };
+            document.querySelectorAll('.nav-item')[navMap[screenId]]?.classList.add('active');
+        }
+
+        // Prayer Toggle
+        let completedPrayers = 3;
+        const totalPrayers = 5;
+
+        function togglePrayer(element) {
+            if (element.classList.contains('completed')) return;
+
+            element.classList.remove('current');
+            element.classList.add('completed');
+            element.querySelector('.prayer-circle').innerHTML = '✓';
+
+            completedPrayers++;
+            updatePrayerRing();
+
+            // Show celebration
+            const prayerName = element.querySelector('.prayer-name').textContent;
+            showPrayerModal(prayerName);
+            triggerConfetti();
+
+            // Mark next prayer as current
+            const nextPrayer = element.nextElementSibling;
+            if (nextPrayer && nextPrayer.classList.contains('prayer-slot')) {
+                nextPrayer.classList.add('current');
+            }
+        }
+
+        function updatePrayerRing() {
+            const progress = document.getElementById('ringProgress');
+            const count = document.getElementById('prayerCount');
+
+            // Full circle = 565 (2 * PI * 90)
+            // We want to show progress, so we reduce the offset
+            const circumference = 565;
+            const offset = circumference - (completedPrayers / totalPrayers) * circumference;
+
+            progress.style.strokeDashoffset = offset;
+            count.textContent = completedPrayers;
+        }
+
+        // Modal
+        function showPrayerModal(prayerName) {
+            document.getElementById('modalPrayerName').textContent = prayerName;
+            document.getElementById('prayerModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('prayerModal').classList.remove('active');
+        }
+
+        // Confetti
+        function triggerConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.style.display = 'block';
+            container.innerHTML = '';
+
+            const colors = ['#FFD700', '#4ADE80', '#20B2AA', '#FF6B6B', '#A78BFA', '#FF8E53'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                container.appendChild(confetti);
+            }
+
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 3000);
+        }
+
+        // Tab switching for leaderboard
+        document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.leaderboard-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Initialize prayer ring
+        updatePrayerRing();
+    </script>
+</body>
+</html>

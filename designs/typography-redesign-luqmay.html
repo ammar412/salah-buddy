@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salah Buddy Typography Redesign - Paula Scher Approach</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Luqmay Brand Colors */
+            --gold: #F5B526;
+            --cream: #F5F0E8;
+            --dark-text: #1C170D;
+            --white: #FFFFFF;
+
+            /* Supporting Islamic Colors */
+            --islamic-green: #2EA85D;
+            --sky-blue: #4A9EDB;
+            --warm-red: #E76F51;
+
+            /* Typography Scale for Kids 7-10 */
+            /* EXTRA LARGE - Hero moments, celebrations */
+            --type-hero: 96px;
+            --type-hero-mobile: 56px;
+
+            /* DISPLAY - Screen titles, major headings */
+            --type-display: 72px;
+            --type-display-mobile: 48px;
+
+            /* HEADLINE - Section headers */
+            --type-headline: 48px;
+            --type-headline-mobile: 36px;
+
+            /* TITLE - Card titles, prayer names */
+            --type-title: 32px;
+            --type-title-mobile: 28px;
+
+            /* BODY LARGE - Emphasis, stats */
+            --type-body-lg: 24px;
+            --type-body-lg-mobile: 20px;
+
+            /* BODY - Default text */
+            --type-body: 18px;
+            --type-body-mobile: 16px;
+
+            /* CAPTION - Small labels */
+            --type-caption: 14px;
+            --type-caption-mobile: 12px;
+
+            /* Weight System */
+            --weight-light: 300;
+            --weight-regular: 400;
+            --weight-medium: 500;
+            --weight-semibold: 600;
+            --weight-bold: 700;
+            --weight-extrabold: 800;
+            --weight-black: 900;
+
+            /* Spacing System */
+            --space-xs: 8px;
+            --space-sm: 12px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+            --space-3xl: 64px;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: var(--cream);
+            color: var(--dark-text);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* PAULA SCHER PRINCIPLE: Big, Bold Typography Creates Energy */
+        .hero-section {
+            background: var(--white);
+            padding: var(--space-3xl) var(--space-xl);
+            text-align: center;
+            border-bottom: 6px solid var(--gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: "صلاة";
+            position: absolute;
+            font-size: 300px;
+            font-weight: var(--weight-black);
+            color: var(--cream);
+            opacity: 0.3;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-title {
+            font-size: var(--type-hero);
+            font-weight: var(--weight-black);
+            color: var(--gold);
+            line-height: 0.9;
+            margin-bottom: var(--space-md);
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: var(--type-headline);
+            font-weight: var(--weight-regular);
+            color: var(--dark-text);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Content Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-2xl) var(--space-xl);
+        }
+
+        /* Section Headers - Paula Scher Style: Expressive, Loud */
+        .section {
+            margin-bottom: var(--space-3xl);
+        }
+
+        .section-title {
+            font-size: var(--type-display);
+            font-weight: var(--weight-extrabold);
+            color: var(--gold);
+            margin-bottom: var(--space-sm);
+            line-height: 1;
+            letter-spacing: -0.03em;
+        }
+
+        .section-subtitle {
+            font-size: var(--type-body-lg);
+            font-weight: var(--weight-regular);
+            color: var(--dark-text);
+            opacity: 0.7;
+            margin-bottom: var(--space-xl);
+        }
+
+        /* Typography Showcase Grid */
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-3xl);
+        }
+
+        .type-card {
+            background: var(--white);
+            padding: var(--space-xl);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(28, 23, 13, 0.08);
+            border: 3px solid var(--cream);
+            transition: all 0.3s ease;
+        }
+
+        .type-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(245, 181, 38, 0.2);
+            border-color: var(--gold);
+        }
+
+        .type-label {
+            font-size: var(--type-caption);
+            font-weight: var(--weight-bold);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-sm);
+        }
+
+        .type-example {
+            margin-bottom: var(--space-md);
+        }
+
+        .type-specs {
+            background: var(--cream);
+            padding: var(--space-md);
+            border-radius: 12px;
+            font-size: var(--type-caption);
+            font-weight: var(--weight-medium);
+            color: var(--dark-text);
+            opacity: 0.8;
+        }
+
+        /* Visual Hierarchy Examples */
+        .hierarchy-demo {
+            background: var(--white);
+            padding: var(--space-2xl);
+            border-radius: 24px;
+            margin-bottom: var(--space-2xl);
+        }
+
+        /* Prayer Card - Before/After */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-3xl);
+        }
+
+        .comparison-label {
+            font-size: var(--type-body-lg);
+            font-weight: var(--weight-bold);
+            color: var(--dark-text);
+            margin-bottom: var(--space-md);
+            text-align: center;
+        }
+
+        /* OLD DESIGN (Dark) */
+        .old-design {
+            background: #0F1C2E;
+            color: white;
+            padding: var(--space-xl);
+            border-radius: 16px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .old-design .prayer-name {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .old-design .prayer-time {
+            font-size: 18px;
+            opacity: 0.7;
+        }
+
+        /* NEW DESIGN (Luqmay) */
+        .new-design {
+            background: var(--white);
+            border: 4px solid var(--gold);
+            padding: var(--space-xl);
+            border-radius: 24px;
+        }
+
+        .new-design .prayer-name {
+            font-size: var(--type-title);
+            font-weight: var(--weight-bold);
+            color: var(--dark-text);
+            line-height: 1.2;
+        }
+
+        .new-design .prayer-time {
+            font-size: var(--type-body);
+            font-weight: var(--weight-medium);
+            color: var(--dark-text);
+            opacity: 0.6;
+        }
+
+        /* Stats Display - Kid-Friendly */
+        .stats-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin: var(--space-2xl) 0;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: var(--space-xl);
+            border-radius: 20px;
+            text-align: center;
+            border: 3px solid var(--cream);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--gold);
+            transform: scale(1.05);
+        }
+
+        .stat-emoji {
+            font-size: 56px;
+            margin-bottom: var(--space-sm);
+        }
+
+        .stat-number {
+            font-size: var(--type-display);
+            font-weight: var(--weight-black);
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-label {
+            font-size: var(--type-body);
+            font-weight: var(--weight-semibold);
+            color: var(--dark-text);
+        }
+
+        /* Greeting Header */
+        .greeting {
+            background: linear-gradient(135deg, var(--gold) 0%, #F8C84A 100%);
+            padding: var(--space-2xl);
+            border-radius: 24px;
+            margin-bottom: var(--space-2xl);
+            text-align: center;
+        }
+
+        .greeting-salutation {
+            font-size: var(--type-body-lg);
+            font-weight: var(--weight-regular);
+            color: var(--dark-text);
+            opacity: 0.8;
+            margin-bottom: var(--space-xs);
+        }
+
+        .greeting-name {
+            font-size: var(--type-display);
+            font-weight: var(--weight-black);
+            color: var(--white);
+            line-height: 1;
+            margin-bottom: var(--space-xs);
+        }
+
+        .greeting-context {
+            font-size: var(--type-body);
+            font-weight: var(--weight-medium);
+            color: var(--dark-text);
+            opacity: 0.7;
+        }
+
+        /* Typography Principles */
+        .principles {
+            background: var(--dark-text);
+            color: var(--cream);
+            padding: var(--space-3xl) var(--space-xl);
+            border-radius: 24px;
+            margin: var(--space-3xl) 0;
+        }
+
+        .principle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-xl);
+            margin-top: var(--space-2xl);
+        }
+
+        .principle-card {
+            background: rgba(245, 240, 232, 0.1);
+            padding: var(--space-xl);
+            border-radius: 16px;
+            border-left: 6px solid var(--gold);
+        }
+
+        .principle-number {
+            font-size: var(--type-display);
+            font-weight: var(--weight-black);
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: var(--space-sm);
+        }
+
+        .principle-title {
+            font-size: var(--type-title);
+            font-weight: var(--weight-bold);
+            color: var(--cream);
+            margin-bottom: var(--space-sm);
+        }
+
+        .principle-desc {
+            font-size: var(--type-body);
+            font-weight: var(--weight-regular);
+            color: var(--cream);
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Weight Comparison */
+        .weight-demo {
+            background: var(--white);
+            padding: var(--space-2xl);
+            border-radius: 24px;
+            margin: var(--space-2xl) 0;
+        }
+
+        .weight-sample {
+            font-size: var(--type-headline);
+            color: var(--dark-text);
+            margin-bottom: var(--space-md);
+            padding: var(--space-md) 0;
+            border-bottom: 2px solid var(--cream);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: var(--type-hero-mobile);
+            }
+            .hero-subtitle {
+                font-size: var(--type-title-mobile);
+            }
+            .section-title {
+                font-size: var(--type-display-mobile);
+            }
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            .type-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .bounce-on-hover:hover {
+            animation: bounce 0.6s ease;
+        }
+
+        /* Emphasis Highlight */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, var(--gold) 60%);
+            padding: 0 var(--space-xs);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-title">SALAH BUDDY</div>
+        <div class="hero-subtitle">Typography That Celebrates Prayer</div>
+    </div>
+
+    <div class="container">
+        <!-- Introduction -->
+        <div class="section">
+            <div class="section-title">Paula Scher's Approach</div>
+            <div class="section-subtitle">
+                Typography isn't decoration—it's the voice of the interface. For kids ages 7-10,
+                <span class="highlight">every letter should feel like a celebration</span>.
+            </div>
+        </div>
+
+        <!-- Typography Scale -->
+        <div class="section">
+            <div class="section-title">Typography Scale</div>
+            <div class="section-subtitle">Sized for excitement and readability</div>
+
+            <div class="type-grid">
+                <!-- Hero -->
+                <div class="type-card">
+                    <div class="type-label">Hero / Celebration Moments</div>
+                    <div class="type-example" style="font-size: 64px; font-weight: 900; color: var(--gold); line-height: 1;">
+                        150 PRAYERS!
+                    </div>
+                    <div class="type-specs">
+                        Size: 96px (desktop) / 56px (mobile)<br>
+                        Weight: 900 (Black)<br>
+                        Use: Eid celebration, major achievements
+                    </div>
+                </div>
+
+                <!-- Display -->
+                <div class="type-card">
+                    <div class="type-label">Display / Screen Titles</div>
+                    <div class="type-example" style="font-size: 48px; font-weight: 800; color: var(--dark-text); line-height: 1.1;">
+                        Your Progress
+                    </div>
+                    <div class="type-specs">
+                        Size: 72px (desktop) / 48px (mobile)<br>
+                        Weight: 800 (Extra Bold)<br>
+                        Use: Main screen headers, page titles
+                    </div>
+                </div>
+
+                <!-- Headline -->
+                <div class="type-card">
+                    <div class="type-label">Headline / Section Headers</div>
+                    <div class="type-example" style="font-size: 36px; font-weight: 700; color: var(--gold); line-height: 1.2;">
+                        Today's Prayers
+                    </div>
+                    <div class="type-specs">
+                        Size: 48px (desktop) / 36px (mobile)<br>
+                        Weight: 700 (Bold)<br>
+                        Use: Section dividers, card headers
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="type-card">
+                    <div class="type-label">Title / Prayer Names</div>
+                    <div class="type-example" style="font-size: 32px; font-weight: 700; color: var(--dark-text); line-height: 1.2;">
+                        Fajr 🌅
+                    </div>
+                    <div class="type-specs">
+                        Size: 32px (desktop) / 28px (mobile)<br>
+                        Weight: 700 (Bold)<br>
+                        Use: Prayer names, card titles
+                    </div>
+                </div>
+
+                <!-- Body Large -->
+                <div class="type-card">
+                    <div class="type-label">Body Large / Emphasis</div>
+                    <div class="type-example" style="font-size: 24px; font-weight: 600; color: var(--dark-text);">
+                        12-day streak! Keep going!
+                    </div>
+                    <div class="type-specs">
+                        Size: 24px (desktop) / 20px (mobile)<br>
+                        Weight: 600 (Semi Bold)<br>
+                        Use: Stats, important messages
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="type-card">
+                    <div class="type-label">Body / Default Text</div>
+                    <div class="type-example" style="font-size: 18px; font-weight: 400; color: var(--dark-text);">
+                        You've completed 3 out of 5 prayers today. Great work!
+                    </div>
+                    <div class="type-specs">
+                        Size: 18px (desktop) / 16px (mobile)<br>
+                        Weight: 400 (Regular) / 500 (Medium for emphasis)<br>
+                        Use: General text, descriptions
+                    </div>
+                </div>
+
+                <!-- Caption -->
+                <div class="type-card">
+                    <div class="type-label">Caption / Small Labels</div>
+                    <div class="type-example" style="font-size: 14px; font-weight: 500; color: var(--dark-text); opacity: 0.7;">
+                        Prayer time: 5:12 AM
+                    </div>
+                    <div class="type-specs">
+                        Size: 14px (desktop) / 12px (mobile)<br>
+                        Weight: 500 (Medium)<br>
+                        Use: Timestamps, small labels
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weight Demonstration -->
+        <div class="section">
+            <div class="section-title">Weight System</div>
+            <div class="section-subtitle">Lexend offers 7 weights—use them expressively</div>
+
+            <div class="weight-demo">
+                <div class="weight-sample" style="font-weight: 300;">
+                    Light (300) — Subtle background text, watermarks
+                </div>
+                <div class="weight-sample" style="font-weight: 400;">
+                    Regular (400) — Body text, descriptions
+                </div>
+                <div class="weight-sample" style="font-weight: 500;">
+                    Medium (500) — Labels, captions, timestamps
+                </div>
+                <div class="weight-sample" style="font-weight: 600;">
+                    Semi Bold (600) — Emphasis, stats, buttons
+                </div>
+                <div class="weight-sample" style="font-weight: 700;">
+                    Bold (700) — Headings, prayer names, titles
+                </div>
+                <div class="weight-sample" style="font-weight: 800;">
+                    Extra Bold (800) — Screen titles, major headers
+                </div>
+                <div class="weight-sample" style="font-weight: 900;">
+                    Black (900) — Hero moments, celebrations, numbers
+                </div>
+            </div>
+        </div>
+
+        <!-- Before/After Comparison -->
+        <div class="section">
+            <div class="section-title">Before & After</div>
+            <div class="section-subtitle">From dark gaming UI to warm educational brand</div>
+
+            <div class="comparison-grid">
+                <!-- Before -->
+                <div>
+                    <div class="comparison-label">❌ Old Design (Night Theme)</div>
+                    <div class="old-design">
+                        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                            <div style="font-size: 40px;">🌅</div>
+                            <div style="flex: 1;">
+                                <div class="prayer-name">Fajr</div>
+                                <div class="prayer-time">5:12 AM</div>
+                            </div>
+                            <div style="width: 32px; height: 32px; background: white; border-radius: 50%;"></div>
+                        </div>
+                        <div style="font-size: 14px; opacity: 0.6;">
+                            Font: Nunito 700 @ 22px<br>
+                            Issue: Hard to read, gaming aesthetic
+                        </div>
+                    </div>
+                </div>
+
+                <!-- After -->
+                <div>
+                    <div class="comparison-label">✅ New Design (Luqmay Brand)</div>
+                    <div class="new-design">
+                        <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+                            <div style="font-size: 56px;">🌅</div>
+                            <div style="flex: 1;">
+                                <div class="prayer-name">Fajr</div>
+                                <div class="prayer-time">5:12 AM</div>
+                            </div>
+                            <div style="width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">✓</div>
+                        </div>
+                        <div style="font-size: 14px; color: var(--dark-text); opacity: 0.5;">
+                            Font: Lexend Bold @ 32px<br>
+                            Benefit: Clear, warm, educational
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Greeting Example -->
+        <div class="section">
+            <div class="section-title">Greeting Header</div>
+            <div class="section-subtitle">First thing kids see—make it feel special</div>
+
+            <div class="greeting bounce-on-hover">
+                <div class="greeting-salutation">Assalamu Alaikum</div>
+                <div class="greeting-name">Ahmad! ⭐</div>
+                <div class="greeting-context">Day 12 of Ramadan — Keep shining!</div>
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="section">
+            <div class="section-title">Stats Display</div>
+            <div class="section-subtitle">Numbers should feel like achievements</div>
+
+            <div class="stats-showcase">
+                <div class="stat-card bounce-on-hover">
+                    <div class="stat-emoji">🕌</div>
+                    <div class="stat-number">57</div>
+                    <div class="stat-label">Total Prayers</div>
+                </div>
+
+                <div class="stat-card bounce-on-hover">
+                    <div class="stat-emoji">🔥</div>
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+
+                <div class="stat-card bounce-on-hover">
+                    <div class="stat-emoji">⭐</div>
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Badges</div>
+                </div>
+
+                <div class="stat-card bounce-on-hover">
+                    <div class="stat-emoji">🌙</div>
+                    <div class="stat-number">11</div>
+                    <div class="stat-label">Fasts</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paula Scher's Principles -->
+        <div class="principles">
+            <div class="section-title" style="color: var(--gold);">Paula Scher's Typography Principles</div>
+            <div class="section-subtitle" style="color: var(--cream); opacity: 1;">Applied to Salah Buddy</div>
+
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-number">01</div>
+                    <div class="principle-title">Big & Bold Wins</div>
+                    <div class="principle-desc">
+                        Don't be timid with type. Kids respond to SCALE. Prayer names at 32px,
+                        stats at 72px, celebrations at 96px. Let typography create the excitement.
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <div class="principle-number">02</div>
+                    <div class="principle-title">Weight Expresses Emotion</div>
+                    <div class="principle-desc">
+                        Light (300) whispers. Regular (400) speaks. Bold (700) shouts. Black (900) celebrates.
+                        Use weight to create vocal variety in your visual voice.
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <div class="principle-number">03</div>
+                    <div class="principle-title">Hierarchy = Clarity</div>
+                    <div class="principle-desc">
+                        Kids shouldn't have to search for what matters. Prayer names? Bold at 32px.
+                        Time? Medium at 18px. Stats? Black at 72px. Clear hierarchy means instant comprehension.
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <div class="principle-number">04</div>
+                    <div class="principle-title">Space Amplifies</div>
+                    <div class="principle-desc">
+                        Generous spacing around big type makes it BIGGER. 48px padding around a 72px
+                        number creates breathing room that amplifies impact.
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <div class="principle-number">05</div>
+                    <div class="principle-title">Contrast Creates Energy</div>
+                    <div class="principle-desc">
+                        Gold on cream. Dark text on white. 900-weight next to 400-weight.
+                        Strong contrast = visual energy that matches kids' actual energy.
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <div class="principle-number">06</div>
+                    <div class="principle-title">Numbers Are Heroes</div>
+                    <div class="principle-desc">
+                        Stats are achievements. Render them at display sizes (72-96px) with Black weight (900).
+                        Make every "5/5 prayers" feel like winning a trophy.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specific Screen Recommendations -->
+        <div class="section">
+            <div class="section-title">Screen-by-Screen Recommendations</div>
+
+            <div class="hierarchy-demo">
+                <h3 style="font-size: var(--type-title); font-weight: var(--weight-bold); color: var(--gold); margin-bottom: var(--space-lg);">
+                    🏠 Home Screen
+                </h3>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px; margin-bottom: var(--space-md);">
+                    <p style="font-size: var(--type-body); font-weight: var(--weight-medium); margin-bottom: var(--space-md);">
+                        <strong>Greeting:</strong>
+                    </p>
+                    <ul style="list-style: none; padding-left: 0; font-size: var(--type-body);">
+                        <li style="margin-bottom: var(--space-xs);">• "Assalamu Alaikum" — 24px, Regular (400)</li>
+                        <li style="margin-bottom: var(--space-xs);">• Name — 72px, Black (900), gold color</li>
+                        <li style="margin-bottom: var(--space-xs);">• Context — 18px, Medium (500)</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px; margin-bottom: var(--space-md);">
+                    <p style="font-size: var(--type-body); font-weight: var(--weight-medium); margin-bottom: var(--space-md);">
+                        <strong>Prayer Cards:</strong>
+                    </p>
+                    <ul style="list-style: none; padding-left: 0; font-size: var(--type-body);">
+                        <li style="margin-bottom: var(--space-xs);">• Prayer Name — 32px, Bold (700)</li>
+                        <li style="margin-bottom: var(--space-xs);">• Time — 18px, Medium (500), 60% opacity</li>
+                        <li style="margin-bottom: var(--space-xs);">• Emoji — 56px (large, playful)</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px;">
+                    <p style="font-size: var(--type-body); font-weight: var(--weight-medium); margin-bottom: var(--space-md);">
+                        <strong>Progress Ring:</strong>
+                    </p>
+                    <ul style="list-style: none; padding-left: 0; font-size: var(--type-body);">
+                        <li style="margin-bottom: var(--space-xs);">• "3/5" — 72px, Black (900), gold color</li>
+                        <li style="margin-bottom: var(--space-xs);">• "Prayers today" — 18px, Medium (500)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="hierarchy-demo">
+                <h3 style="font-size: var(--type-title); font-weight: var(--weight-bold); color: var(--gold); margin-bottom: var(--space-lg);">
+                    📊 Dashboard Screen
+                </h3>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px; margin-bottom: var(--space-md);">
+                    <p style="font-size: var(--type-body); font-weight: var(--weight-medium); margin-bottom: var(--space-md);">
+                        <strong>Page Title:</strong>
+                    </p>
+                    <ul style="list-style: none; padding-left: 0; font-size: var(--type-body);">
+                        <li style="margin-bottom: var(--space-xs);">• "Your Progress" — 72px, Extra Bold (800)</li>
+                        <li style="margin-bottom: var(--space-xs);">• Subtitle — 24px, Regular (400), 70% opacity</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px; margin-bottom: var(--space-md);">
+                    <p style="font-size: var(--type-body); font-weight: var(--weight-medium); margin-bottom: var(--space-md);">
+                        <strong>Stat Cards:</strong>
+                    </p>
+                    <ul style="list-style: none; padding-left: 0; font-size: var(--type-body);">
+                        <li style="margin-bottom: var(--space-xs);">• Number — 72px, Black (900), gold color</li>
+                        <li style="margin-bottom: var(--space-xs);">• Label — 18px, Semi Bold (600)</li>
+                        <li style="margin-bottom: var(--space-xs);">• Emoji — 56px (celebratory)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="hierarchy-demo">
+                <h3 style="font-size: var(--type-title); font-weight: var(--weight-bold); color: var(--gold); margin-bottom: var(--space-lg);">
+                    🏆 Leaderboard Screen
+                </h3>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px; margin-bottom: var(--space-md);">
+                    <p style="font-size: var(--type-body); font-weight: var(--weight-medium); margin-bottom: var(--space-md);">
+                        <strong>Rankings:</strong>
+                    </p>
+                    <ul style="list-style: none; padding-left: 0; font-size: var(--type-body);">
+                        <li style="margin-bottom: var(--space-xs);">• Rank Number — 48px, Black (900)</li>
+                        <li style="margin-bottom: var(--space-xs);">• Name — 24px, Bold (700)</li>
+                        <li style="margin-bottom: var(--space-xs);">• Points — 32px, Extra Bold (800), gold</li>
+                        <li style="margin-bottom: var(--space-xs);">• Streak — 14px, Medium (500)</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px;">
+                    <p style="font-size: var(--type-body); font-weight: var(--weight-medium); margin-bottom: var(--space-md);">
+                        <strong>Your Rank Card:</strong>
+                    </p>
+                    <ul style="list-style: none; padding-left: 0; font-size: var(--type-body);">
+                        <li style="margin-bottom: var(--space-xs);">• "Your Position" — 24px, Semi Bold (600)</li>
+                        <li style="margin-bottom: var(--space-xs);">• Rank — 96px, Black (900), white on gold</li>
+                        <li style="margin-bottom: var(--space-xs);">• Name — 32px, Bold (700)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="hierarchy-demo">
+                <h3 style="font-size: var(--type-title); font-weight: var(--weight-bold); color: var(--gold); margin-bottom: var(--space-lg);">
+                    🎉 Celebration Moments
+                </h3>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px;">
+                    <p style="font-size: var(--type-body); font-weight: var(--weight-medium); margin-bottom: var(--space-md);">
+                        <strong>Modal/Toast Messages:</strong>
+                    </p>
+                    <ul style="list-style: none; padding-left: 0; font-size: var(--type-body);">
+                        <li style="margin-bottom: var(--space-xs);">• Emoji — 100px (huge, celebratory)</li>
+                        <li style="margin-bottom: var(--space-xs);">• "Mashallah!" — 48px, Extra Bold (800)</li>
+                        <li style="margin-bottom: var(--space-xs);">• Message — 24px, Medium (500)</li>
+                        <li style="margin-bottom: var(--space-xs);">• Button — 20px, Semi Bold (600)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Checklist -->
+        <div class="section">
+            <div class="section-title">Implementation Checklist</div>
+
+            <div style="background: var(--white); padding: var(--space-2xl); border-radius: 24px; border: 3px solid var(--gold);">
+                <h3 style="font-size: var(--type-title); font-weight: var(--weight-bold); color: var(--dark-text); margin-bottom: var(--space-lg);">
+                    Typography Setup
+                </h3>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px; margin-bottom: var(--space-lg);">
+                    <p style="font-size: var(--type-body-lg); font-weight: var(--weight-semibold); margin-bottom: var(--space-md);">
+                        1. Font Loading
+                    </p>
+                    <pre style="background: var(--dark-text); color: var(--cream); padding: var(--space-md); border-radius: 8px; overflow-x: auto; font-size: 14px;">
+&lt;link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"&gt;</pre>
+                </div>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px; margin-bottom: var(--space-lg);">
+                    <p style="font-size: var(--type-body-lg); font-weight: var(--weight-semibold); margin-bottom: var(--space-md);">
+                        2. CSS Variables (Tailwind Config)
+                    </p>
+                    <pre style="background: var(--dark-text); color: var(--cream); padding: var(--space-md); border-radius: 8px; overflow-x: auto; font-size: 14px;">
+:root {
+  /* Sizes */
+  --type-hero: 96px;
+  --type-display: 72px;
+  --type-headline: 48px;
+  --type-title: 32px;
+  --type-body-lg: 24px;
+  --type-body: 18px;
+  --type-caption: 14px;
+
+  /* Weights */
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+  --weight-black: 900;
+}</pre>
+                </div>
+
+                <div style="background: var(--cream); padding: var(--space-lg); border-radius: 16px;">
+                    <p style="font-size: var(--type-body-lg); font-weight: var(--weight-semibold); margin-bottom: var(--space-md);">
+                        3. Component Classes
+                    </p>
+                    <pre style="background: var(--dark-text); color: var(--cream); padding: var(--space-md); border-radius: 8px; overflow-x: auto; font-size: 14px;">
+.greeting-name {
+  font-size: var(--type-display);
+  font-weight: var(--weight-black);
+  color: var(--gold);
+  line-height: 1;
+}
+
+.prayer-name {
+  font-size: var(--type-title);
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+}
+
+.stat-number {
+  font-size: var(--type-display);
+  font-weight: var(--weight-black);
+  color: var(--gold);
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Recommendation -->
+        <div class="principles" style="text-align: center;">
+            <div class="section-title" style="color: var(--gold); justify-content: center;">
+                Final Recommendation
+            </div>
+            <div style="max-width: 800px; margin: var(--space-2xl) auto;">
+                <p style="font-size: var(--type-body-lg); font-weight: var(--weight-medium); color: var(--cream); line-height: 1.6; margin-bottom: var(--space-lg);">
+                    Typography isn't just about readability—it's about creating an emotional experience.
+                    For Salah Buddy, <span style="color: var(--gold); font-weight: var(--weight-bold);">Lexend at scale
+                    creates warmth, clarity, and celebration</span> that matches Luqmay's educational mission.
+                </p>
+                <p style="font-size: var(--type-body-lg); font-weight: var(--weight-medium); color: var(--cream); line-height: 1.6;">
+                    Every prayer logged should feel like a victory. Every stat should feel like a trophy.
+                    <span style="color: var(--gold); font-weight: var(--weight-bold);">Big, bold, expressive typography
+                    makes kids WANT to engage</span>—because the interface itself is celebrating with them.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="background: var(--gold); padding: var(--space-2xl); text-align: center; margin-top: var(--space-3xl);">
+        <p style="font-size: var(--type-body); font-weight: var(--weight-semibold); color: var(--dark-text);">
+            Typography Redesign by Paula Scher's Principles for Luqmay × Salah Buddy
+        </p>
+    </div>
+</body>
+</html>

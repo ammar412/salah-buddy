@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salah Buddy - Design Board Consultation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --night-blue: #011C2F;
+            --teal: #208796;
+            --fresh-green: #2EA85D;
+            --golden: #FCC201;
+            --lemon: #FFF34C;
+            --cream: #DACBAE;
+            --coral: #E76F51;
+            --purple: #6B4C9A;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--night-blue);
+            color: white;
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 60px 80px;
+            background: linear-gradient(135deg, var(--night-blue) 0%, #0a2d42 100%);
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav button {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav button:hover {
+            background: var(--teal);
+            border-color: var(--teal);
+        }
+
+        /* Slide 1: Title */
+        .title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--night-blue) 0%, #0a2d42 50%, var(--teal) 150%);
+        }
+
+        .logo-moon {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .title-slide h1 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 72px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--golden), var(--lemon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .title-slide .subtitle {
+            font-size: 28px;
+            font-weight: 300;
+            color: var(--cream);
+            margin-bottom: 40px;
+        }
+
+        .title-slide .meta {
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        /* Content Slides */
+        .slide h2 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 42px;
+            color: var(--golden);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slide h3 {
+            font-size: 24px;
+            color: var(--teal);
+            margin: 30px 0 15px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            flex: 1;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            flex: 1;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .card h4 {
+            font-size: 20px;
+            color: var(--golden);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card p, .card li {
+            font-size: 16px;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .card li::before {
+            content: "✦";
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+        }
+
+        /* Color Palette */
+        .color-palette {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .color-swatch {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Quote */
+        .quote {
+            background: linear-gradient(135deg, var(--teal), var(--fresh-green));
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            font-size: 24px;
+            font-style: italic;
+            position: relative;
+        }
+
+        .quote::before {
+            content: '"';
+            font-size: 80px;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            opacity: 0.3;
+            font-family: Georgia, serif;
+        }
+
+        .quote-author {
+            font-style: normal;
+            font-weight: 600;
+            margin-top: 15px;
+            opacity: 0.8;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: linear-gradient(135deg, rgba(32,135,150,0.3), rgba(46,168,93,0.2));
+            border: 2px solid var(--teal);
+        }
+
+        /* Screen Mockup */
+        .mockup {
+            background: white;
+            border-radius: 30px;
+            padding: 20px;
+            max-width: 300px;
+            margin: 0 auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .mockup-inner {
+            background: linear-gradient(180deg, #1a3a5c 0%, var(--night-blue) 100%);
+            border-radius: 20px;
+            padding: 30px 20px;
+            min-height: 450px;
+        }
+
+        .prayer-ring {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 15px solid rgba(255,255,255,0.1);
+            margin: 20px auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prayer-ring::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 15px solid var(--fresh-green);
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            transform: rotate(-45deg);
+        }
+
+        .prayer-ring span {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--golden);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(252,194,1,0.2);
+            border: 1px solid var(--golden);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        /* Progress Bar */
+        .progress-demo {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--teal), var(--fresh-green));
+            border-radius: 10px;
+            width: 72%;
+        }
+
+        /* Leaderboard Demo */
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            margin: 10px 0;
+        }
+
+        .rank {
+            width: 40px;
+            height: 40px;
+            background: var(--golden);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--night-blue);
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--coral), var(--purple));
+        }
+
+        /* Designer Credit */
+        .designer-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        /* Stars decoration */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .slide {
+                padding: 40px;
+            }
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Agenda Items */
+        .agenda-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+        }
+
+        .agenda-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            border-left: 4px solid var(--teal);
+            transition: all 0.3s ease;
+        }
+
+        .agenda-item:hover {
+            background: rgba(255,255,255,0.1);
+            border-left-color: var(--golden);
+        }
+
+        .agenda-num {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--golden);
+            opacity: 0.5;
+        }
+
+        /* Character showcase */
+        .character-box {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .character-emoji {
+            font-size: 120px;
+            margin-bottom: 20px;
+        }
+
+        /* Key insight boxes */
+        .insight-box {
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            padding: 25px;
+            border-radius: 15px;
+            margin: 15px 0;
+        }
+
+        .insight-box h5 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        /* Final CTA */
+        .cta-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .cta-slide h2 {
+            font-size: 56px;
+            justify-content: center;
+        }
+
+        .principles-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .principle-tag {
+            background: linear-gradient(135deg, var(--teal), var(--fresh-green));
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active" data-slide="1">
+            <div class="stars">
+                <div class="star" style="top: 10%; left: 20%; animation-delay: 0.5s;"></div>
+                <div class="star" style="top: 15%; left: 80%; animation-delay: 1s;"></div>
+                <div class="star" style="top: 30%; left: 10%; animation-delay: 0.2s;"></div>
+                <div class="star" style="top: 25%; left: 60%; animation-delay: 1.5s;"></div>
+                <div class="star" style="top: 40%; left: 90%; animation-delay: 0.8s;"></div>
+                <div class="star" style="top: 60%; left: 15%; animation-delay: 1.2s;"></div>
+                <div class="star" style="top: 70%; left: 75%; animation-delay: 0.3s;"></div>
+                <div class="star" style="top: 80%; left: 40%; animation-delay: 1.8s;"></div>
+            </div>
+            <div class="logo-moon">🌙</div>
+            <h1>Salah Buddy</h1>
+            <p class="subtitle">A Ramadan Companion for Kids</p>
+            <p class="meta">Design Board Consultation | Luqmay | Ramadan 2025</p>
+        </div>
+
+        <!-- Slide 2: Agenda -->
+        <div class="slide" data-slide="2">
+            <h2>📋 What We'll Cover</h2>
+            <div class="agenda-list">
+                <div class="agenda-item">
+                    <span class="agenda-num">01</span>
+                    <div>
+                        <strong>The Vision</strong>
+                        <p style="opacity: 0.7;">What makes Salah Buddy different</p>
+                    </div>
+                </div>
+                <div class="agenda-item">
+                    <span class="agenda-num">02</span>
+                    <div>
+                        <strong>Core Features</strong>
+                        <p style="opacity: 0.7;">Prayer tracking, fasting, dashboards</p>
+                    </div>
+                </div>
+                <div class="agenda-item">
+                    <span class="agenda-num">03</span>
+                    <div>
+                        <strong>Visual Identity</strong>
+                        <p style="opacity: 0.7;">Colors, typography, Islamic patterns</p>
+                    </div>
+                </div>
+                <div class="agenda-item">
+                    <span class="agenda-num">04</span>
+                    <div>
+                        <strong>Character & Story</strong>
+                        <p style="opacity: 0.7;">The companion that grows with you</p>
+                    </div>
+                </div>
+                <div class="agenda-item">
+                    <span class="agenda-num">05</span>
+                    <div>
+                        <strong>Gamification</strong>
+                        <p style="opacity: 0.7;">Rewards that feel spiritual, not transactional</p>
+                    </div>
+                </div>
+                <div class="agenda-item">
+                    <span class="agenda-num">06</span>
+                    <div>
+                        <strong>Key Screens</strong>
+                        <p style="opacity: 0.7;">Home, tracker, leaderboard concepts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: The Vision -->
+        <div class="slide" data-slide="3">
+            <h2>✨ The Vision</h2>
+            <div class="quote">
+                Make prayer feel like play. Not gamification—that's cheap. Make the act of tracking prayer itself delightful. The device should celebrate with the child.
+                <div class="quote-author">— Steve Jobs perspective</div>
+            </div>
+            <div class="grid-2" style="margin-top: 30px;">
+                <div class="card">
+                    <h4>🎯 The ONE Thing</h4>
+                    <p>Focus on prayer tracking done <strong>insanely well</strong>. Kids should feel like heroes every time they complete a prayer. Everything else is secondary.</p>
+                    <div class="insight-box" style="margin-top: 20px;">
+                        <h5>Key Insight</h5>
+                        <p>Ship with ONE feature done perfectly: Prayer tracking that makes kids WANT to pray.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>💡 Design Principles</h4>
+                    <ul>
+                        <li>Clarity over competition</li>
+                        <li>One primary action per screen</li>
+                        <li>Tactile feedback without noise</li>
+                        <li>Grace, not guilt for missed prayers</li>
+                        <li>Emotional design over metrics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: User Personas -->
+        <div class="slide" data-slide="4">
+            <h2>👨‍👩‍👧‍👦 Who We're Designing For</h2>
+            <div class="grid-2">
+                <div class="card feature-card">
+                    <h4>🧒 Ages 4-7: Little Stars</h4>
+                    <ul>
+                        <li>Extra-bold, rounded typography</li>
+                        <li>Large tap targets (44px minimum)</li>
+                        <li>Single-step actions only</li>
+                        <li>Parent co-use expected</li>
+                        <li>Lots of animation & celebration</li>
+                        <li>No reading required—icons only</li>
+                    </ul>
+                    <div style="margin-top: 20px;">
+                        <span class="badge">👆 Big buttons</span>
+                        <span class="badge">🎨 Bright colors</span>
+                        <span class="badge">🎵 Sound effects</span>
+                    </div>
+                </div>
+                <div class="card feature-card">
+                    <h4>🧑 Ages 8-12: Rising Champions</h4>
+                    <ul>
+                        <li>Medium-weight geometric sans</li>
+                        <li>More independence</li>
+                        <li>Optional depth & challenges</li>
+                        <li>Can navigate & read on their own</li>
+                        <li>Light competition elements</li>
+                        <li>Stats for those who seek them</li>
+                    </ul>
+                    <div style="margin-top: 20px;">
+                        <span class="badge">📊 Progress stats</span>
+                        <span class="badge">🏆 Challenges</span>
+                        <span class="badge">👥 Friends</span>
+                    </div>
+                </div>
+            </div>
+            <div class="insight-box" style="max-width: 800px; margin: 30px auto;">
+                <h5>Don Norman's Advice</h5>
+                <p>Don't split the interface—layer complexity. Same core UI for all, with progressive disclosure for advanced features.</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Visual Identity -->
+        <div class="slide" data-slide="5">
+            <h2>🎨 Visual Identity</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🌈 Color Palette</h4>
+                    <p>Islamic jewel tones meet playful energy</p>
+                    <div class="color-palette">
+                        <div class="color-swatch" style="background: #011C2F; color: white;">
+                            Night Blue<br>#011C2F
+                        </div>
+                        <div class="color-swatch" style="background: #208796; color: white;">
+                            Teal<br>#208796
+                        </div>
+                        <div class="color-swatch" style="background: #2EA85D; color: white;">
+                            Fresh Green<br>#2EA85D
+                        </div>
+                        <div class="color-swatch" style="background: #FCC201; color: #011C2F;">
+                            Golden<br>#FCC201
+                        </div>
+                        <div class="color-swatch" style="background: #FFF34C; color: #011C2F;">
+                            Lemon<br>#FFF34C
+                        </div>
+                        <div class="color-swatch" style="background: #DACBAE; color: #011C2F;">
+                            Cream<br>#DACBAE
+                        </div>
+                        <div class="color-swatch" style="background: #E76F51; color: white;">
+                            Coral<br>#E76F51
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>✍️ Typography</h4>
+                    <p style="font-family: 'Baloo 2'; font-size: 36px; color: var(--golden); margin: 20px 0;">
+                        salah buddy
+                    </p>
+                    <ul>
+                        <li><strong>Display:</strong> Baloo 2 (friendly, rounded)</li>
+                        <li><strong>Body:</strong> Poppins (clean, modern)</li>
+                        <li>Lowercase treatment for approachability</li>
+                        <li>"Buddy" slightly bolder than "Salah"</li>
+                        <li>Modern Kufi for special Arabic words</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="grid-3" style="margin-top: 30px;">
+                <div class="card">
+                    <h4>☪️ Islamic Motifs</h4>
+                    <ul>
+                        <li>Six-point stars for badges</li>
+                        <li>Circular rosettes for loading</li>
+                        <li>Crescent moon mascot</li>
+                        <li>Ramadan lanterns</li>
+                        <li>Simplified dome shapes</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🎯 Pattern Rules</h4>
+                    <ul>
+                        <li>Max 2-3 shapes combined</li>
+                        <li>Animation-friendly designs</li>
+                        <li>Stars twinkle, moons phase</li>
+                        <li>Lanterns glow with progress</li>
+                        <li>Tessellations unlock as rewards</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>💫 Jessica Walsh's Take</h4>
+                    <ul>
+                        <li>No pastels—vibrant is Islamic!</li>
+                        <li>Geometric patterns in 3D</li>
+                        <li>Prayer rugs as portals</li>
+                        <li>Calligraphy that moves</li>
+                        <li>Make every tap feel like unwrapping a gift</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Character & Story -->
+        <div class="slide" data-slide="6">
+            <h2>🌟 The Companion Character</h2>
+            <div class="grid-2">
+                <div class="character-box card">
+                    <div class="character-emoji">🌱</div>
+                    <h4>Day 1: A Seed of Light</h4>
+                    <p>A small, vulnerable spirit that starts as a glowing seed. Not a mascot that gives points—a companion that grows through presence.</p>
+                </div>
+                <div class="character-box card">
+                    <div class="character-emoji">⭐</div>
+                    <h4>Day 30: A Shining Star</h4>
+                    <p>By Eid, the companion has transformed into something beautiful. The transformation mirrors the child's spiritual journey.</p>
+                </div>
+            </div>
+            <div class="quote" style="margin-top: 30px;">
+                Children remember how something made them feel, not what they earned. Design for memory, not metrics.
+                <div class="quote-author">— Miyazaki perspective</div>
+            </div>
+            <div class="grid-3" style="margin-top: 30px;">
+                <div class="card">
+                    <h4>🌅 Fajr Moment</h4>
+                    <p>Quiet encouragement. Beautiful sky transitions. The companion waits patiently.</p>
+                </div>
+                <div class="card">
+                    <h4>🌙 Iftar Moment</h4>
+                    <p>Warmth, not fireworks. The companion sits with them, sharing the moment.</p>
+                </div>
+                <div class="card">
+                    <h4>😔 Missed Prayer</h4>
+                    <p>Companion stays hopeful—teaches resilience, not shame. Always a path back.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: The 30-Day Story Arc -->
+        <div class="slide" data-slide="7">
+            <h2>📖 The 30-Day Story Arc</h2>
+            <div class="grid-3">
+                <div class="card" style="border-top: 4px solid var(--teal);">
+                    <h4>Act 1: Discovery</h4>
+                    <p style="color: var(--teal); font-weight: 600;">Days 1-7</p>
+                    <ul>
+                        <li>Excitement of starting</li>
+                        <li>Learning the rhythm</li>
+                        <li>Companion begins to grow</li>
+                        <li>First streak celebration</li>
+                    </ul>
+                    <div class="insight-box">
+                        <p>"What Is" → "What Could Be"</p>
+                    </div>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--golden);">
+                    <h4>Act 2: Challenge</h4>
+                    <p style="color: var(--golden); font-weight: 600;">Days 8-23</p>
+                    <ul>
+                        <li>Day 10: "Double digits!" celebration</li>
+                        <li>Day 15: Halfway transformation</li>
+                        <li>Building consistency</li>
+                        <li>Mid-Ramadan milestone badge</li>
+                    </ul>
+                    <div class="insight-box">
+                        <p>Build tension through micro-victories</p>
+                    </div>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--fresh-green);">
+                    <h4>Act 3: Triumph</h4>
+                    <p style="color: var(--fresh-green); font-weight: 600;">Days 24-30</p>
+                    <ul>
+                        <li>Day 27: Laylat al-Qadr mystery</li>
+                        <li>Day 30: Pre-Eid anticipation</li>
+                        <li>Companion fully transformed</li>
+                        <li>Personal video montage</li>
+                    </ul>
+                    <div class="insight-box">
+                        <p>Crescendo to Eid celebration</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 30px; text-align: center;">
+                <h4>🎉 Eid Finale: The Hero's Reward</h4>
+                <p style="font-size: 20px;">"You prayed 150 times! You fasted 30 days!"</p>
+                <p>Digital fireworks + personalized video montage. Character gets crowned. Parents receive summary. Screenshot-worthy, shareable moment.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Gamification -->
+        <div class="slide" data-slide="8">
+            <h2>🎮 Gamification That Feels Spiritual</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🔓 Unlock, Don't Just Reward</h4>
+                    <ul>
+                        <li>Build your own mosque piece by piece</li>
+                        <li>Collect prophets' stories</li>
+                        <li>Earn charity coins to help virtual animals</li>
+                        <li>Parent prayer together = multiplier</li>
+                        <li>Random "mercy drops" keep it fresh</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔥 Streak Philosophy</h4>
+                    <ul>
+                        <li><strong>Grace, not guilt:</strong> Dim the star, don't break the chain</li>
+                        <li><strong>Comeback mechanic:</strong> Make-up prayer window</li>
+                        <li><strong>Permanent wins:</strong> 7-day streak = keep one star forever</li>
+                        <li><strong>Recovery celebrated:</strong> "Most improved" badges</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="grid-3" style="margin-top: 30px;">
+                <div class="card">
+                    <h4>🏅 Badge Milestones</h4>
+                    <p>Spiritual, not arbitrary:</p>
+                    <div style="margin-top: 15px;">
+                        <span class="badge">🌅 First Fajr</span>
+                        <span class="badge">⭐ All 5 in One Day</span>
+                        <span class="badge">🤝 Helped a Friend</span>
+                        <span class="badge">🌙 Laylat al-Qadr</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>📚 Companions Collection</h4>
+                    <p>Unlock through consistency:</p>
+                    <div style="margin-top: 15px;">
+                        <span class="badge">Abu Bakr (loyalty)</span>
+                        <span class="badge">Bilal (Fajr commitment)</span>
+                        <span class="badge">Khadijah (support)</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>🌌 The Constellation</h4>
+                    <p>Each completed prayer = a new star. By month's end, you've created your own constellation.</p>
+                    <p style="margin-top: 10px; color: var(--golden);">Pinch-to-zoom reveals your unique pattern. Your personal cosmos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Leaderboard Design -->
+        <div class="slide" data-slide="9">
+            <h2>🏆 Inclusive Competition</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🏔️ Not a List—A Landscape</h4>
+                    <p>Kids are climbing a mountain together. You see avatars of friends as fellow travelers, not competitors.</p>
+                    <ul style="margin-top: 20px;">
+                        <li>Top position = helping others climb</li>
+                        <li>Celebrate the middle</li>
+                        <li>Heat map shows participation density</li>
+                        <li>"Look how many friends are praying!"</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Multiple Leaderboards</h4>
+                    <div class="leaderboard-item">
+                        <div class="rank">1</div>
+                        <div class="avatar"></div>
+                        <div>
+                            <strong>By Age Group</strong>
+                            <p style="font-size: 14px; opacity: 0.7;">Fair competition within peer groups</p>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank" style="background: var(--teal);">⬆</div>
+                        <div class="avatar" style="background: linear-gradient(135deg, var(--fresh-green), var(--teal));"></div>
+                        <div>
+                            <strong>Most Improved</strong>
+                            <p style="font-size: 14px; opacity: 0.7;">Rewards effort, not just volume</p>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <div class="rank" style="background: var(--coral);">👨‍👩‍👧</div>
+                        <div class="avatar" style="background: linear-gradient(135deg, var(--golden), var(--coral));"></div>
+                        <div>
+                            <strong>Family Teams</strong>
+                            <p style="font-size: 14px; opacity: 0.7;">Siblings & families compete together</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="insight-box" style="max-width: 800px; margin: 30px auto;">
+                <h5>Edward Tufte's Principle</h5>
+                <p>Show participation density rather than rankings. Emphasis on collective achievement. Top performers get subtle star indicators, but the glow is shared.</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Core Screen - Home -->
+        <div class="slide" data-slide="10">
+            <h2>📱 Key Screen: Home</h2>
+            <div class="grid-2">
+                <div>
+                    <div class="mockup">
+                        <div class="mockup-inner">
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <span style="font-size: 14px; opacity: 0.7;">Assalamu Alaikum</span>
+                                <h3 style="font-family: 'Baloo 2'; font-size: 24px; color: var(--golden);">Ahmad! 🌟</h3>
+                            </div>
+                            <div class="prayer-ring">
+                                <span>3/5</span>
+                            </div>
+                            <p style="text-align: center; margin: 15px 0; font-size: 14px;">Prayers today</p>
+                            <div style="display: flex; justify-content: space-around; margin: 30px 0;">
+                                <div style="text-align: center; opacity: 0.5;">
+                                    <div style="font-size: 24px;">✓</div>
+                                    <div style="font-size: 10px;">Fajr</div>
+                                </div>
+                                <div style="text-align: center; opacity: 0.5;">
+                                    <div style="font-size: 24px;">✓</div>
+                                    <div style="font-size: 10px;">Dhuhr</div>
+                                </div>
+                                <div style="text-align: center; opacity: 0.5;">
+                                    <div style="font-size: 24px;">✓</div>
+                                    <div style="font-size: 10px;">Asr</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 24px; color: var(--golden);">○</div>
+                                    <div style="font-size: 10px;">Maghrib</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 24px;">○</div>
+                                    <div style="font-size: 10px;">Isha</div>
+                                </div>
+                            </div>
+                            <div style="background: var(--teal); padding: 15px; border-radius: 15px; text-align: center;">
+                                <div style="font-size: 12px; opacity: 0.8;">Day 12 of Ramadan</div>
+                                <div style="font-size: 18px; font-weight: 600;">🔥 7-day streak!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card">
+                        <h4>Design Decisions</h4>
+                        <ul>
+                            <li><strong>Single progress ring:</strong> Dieter Rams' "one clear purpose"</li>
+                            <li><strong>5 prayer slots:</strong> Physical spaces, not abstract numbers</li>
+                            <li><strong>Tap to complete:</strong> One action, instant feedback</li>
+                            <li><strong>Streak celebration:</strong> But not punishing if broken</li>
+                            <li><strong>Personal greeting:</strong> This is THEIR app</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="margin-top: 20px;">
+                        <h4>Interaction</h4>
+                        <ul>
+                            <li>Tap prayer circle → Mark complete → Confetti!</li>
+                            <li>Long press → See prayer time details</li>
+                            <li>Swipe down → Refresh companion</li>
+                            <li>Tap streak → See constellation progress</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Dashboard & Data -->
+        <div class="slide" data-slide="11">
+            <h2>📊 Dashboard Design</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>📈 Three Data Points Only</h4>
+                    <p style="margin-bottom: 20px;">Kids don't need analytics—they need encouragement.</p>
+
+                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin: 15px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Today's Prayers</span>
+                            <span style="color: var(--golden); font-weight: 600;">4/5</span>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <div style="width: 30px; height: 30px; background: var(--fresh-green); border-radius: 50%;"></div>
+                            <div style="width: 30px; height: 30px; background: var(--fresh-green); border-radius: 50%;"></div>
+                            <div style="width: 30px; height: 30px; background: var(--fresh-green); border-radius: 50%;"></div>
+                            <div style="width: 30px; height: 30px; background: var(--fresh-green); border-radius: 50%;"></div>
+                            <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.2); border-radius: 50%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin: 15px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Current Streak</span>
+                            <span style="color: var(--coral); font-weight: 600; font-size: 24px;">🔥 12</span>
+                        </div>
+                        <div class="progress-demo">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div style="font-size: 12px; opacity: 0.7;">Best: 15 days</div>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin: 15px 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Latest Badge</span>
+                            <span class="badge">🌅 Fajr Champion</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>📅 30-Day Calendar View</h4>
+                    <p>Small multiples—pattern recognition over counting</p>
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 20px;">
+                        <!-- Week 1 -->
+                        <div style="width: 35px; height: 35px; background: var(--fresh-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">5</div>
+                        <div style="width: 35px; height: 35px; background: var(--fresh-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">5</div>
+                        <div style="width: 35px; height: 35px; background: var(--teal); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">4</div>
+                        <div style="width: 35px; height: 35px; background: var(--fresh-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">5</div>
+                        <div style="width: 35px; height: 35px; background: var(--fresh-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">5</div>
+                        <div style="width: 35px; height: 35px; background: var(--teal); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">3</div>
+                        <div style="width: 35px; height: 35px; background: var(--fresh-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">5</div>
+                        <!-- Week 2 -->
+                        <div style="width: 35px; height: 35px; background: var(--fresh-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">5</div>
+                        <div style="width: 35px; height: 35px; background: var(--fresh-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">5</div>
+                        <div style="width: 35px; height: 35px; background: var(--fresh-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">5</div>
+                        <div style="width: 35px; height: 35px; background: var(--teal); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px;">4</div>
+                        <div style="width: 35px; height: 35px; background: var(--golden); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--night-blue);">★</div>
+                        <div style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); border-radius: 8px;"></div>
+                        <div style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); border-radius: 8px;"></div>
+                    </div>
+                    <div style="margin-top: 20px; display: flex; gap: 15px; font-size: 12px;">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="width: 15px; height: 15px; background: var(--fresh-green); border-radius: 4px;"></div>
+                            <span>All 5</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="width: 15px; height: 15px; background: var(--teal); border-radius: 4px;"></div>
+                            <span>3-4</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="width: 15px; height: 15px; background: var(--golden); border-radius: 4px;"></div>
+                            <span>Special Day</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Fasting Tracker -->
+        <div class="slide" data-slide="12">
+            <h2>☀️ Fasting Tracker</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🌅 Sunrise-to-Sunset Arc</h4>
+                    <p>Physical metaphor matches lived experience</p>
+                    <div style="margin: 30px 0; position: relative; height: 150px;">
+                        <div style="position: absolute; width: 100%; height: 4px; background: linear-gradient(90deg, var(--golden) 0%, var(--teal) 50%, var(--night-blue) 100%); top: 50%; border-radius: 2px;"></div>
+                        <div style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); text-align: center;">
+                            <div style="font-size: 30px;">🌅</div>
+                            <div style="font-size: 10px; margin-top: 5px;">Suhoor</div>
+                            <div style="font-size: 10px; opacity: 0.7;">4:30 AM</div>
+                        </div>
+                        <div style="position: absolute; left: 60%; top: 50%; transform: translate(-50%, -50%);">
+                            <div style="font-size: 40px; animation: float 3s ease-in-out infinite;">☀️</div>
+                            <div style="font-size: 10px; text-align: center; margin-top: 5px;">Now</div>
+                        </div>
+                        <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); text-align: center;">
+                            <div style="font-size: 30px;">🌙</div>
+                            <div style="font-size: 10px; margin-top: 5px;">Iftar</div>
+                            <div style="font-size: 10px; opacity: 0.7;">6:45 PM</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; font-size: 14px; opacity: 0.8;">No clocks or numbers—just visual progression</p>
+                </div>
+                <div class="card">
+                    <h4>🎯 Steve Jobs' Advice</h4>
+                    <div class="insight-box">
+                        <h5>Consider Cutting This</h5>
+                        <p>Fasting tracker may be too complex for ages 4-7. Consider making it v2 after nailing prayer tracking.</p>
+                    </div>
+                    <h4 style="margin-top: 20px;">If We Keep It:</h4>
+                    <ul>
+                        <li>Ages 8-12 only (toggle in settings)</li>
+                        <li>Simple yes/no daily check</li>
+                        <li>30-day grid like prayer calendar</li>
+                        <li>Companion encourages during fast</li>
+                        <li>Celebrates iftar moment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Key Decisions -->
+        <div class="slide" data-slide="13">
+            <h2>⚖️ Key Design Decisions</h2>
+            <div class="grid-2">
+                <div class="card" style="border-left: 4px solid var(--fresh-green);">
+                    <h4>✅ What We're Including</h4>
+                    <ul>
+                        <li><strong>Prayer tracking</strong> as the hero feature</li>
+                        <li><strong>Companion character</strong> that grows with child</li>
+                        <li><strong>Personal constellation</strong> of completed prayers</li>
+                        <li><strong>Grace-based streaks</strong> (dim, don't break)</li>
+                        <li><strong>Multiple leaderboards</strong> (age, improvement, family)</li>
+                        <li><strong>Spiritual badges</strong> tied to meaningful moments</li>
+                        <li><strong>30-day story arc</strong> with Eid finale</li>
+                        <li><strong>Parent dashboard</strong> (separate view)</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--coral);">
+                    <h4>❌ What We're Cutting/Deferring</h4>
+                    <ul>
+                        <li><strong>Complex fasting tracker</strong> → v2 for older kids</li>
+                        <li><strong>Dashboard analytics</strong> → 3 metrics max</li>
+                        <li><strong>Global ranking list</strong> → Landscape instead</li>
+                        <li><strong>Notification spam</strong> → App waits for child</li>
+                        <li><strong>Points/currency</strong> → Unlock, don't score</li>
+                        <li><strong>Punitive visuals</strong> → Grace over guilt</li>
+                        <li><strong>Reading-dependent UI</strong> → Icons for young kids</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="quote" style="margin-top: 30px;">
+                The interface should disappear—focus on the ritual, not the app. Make 100 kids absolutely love it before trying to reach 10,000.
+                <div class="quote-author">— Design Board Synthesis</div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Next Steps -->
+        <div class="slide cta-slide" data-slide="14">
+            <h2>🚀 Let's Build Salah Buddy</h2>
+            <div class="principles-list">
+                <div class="principle-tag">🎯 Prayer First</div>
+                <div class="principle-tag">💚 Grace Over Guilt</div>
+                <div class="principle-tag">🌱 Companion Grows</div>
+                <div class="principle-tag">⭐ Constellation Magic</div>
+                <div class="principle-tag">👨‍👩‍👧 Family Together</div>
+            </div>
+            <div style="max-width: 600px; margin: 40px auto;">
+                <div class="card" style="text-align: left;">
+                    <h4>📋 Recommended Next Steps</h4>
+                    <ol style="list-style: decimal; padding-left: 20px; line-height: 2;">
+                        <li>Finalize companion character design</li>
+                        <li>Create high-fidelity mockups for core screens</li>
+                        <li>Build interactive prototype for user testing</li>
+                        <li>Test with 5-10 kids (both age groups)</li>
+                        <li>Iterate based on feedback</li>
+                        <li>Launch MVP for Ramadan 2025</li>
+                    </ol>
+                </div>
+            </div>
+            <p style="margin-top: 40px; opacity: 0.7;">Design Board Consultation Complete | Luqmay × Salah Buddy</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav">
+            <button onclick="prevSlide()">← Previous</button>
+            <button onclick="nextSlide()">Next →</button>
+        </div>
+        <div class="slide-number">
+            <span id="currentSlide">1</span> / <span id="totalSlides">14</span>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 14;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            document.querySelector(`[data-slide="${currentSlide}"]`).classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Touch/swipe navigation
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
