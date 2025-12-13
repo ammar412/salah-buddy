@@ -59,6 +59,14 @@
         "destination": "/admin/users.html"
       },
       {
+        "source": "/signup",
+        "destination": "/signup.html"
+      },
+      {
+        "source": "/app",
+        "destination": "/app/index.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
