@@ -636,7 +636,8 @@
             border-radius: 4px;
         }
 
-        .legend-dot.complete { background: linear-gradient(135deg, var(--green), var(--teal)); }
+        /* Issue #20: Use CSS variable instead of duplicate gradient definition */
+        .legend-dot.complete { background: var(--gradient-green); }
         .legend-dot.partial { background: var(--gold); }
         .legend-dot.today { border: 3px solid var(--coral); background: var(--white); }
 
@@ -928,6 +929,12 @@
             justify-content: center;
             font-size: 28px;
         }
+
+        /* Issue #20: Avatar gradient utility classes to avoid inline gradient duplication */
+        .lb-avatar.bg-gradient-purple { background: var(--gradient-purple); }
+        .lb-avatar.bg-gradient-coral { background: var(--gradient-coral); }
+        .lb-avatar.bg-gradient-green { background: var(--gradient-green); }
+        .lb-avatar.bg-gradient-gold { background: var(--gradient-gold-alt); }
 
         .lb-info {
             flex: 1;
@@ -1900,6 +1907,40 @@
     </style>
     <!-- Firebase SDK -->
     <script type="module">
+        /**
+         * Issue #21: Global Namespace Documentation
+         *
+         * This app uses the following intentional globals under window:
+         *
+         * NAMESPACES:
+         * - window.SalahBuddy: Main application namespace (API functions)
+         * - window.AppState: Application state object
+         * - window.DOMCache: Cached DOM element references
+         * - window.firebaseModules: Firebase SDK functions
+         *
+         * FIREBASE:
+         * - window.firebaseApp: Firebase app instance
+         * - window.firebaseAuth: Firebase auth instance
+         * - window.firebaseDb: Firestore database instance
+         *
+         * UTILITIES:
+         * - window.escapeHtml: XSS prevention helper
+         *
+         * HTML EVENT HANDLERS (required for onclick attributes):
+         * - handleAuth, handleGuestMode, handleSignOut
+         * - downloadMyData, confirmDeleteAccount, deleteAccountPermanently
+         * - showScreen, updateMobileNav, togglePrayer, closeModal
+         * - openStory, closeVideoModal, completeTask
+         * - trackPrayer, trackStory, loadLeaderboard, updateDashboard
+         * - refreshStoryCards
+         */
+
+        // Issue #21: Initialize main application namespace
+        window.SalahBuddy = window.SalahBuddy || {
+            version: '1.0.0',
+            initialized: false
+        };
+
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, orderBy, limit, getDocs, onSnapshot, serverTimestamp, increment, writeBatch, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -1911,7 +1952,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Make Firebase available globally
+        // Make Firebase available globally (under documented namespace)
         window.firebaseApp = app;
         window.firebaseAuth = auth;
         window.firebaseDb = db;
@@ -2225,7 +2266,7 @@
                         <div class="leaderboard-list">
                             <div class="leaderboard-item">
                                 <div class="lb-rank">4</div>
-                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--purple), var(--teal));">🌙</div>
+                                <div class="lb-avatar bg-gradient-purple">🌙</div>
                                 <div class="lb-info">
                                     <div class="lb-name">Omar</div>
                                     <div class="lb-streak">🔥 22 day streak</div>
@@ -2234,7 +2275,7 @@
                             </div>
                             <div class="leaderboard-item">
                                 <div class="lb-rank">5</div>
-                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--coral), var(--coral-light));">💫</div>
+                                <div class="lb-avatar bg-gradient-coral">💫</div>
                                 <div class="lb-info">
                                     <div class="lb-name">Maryam</div>
                                     <div class="lb-streak">🔥 20 day streak</div>
@@ -2243,7 +2284,7 @@
                             </div>
                             <div class="leaderboard-item">
                                 <div class="lb-rank">6</div>
-                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--green), var(--teal));">🌟</div>
+                                <div class="lb-avatar bg-gradient-green">🌟</div>
                                 <div class="lb-info">
                                     <div class="lb-name">Ibrahim</div>
                                     <div class="lb-streak">🔥 18 day streak</div>
@@ -2252,7 +2293,7 @@
                             </div>
                             <div class="leaderboard-item">
                                 <div class="lb-rank">7</div>
-                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--gold), var(--gold-light));">⭐</div>
+                                <div class="lb-avatar bg-gradient-gold">⭐</div>
                                 <div class="lb-info">
                                     <div class="lb-name">Zainab</div>
                                     <div class="lb-streak">🔥 15 day streak</div>
@@ -2386,6 +2427,10 @@
     </div>
 
     <script>
+        // Issue #21: Wrap in IIFE to prevent global namespace pollution
+        (function() {
+        'use strict';
+
         // Story data for 30 days
         const stories = [
             { day: 1, title: "What is Salah?", desc: "Introduction to the beautiful gift of prayer", emoji: "🕌", color: "linear-gradient(135deg, #667eea, #764ba2)" },
@@ -2581,11 +2626,13 @@
         generateAchievements();
         window.updateDashboard = updateDashboard;
 
-        // Screen navigation
+        // Screen navigation - Issue #24: Use cached DOM refs when available
         function showScreen(screenName) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const screens = (window.DOMCache && window.DOMCache.screens) || document.querySelectorAll('.screen');
+            const navItems = (window.DOMCache && window.DOMCache.navItems) || document.querySelectorAll('.nav-item');
+            screens.forEach(s => s.classList.remove('active'));
             document.getElementById(screenName + 'Screen').classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            navItems.forEach(n => n.classList.remove('active'));
             if (event && event.currentTarget) {
                 event.currentTarget.classList.add('active');
             }
@@ -2670,8 +2717,9 @@
             updateStoryCardUI(day);
         }
 
+        // Issue #24: Use cached DOM refs when available
         function updateStoryCardUI(day) {
-            const storyCards = document.querySelectorAll('.story-card');
+            const storyCards = (window.DOMCache && window.DOMCache.storyCards) || document.querySelectorAll('.story-card');
             storyCards.forEach(card => {
                 const onclick = card.getAttribute('onclick');
                 if (onclick && onclick.includes(`openStory(${day})`)) {
@@ -2707,22 +2755,26 @@
             }, 3000);
         }
 
-        // Leaderboard tab switching
-        document.querySelectorAll('.leaderboard-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.leaderboard-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+        // Issue #22: Removed dead leaderboard tab switching code (tabs were removed)
 
-        // Close modals on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
+        // Close modals on overlay click - Issue #24: Use cached DOM refs when available
+        const modalOverlays = (window.DOMCache && window.DOMCache.modalOverlays) || document.querySelectorAll('.modal-overlay');
+        modalOverlays.forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.classList.remove('active');
                 }
             });
         });
+
+        // Issue #21: Export only necessary functions to window for HTML onclick handlers
+        window.showScreen = showScreen;
+        window.togglePrayer = togglePrayer;
+        window.closeModal = closeModal;
+        window.openStory = openStory;
+        window.closeVideoModal = closeVideoModal;
+
+        })(); // End IIFE
     </script>
 
     <!-- Mobile Bottom Navigation -->
@@ -2748,8 +2800,10 @@
     </nav>
 
     <script>
+        // Issue #24: Use cached DOM refs when available
         function updateMobileNav(element) {
-            document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
+            const mobileNavItems = (window.DOMCache && window.DOMCache.mobileNavItems) || document.querySelectorAll('.mobile-nav-item');
+            mobileNavItems.forEach(item => item.classList.remove('active'));
             element.classList.add('active');
         }
     </script>
@@ -2878,7 +2932,11 @@
             confettiContainer: null,
             storiesGrid: null,
             achievementsGrid: null,
-            calendarGrid: null
+            calendarGrid: null,
+            // Story and navigation elements (Issue #24)
+            storyCards: null,
+            modalOverlays: null,
+            mobileNavItems: null
         };
 
         // Initialize DOM cache after DOM is ready
@@ -2910,6 +2968,10 @@
             DOMCache.storiesGrid = document.getElementById('storiesGrid');
             DOMCache.achievementsGrid = document.getElementById('achievementsGrid');
             DOMCache.calendarGrid = document.getElementById('calendarGrid');
+            // Issue #24: Cache additional frequently accessed elements
+            DOMCache.storyCards = document.querySelectorAll('.story-card');
+            DOMCache.modalOverlays = document.querySelectorAll('.modal-overlay');
+            DOMCache.mobileNavItems = document.querySelectorAll('.mobile-nav-item');
         }
         window.DOMCache = DOMCache;
 
