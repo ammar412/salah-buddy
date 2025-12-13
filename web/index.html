@@ -636,7 +636,8 @@
             border-radius: 4px;
         }
 
-        .legend-dot.complete { background: linear-gradient(135deg, var(--green), var(--teal)); }
+        /* Issue #20: Use CSS variable instead of duplicate gradient definition */
+        .legend-dot.complete { background: var(--gradient-green); }
         .legend-dot.partial { background: var(--gold); }
         .legend-dot.today { border: 3px solid var(--coral); background: var(--white); }
 
@@ -928,6 +929,12 @@
             justify-content: center;
             font-size: 28px;
         }
+
+        /* Issue #20: Avatar gradient utility classes to avoid inline gradient duplication */
+        .lb-avatar.bg-gradient-purple { background: var(--gradient-purple); }
+        .lb-avatar.bg-gradient-coral { background: var(--gradient-coral); }
+        .lb-avatar.bg-gradient-green { background: var(--gradient-green); }
+        .lb-avatar.bg-gradient-gold { background: var(--gradient-gold-alt); }
 
         .lb-info {
             flex: 1;
@@ -1900,6 +1907,34 @@
     </style>
     <!-- Firebase SDK -->
     <script type="module">
+        /**
+         * Issue #21: Global Namespace Documentation
+         *
+         * This app uses the following intentional globals under window:
+         *
+         * NAMESPACES:
+         * - window.firebaseApp/Auth/Db/Modules: Firebase instances and utilities
+         * - window.AppState: Application state object
+         * - window.DOMCache: Cached DOM element references
+         * - window.firebaseModules: Firebase SDK functions
+         *
+         * FIREBASE:
+         * - window.firebaseApp: Firebase app instance
+         * - window.firebaseAuth: Firebase auth instance
+         * - window.firebaseDb: Firestore database instance
+         *
+         * UTILITIES:
+         * - window.escapeHtml: XSS prevention helper
+         *
+         * HTML EVENT HANDLERS (required for onclick attributes):
+         * - handleAuth, handleGuestMode, handleSignOut
+         * - downloadMyData, confirmDeleteAccount, deleteAccountPermanently
+         * - showScreen, updateMobileNav, togglePrayer, closeModal
+         * - openStory, closeVideoModal, completeTask
+         * - trackPrayer, trackStory, loadLeaderboard, updateDashboard
+         * - refreshStoryCards
+         */
+
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, orderBy, limit, getDocs, onSnapshot, serverTimestamp, increment, writeBatch, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -1911,7 +1946,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Make Firebase available globally
+        // Make Firebase available globally (under documented namespace)
         window.firebaseApp = app;
         window.firebaseAuth = auth;
         window.firebaseDb = db;
@@ -1938,7 +1973,7 @@
             writeBatch,
             arrayUnion
         };
-        // Auth modules for re-authentication (Issue #10 - account deletion)
+        // Auth modules for re-authentication (Issue #10 - account deletion security)
         window.firebaseAuthModules = {
             EmailAuthProvider,
             reauthenticateWithCredential
@@ -2230,7 +2265,7 @@
                         <div class="leaderboard-list">
                             <div class="leaderboard-item">
                                 <div class="lb-rank">4</div>
-                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--purple), var(--teal));">🌙</div>
+                                <div class="lb-avatar bg-gradient-purple">🌙</div>
                                 <div class="lb-info">
                                     <div class="lb-name">Omar</div>
                                     <div class="lb-streak">🔥 22 day streak</div>
@@ -2239,7 +2274,7 @@
                             </div>
                             <div class="leaderboard-item">
                                 <div class="lb-rank">5</div>
-                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--coral), var(--coral-light));">💫</div>
+                                <div class="lb-avatar bg-gradient-coral">💫</div>
                                 <div class="lb-info">
                                     <div class="lb-name">Maryam</div>
                                     <div class="lb-streak">🔥 20 day streak</div>
@@ -2248,7 +2283,7 @@
                             </div>
                             <div class="leaderboard-item">
                                 <div class="lb-rank">6</div>
-                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--green), var(--teal));">🌟</div>
+                                <div class="lb-avatar bg-gradient-green">🌟</div>
                                 <div class="lb-info">
                                     <div class="lb-name">Ibrahim</div>
                                     <div class="lb-streak">🔥 18 day streak</div>
@@ -2257,7 +2292,7 @@
                             </div>
                             <div class="leaderboard-item">
                                 <div class="lb-rank">7</div>
-                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--gold), var(--gold-light));">⭐</div>
+                                <div class="lb-avatar bg-gradient-gold">⭐</div>
                                 <div class="lb-info">
                                     <div class="lb-name">Zainab</div>
                                     <div class="lb-streak">🔥 15 day streak</div>
@@ -2391,38 +2426,57 @@
     </div>
 
     <script>
+        // Issue #21: Wrap in IIFE to prevent global namespace pollution
+        (function() {
+        'use strict';
+
         // Story data for 30 days
+        // Issue #20: Consolidated gradient definitions - 6 rotating gradients instead of 30 unique ones
+        const STORY_GRADIENTS = [
+            'linear-gradient(135deg, #667eea, #764ba2)',  // Purple/Violet
+            'linear-gradient(135deg, #4facfe, #00f2fe)',  // Cyan/Teal
+            'linear-gradient(135deg, #fa709a, #fee140)',  // Pink/Gold
+            'linear-gradient(135deg, #11998e, #38ef7d)',  // Teal/Green
+            'linear-gradient(135deg, #ffecd2, #fcb69f)',  // Peach/Coral
+            'linear-gradient(135deg, #a18cd1, #fbc2eb)',  // Lavender/Pink
+        ];
+
+        // Get gradient for a story day (rotates through 6 gradients)
+        function getStoryGradient(day) {
+            return STORY_GRADIENTS[(day - 1) % STORY_GRADIENTS.length];
+        }
+
         const stories = [
-            { day: 1, title: "What is Salah?", desc: "Introduction to the beautiful gift of prayer", emoji: "🕌", color: "linear-gradient(135deg, #667eea, #764ba2)" },
-            { day: 2, title: "Making Wudu", desc: "Learn how to prepare for prayer", emoji: "💧", color: "linear-gradient(135deg, #4facfe, #00f2fe)" },
-            { day: 3, title: "The 5 Daily Prayers", desc: "Meet Fajr, Dhuhr, Asr, Maghrib & Isha", emoji: "🌅", color: "linear-gradient(135deg, #fa709a, #fee140)" },
-            { day: 4, title: "Facing the Qibla", desc: "Why we face Makkah when we pray", emoji: "🧭", color: "linear-gradient(135deg, #a8edea, #fed6e3)" },
-            { day: 5, title: "Standing Before Allah", desc: "The meaning of Qiyam", emoji: "🧍", color: "linear-gradient(135deg, #d299c2, #fef9d7)" },
-            { day: 6, title: "Surah Al-Fatiha", desc: "The opening chapter we recite", emoji: "📖", color: "linear-gradient(135deg, #89f7fe, #66a6ff)" },
-            { day: 7, title: "Bowing in Ruku", desc: "Showing humility to Allah", emoji: "🙇", color: "linear-gradient(135deg, #a18cd1, #fbc2eb)" },
-            { day: 8, title: "Prostrating in Sujood", desc: "The closest to Allah", emoji: "🤲", color: "linear-gradient(135deg, #ffecd2, #fcb69f)" },
-            { day: 9, title: "Sitting & Tashahhud", desc: "Greeting the Prophet ﷺ", emoji: "✋", color: "linear-gradient(135deg, #ff9a9e, #fecfef)" },
-            { day: 10, title: "Ending with Salam", desc: "Peace to those around us", emoji: "☮️", color: "linear-gradient(135deg, #a1c4fd, #c2e9fb)" },
-            { day: 11, title: "Praying Together", desc: "The beauty of congregation", emoji: "👨‍👩‍👧‍👦", color: "linear-gradient(135deg, #f093fb, #f5576c)" },
-            { day: 12, title: "The Night Journey", desc: "How we got 5 daily prayers", emoji: "🌙", color: "linear-gradient(135deg, #667eea, #764ba2)" },
-            { day: 13, title: "Fajr - The Dawn Prayer", desc: "Starting the day with Allah", emoji: "🌅", color: "linear-gradient(135deg, #ff9a9e, #fad0c4)" },
-            { day: 14, title: "Dhuhr - The Noon Prayer", desc: "A midday break for Allah", emoji: "☀️", color: "linear-gradient(135deg, #ffecd2, #fcb69f)" },
-            { day: 15, title: "Asr - The Afternoon Prayer", desc: "Taking time before sunset", emoji: "🌤️", color: "linear-gradient(135deg, #fbc2eb, #a6c1ee)" },
-            { day: 16, title: "Maghrib - The Sunset Prayer", desc: "Thanking Allah as day ends", emoji: "🌇", color: "linear-gradient(135deg, #fa709a, #fee140)" },
-            { day: 17, title: "Isha - The Night Prayer", desc: "Ending the day peacefully", emoji: "🌙", color: "linear-gradient(135deg, #5f72bd, #9b23ea)" },
-            { day: 18, title: "The Mosque", desc: "Allah's house on Earth", emoji: "🕌", color: "linear-gradient(135deg, #11998e, #38ef7d)" },
-            { day: 19, title: "Friday Prayer", desc: "The special weekly gathering", emoji: "📿", color: "linear-gradient(135deg, #396afc, #2948ff)" },
-            { day: 20, title: "Praying at Home", desc: "Making any place special", emoji: "🏠", color: "linear-gradient(135deg, #ee9ca7, #ffdde1)" },
-            { day: 21, title: "The Prayer Mat", desc: "Your special place for Allah", emoji: "🧎", color: "linear-gradient(135deg, #c471f5, #fa71cd)" },
-            { day: 22, title: "Dua After Salah", desc: "Talking to Allah", emoji: "🤲", color: "linear-gradient(135deg, #48c6ef, #6f86d6)" },
-            { day: 23, title: "Helping Others Pray", desc: "Teaching younger siblings", emoji: "🤝", color: "linear-gradient(135deg, #f78ca0, #fe9a8b)" },
-            { day: 24, title: "When Prayer is Hard", desc: "Tips for staying focused", emoji: "💪", color: "linear-gradient(135deg, #a8caba, #5d4157)" },
-            { day: 25, title: "Prayers of the Prophets", desc: "Learning from the best", emoji: "⭐", color: "linear-gradient(135deg, #ffd89b, #19547b)" },
-            { day: 26, title: "Night of Power", desc: "The most special night", emoji: "✨", color: "linear-gradient(135deg, #0f0c29, #302b63)" },
-            { day: 27, title: "Taraweeh Prayers", desc: "Special Ramadan prayers", emoji: "🌟", color: "linear-gradient(135deg, #360033, #0b8793)" },
-            { day: 28, title: "Eid Prayer", desc: "Celebrating together", emoji: "🎉", color: "linear-gradient(135deg, #f5af19, #f12711)" },
-            { day: 29, title: "Prayer as a Gift", desc: "Why salah is special", emoji: "🎁", color: "linear-gradient(135deg, #c33764, #1d2671)" },
-            { day: 30, title: "Prayer Forever", desc: "Keeping salah in your heart", emoji: "❤️", color: "linear-gradient(135deg, #ed4264, #ffedbc)" }
+            { day: 1, title: "What is Salah?", desc: "Introduction to the beautiful gift of prayer", emoji: "🕌" },
+            { day: 2, title: "Making Wudu", desc: "Learn how to prepare for prayer", emoji: "💧" },
+            { day: 3, title: "The 5 Daily Prayers", desc: "Meet Fajr, Dhuhr, Asr, Maghrib & Isha", emoji: "🌅" },
+            { day: 4, title: "Facing the Qibla", desc: "Why we face Makkah when we pray", emoji: "🧭" },
+            { day: 5, title: "Standing Before Allah", desc: "The meaning of Qiyam", emoji: "🧍" },
+            { day: 6, title: "Surah Al-Fatiha", desc: "The opening chapter we recite", emoji: "📖" },
+            { day: 7, title: "Bowing in Ruku", desc: "Showing humility to Allah", emoji: "🙇" },
+            { day: 8, title: "Prostrating in Sujood", desc: "The closest to Allah", emoji: "🤲" },
+            { day: 9, title: "Sitting & Tashahhud", desc: "Greeting the Prophet ﷺ", emoji: "✋" },
+            { day: 10, title: "Ending with Salam", desc: "Peace to those around us", emoji: "☮️" },
+            { day: 11, title: "Praying Together", desc: "The beauty of congregation", emoji: "👨‍👩‍👧‍👦" },
+            { day: 12, title: "The Night Journey", desc: "How we got 5 daily prayers", emoji: "🌙" },
+            { day: 13, title: "Fajr - The Dawn Prayer", desc: "Starting the day with Allah", emoji: "🌅" },
+            { day: 14, title: "Dhuhr - The Noon Prayer", desc: "A midday break for Allah", emoji: "☀️" },
+            { day: 15, title: "Asr - The Afternoon Prayer", desc: "Taking time before sunset", emoji: "🌤️" },
+            { day: 16, title: "Maghrib - The Sunset Prayer", desc: "Thanking Allah as day ends", emoji: "🌇" },
+            { day: 17, title: "Isha - The Night Prayer", desc: "Ending the day peacefully", emoji: "🌙" },
+            { day: 18, title: "The Mosque", desc: "Allah's house on Earth", emoji: "🕌" },
+            { day: 19, title: "Friday Prayer", desc: "The special weekly gathering", emoji: "📿" },
+            { day: 20, title: "Praying at Home", desc: "Making any place special", emoji: "🏠" },
+            { day: 21, title: "The Prayer Mat", desc: "Your special place for Allah", emoji: "🧎" },
+            { day: 22, title: "Dua After Salah", desc: "Talking to Allah", emoji: "🤲" },
+            { day: 23, title: "Helping Others Pray", desc: "Teaching younger siblings", emoji: "🤝" },
+            { day: 24, title: "When Prayer is Hard", desc: "Tips for staying focused", emoji: "💪" },
+            { day: 25, title: "Prayers of the Prophets", desc: "Learning from the best", emoji: "⭐" },
+            { day: 26, title: "Night of Power", desc: "The most special night", emoji: "✨" },
+            { day: 27, title: "Taraweeh Prayers", desc: "Special Ramadan prayers", emoji: "🌟" },
+            { day: 28, title: "Eid Prayer", desc: "Celebrating together", emoji: "🎉" },
+            { day: 29, title: "Prayer as a Gift", desc: "Why salah is special", emoji: "🎁" },
+            { day: 30, title: "Prayer Forever", desc: "Keeping salah in your heart", emoji: "❤️" }
         ];
 
         // Calculate current day of Ramadan (2025 Ramadan starts March 1)
@@ -2476,7 +2530,7 @@
                 card.style.cursor = isLocked ? 'not-allowed' : 'pointer';
 
                 card.innerHTML = `
-                    <div class="story-card-thumbnail" style="background: ${story.color};">
+                    <div class="story-card-thumbnail" style="background: ${getStoryGradient(story.day)};">
                         <div class="story-card-day">Day ${story.day}</div>
                         ${story.emoji}
                         ${isWatched ? '<div class="story-card-check">✓</div>' : ''}
@@ -2495,7 +2549,18 @@
         generateStoryCards();
 
         // Re-generate story cards when AppState updates
-        window.refreshStoryCards = generateStoryCards;
+        // P2-4: Invalidate stale DOM cache when regenerating story cards
+        window.refreshStoryCards = function() {
+            // Invalidate cached storyCards since we're regenerating them
+            if (window.DOMCache) {
+                window.DOMCache.storyCards = null;
+            }
+            generateStoryCards();
+            // Re-cache after regeneration
+            if (window.DOMCache) {
+                window.DOMCache.storyCards = document.querySelectorAll('.story-card');
+            }
+        };
 
         // Define achievements
         const achievements = [
@@ -2586,11 +2651,13 @@
         generateAchievements();
         window.updateDashboard = updateDashboard;
 
-        // Screen navigation
+        // Screen navigation - Issue #24: Use cached DOM refs when available
         function showScreen(screenName) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const screens = (window.DOMCache && window.DOMCache.screens) || document.querySelectorAll('.screen');
+            const navItems = (window.DOMCache && window.DOMCache.navItems) || document.querySelectorAll('.nav-item');
+            screens.forEach(s => s.classList.remove('active'));
             document.getElementById(screenName + 'Screen').classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            navItems.forEach(n => n.classList.remove('active'));
             if (event && event.currentTarget) {
                 event.currentTarget.classList.add('active');
             }
@@ -2675,8 +2742,9 @@
             updateStoryCardUI(day);
         }
 
+        // Issue #24: Use cached DOM refs when available
         function updateStoryCardUI(day) {
-            const storyCards = document.querySelectorAll('.story-card');
+            const storyCards = (window.DOMCache && window.DOMCache.storyCards) || document.querySelectorAll('.story-card');
             storyCards.forEach(card => {
                 const onclick = card.getAttribute('onclick');
                 if (onclick && onclick.includes(`openStory(${day})`)) {
@@ -2712,22 +2780,29 @@
             }, 3000);
         }
 
-        // Leaderboard tab switching
-        document.querySelectorAll('.leaderboard-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.leaderboard-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+        // Issue #22: Removed dead leaderboard tab switching code (tabs were removed)
 
-        // Close modals on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
+        // Close modals on overlay click - Issue #24: Use cached DOM refs when available
+        const modalOverlays = (window.DOMCache && window.DOMCache.modalOverlays) || document.querySelectorAll('.modal-overlay');
+        modalOverlays.forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.classList.remove('active');
                 }
             });
         });
+
+        // Issue #21: Export only necessary functions to window for HTML onclick handlers
+        // TODO: Future work - migrate inline onclick handlers to addEventListener for CSP compliance
+        // This would allow removal of 'unsafe-inline' from script-src CSP directive
+        // See: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+        window.showScreen = showScreen;
+        window.togglePrayer = togglePrayer;
+        window.closeModal = closeModal;
+        window.openStory = openStory;
+        window.closeVideoModal = closeVideoModal;
+
+        })(); // End IIFE
     </script>
 
     <!-- Mobile Bottom Navigation -->
@@ -2753,8 +2828,10 @@
     </nav>
 
     <script>
+        // Issue #24: Use cached DOM refs when available
         function updateMobileNav(element) {
-            document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
+            const mobileNavItems = (window.DOMCache && window.DOMCache.mobileNavItems) || document.querySelectorAll('.mobile-nav-item');
+            mobileNavItems.forEach(item => item.classList.remove('active'));
             element.classList.add('active');
         }
     </script>
@@ -2883,7 +2960,11 @@
             confettiContainer: null,
             storiesGrid: null,
             achievementsGrid: null,
-            calendarGrid: null
+            calendarGrid: null,
+            // Story and navigation elements (Issue #24)
+            storyCards: null,
+            modalOverlays: null,
+            mobileNavItems: null
         };
 
         // Initialize DOM cache after DOM is ready
@@ -2915,6 +2996,10 @@
             DOMCache.storiesGrid = document.getElementById('storiesGrid');
             DOMCache.achievementsGrid = document.getElementById('achievementsGrid');
             DOMCache.calendarGrid = document.getElementById('calendarGrid');
+            // Issue #24: Cache additional frequently accessed elements
+            DOMCache.storyCards = document.querySelectorAll('.story-card');
+            DOMCache.modalOverlays = document.querySelectorAll('.modal-overlay');
+            DOMCache.mobileNavItems = document.querySelectorAll('.mobile-nav-item');
         }
         window.DOMCache = DOMCache;
 
@@ -3201,7 +3286,8 @@
         };
 
         // COPPA Compliance: Download user data (Issue #10)
-        // Fixed: Now includes stats, consent records, and all user data
+        // P2-2: Parallelized queries with Promise.all() for better performance
+        // P2-3: Added stats, storyProgress, and consent metadata for complete export
         window.downloadMyData = async function() {
             if (!AppState.user) {
                 showToast('Please sign in to download your data', 'error');
@@ -3209,50 +3295,72 @@
             }
 
             try {
-                const { collection, getDocs, doc, getDoc } = window.firebaseModules;
+                const { collection, getDocs, doc, getDoc, query, where } = window.firebaseModules;
                 const uid = AppState.user.uid;
 
-                // Gather all user data
+                // Gather all user data - run queries in parallel for performance
+                const [
+                    prayersSnapshot,
+                    completionsSnapshot,
+                    progressDoc,
+                    statsDoc,
+                    storyProgressSnapshot,
+                    topLevelPrayersSnapshot
+                ] = await Promise.all([
+                    getDocs(collection(window.firebaseDb, 'users', uid, 'prayers')),
+                    getDocs(collection(window.firebaseDb, 'users', uid, 'taskCompletions')),
+                    getDoc(doc(window.firebaseDb, 'users', uid, 'progress', 'stories')),
+                    getDoc(doc(window.firebaseDb, 'stats', uid)),
+                    getDocs(query(collection(window.firebaseDb, 'storyProgress'), where('userId', '==', uid))),
+                    getDocs(query(collection(window.firebaseDb, 'prayers'), where('userId', '==', uid)))
+                ]);
+
                 const userData = {
                     exportDate: new Date().toISOString(),
+                    exportVersion: '1.0',
                     profile: {
                         ...AppState.profile,
-                        // Explicitly include consent records for COPPA compliance
-                        consent: {
-                            parentalConsentGiven: AppState.profile?.parentalConsentGiven || false,
-                            parentalConsentDate: AppState.profile?.parentalConsentDate || null,
-                            privacyPolicyVersion: AppState.profile?.privacyPolicyVersion || null
-                        }
+                        // Include COPPA consent metadata
+                        parentalConsentGiven: AppState.profile?.parentalConsentGiven || false,
+                        parentalConsentDate: AppState.profile?.parentalConsentDate?.toDate?.()?.toISOString() || null,
+                        privacyPolicyVersion: AppState.profile?.privacyPolicyVersion || null
                     },
-                    stats: null,
                     prayers: [],
                     taskCompletions: [],
-                    progress: {}
+                    progress: {},
+                    stats: null,
+                    storyProgress: []
                 };
 
-                // Get stats
-                const statsDoc = await getDoc(doc(window.firebaseDb, 'stats', uid));
-                if (statsDoc.exists()) {
-                    userData.stats = statsDoc.data();
-                }
-
-                // Get prayers
-                const prayersSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'prayers'));
+                // Process prayers subcollection
                 prayersSnapshot.forEach(docSnap => {
                     userData.prayers.push({ date: docSnap.id, ...docSnap.data() });
                 });
 
-                // Get task completions
-                const completionsSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'taskCompletions'));
+                // Process top-level prayer records
+                topLevelPrayersSnapshot.forEach(docSnap => {
+                    userData.prayers.push({ id: docSnap.id, source: 'top-level', ...docSnap.data() });
+                });
+
+                // Process task completions
                 completionsSnapshot.forEach(docSnap => {
                     userData.taskCompletions.push({ id: docSnap.id, ...docSnap.data() });
                 });
 
-                // Get progress
-                const progressDoc = await getDoc(doc(window.firebaseDb, 'users', uid, 'progress', 'stories'));
+                // Process progress
                 if (progressDoc.exists()) {
                     userData.progress.stories = progressDoc.data();
                 }
+
+                // Process stats
+                if (statsDoc.exists()) {
+                    userData.stats = statsDoc.data();
+                }
+
+                // Process story progress (top-level)
+                storyProgressSnapshot.forEach(docSnap => {
+                    userData.storyProgress.push({ id: docSnap.id, ...docSnap.data() });
+                });
 
                 // Download as JSON
                 const dataStr = JSON.stringify(userData, null, 2);
@@ -3303,7 +3411,9 @@
         };
 
         // COPPA Compliance: Delete account and all data (Issue #10)
-        // Fixed: Added re-authentication, complete data deletion, better error handling
+        // P1-2: Fixed batch limit (>500 docs) with chunked deletions
+        // P1-3: Fixed incomplete deletion by including all user data collections
+        // Fixed: Added re-authentication for security (prevents stale session attacks)
         async function deleteAccount() {
             if (!AppState.user) return;
 
@@ -3329,37 +3439,59 @@
                 }
 
                 // Step 2: Delete all user data from Firestore
-                const batch = writeBatch(window.firebaseDb);
+                const BATCH_SIZE = 450; // Firestore limit is 500, leave margin for safety
 
-                // Delete prayers subcollection
+                // Helper function to delete documents in batches
+                async function deleteInBatches(docsToDelete) {
+                    for (let i = 0; i < docsToDelete.length; i += BATCH_SIZE) {
+                        const batch = writeBatch(window.firebaseDb);
+                        const chunk = docsToDelete.slice(i, i + BATCH_SIZE);
+                        chunk.forEach(docRef => batch.delete(docRef));
+                        await batch.commit();
+                    }
+                }
+
+                // Collect all documents to delete
+                const docsToDelete = [];
+
+                // 1. Delete prayers subcollection
                 const prayersSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'prayers'));
-                prayersSnapshot.forEach(docSnapshot => {
-                    batch.delete(docSnapshot.ref);
-                });
+                prayersSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
 
-                // Delete task completions subcollection
+                // 2. Delete task completions subcollection
                 const completionsSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'taskCompletions'));
-                completionsSnapshot.forEach(docSnapshot => {
-                    batch.delete(docSnapshot.ref);
-                });
+                completionsSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
 
-                // Delete progress subcollection
+                // 3. Delete progress subcollection
                 const progressSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'progress'));
-                progressSnapshot.forEach(docSnapshot => {
-                    batch.delete(docSnapshot.ref);
-                });
+                progressSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
 
-                // Delete stats document (if exists)
-                const statsDoc = doc(window.firebaseDb, 'stats', uid);
-                batch.delete(statsDoc);
+                // 4. Delete stats document (top-level collection)
+                docsToDelete.push(doc(window.firebaseDb, 'stats', uid));
 
-                // Commit subcollection and stats deletions
-                await batch.commit();
+                // 5. Delete story progress documents (top-level, userId prefix pattern)
+                // Note: These are stored as {userId}_{storyDay}
+                const storyProgressSnapshot = await getDocs(
+                    query(collection(window.firebaseDb, 'storyProgress'), where('userId', '==', uid))
+                );
+                storyProgressSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
 
-                // Delete the main user document
+                // 6. Delete prayer records (top-level, userId prefix pattern)
+                // Note: These are stored as {userId}_{date}
+                const prayerRecordsSnapshot = await getDocs(
+                    query(collection(window.firebaseDb, 'prayers'), where('userId', '==', uid))
+                );
+                prayerRecordsSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
+
+                // Delete all collected documents in batches
+                if (docsToDelete.length > 0) {
+                    await deleteInBatches(docsToDelete);
+                }
+
+                // Delete the main user document (after subcollections)
                 await deleteDoc(doc(window.firebaseDb, 'users', uid));
 
-                // Step 3: Delete the Firebase Auth user (must be last)
+                // Delete the Firebase Auth user
                 await AppState.user.delete();
 
                 // Clear local state
