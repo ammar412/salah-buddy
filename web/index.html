@@ -1913,7 +1913,7 @@
          * This app uses the following intentional globals under window:
          *
          * NAMESPACES:
-         * - window.SalahBuddy: Main application namespace (API functions)
+         * - window.firebaseApp/Auth/Db/Modules: Firebase instances and utilities
          * - window.AppState: Application state object
          * - window.DOMCache: Cached DOM element references
          * - window.firebaseModules: Firebase SDK functions
@@ -1934,12 +1934,6 @@
          * - trackPrayer, trackStory, loadLeaderboard, updateDashboard
          * - refreshStoryCards
          */
-
-        // Issue #21: Initialize main application namespace
-        window.SalahBuddy = window.SalahBuddy || {
-            version: '1.0.0',
-            initialized: false
-        };
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -2535,7 +2529,18 @@
         generateStoryCards();
 
         // Re-generate story cards when AppState updates
-        window.refreshStoryCards = generateStoryCards;
+        // P2-4: Invalidate stale DOM cache when regenerating story cards
+        window.refreshStoryCards = function() {
+            // Invalidate cached storyCards since we're regenerating them
+            if (window.DOMCache) {
+                window.DOMCache.storyCards = null;
+            }
+            generateStoryCards();
+            // Re-cache after regeneration
+            if (window.DOMCache) {
+                window.DOMCache.storyCards = document.querySelectorAll('.story-card');
+            }
+        };
 
         // Define achievements
         const achievements = [
@@ -2768,6 +2773,9 @@
         });
 
         // Issue #21: Export only necessary functions to window for HTML onclick handlers
+        // TODO: Future work - migrate inline onclick handlers to addEventListener for CSP compliance
+        // This would allow removal of 'unsafe-inline' from script-src CSP directive
+        // See: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
         window.showScreen = showScreen;
         window.togglePrayer = togglePrayer;
         window.closeModal = closeModal;
@@ -3258,6 +3266,8 @@
         };
 
         // COPPA Compliance: Download user data (Issue #10)
+        // P2-2: Parallelized queries with Promise.all() for better performance
+        // P2-3: Added stats, storyProgress, and consent metadata for complete export
         window.downloadMyData = async function() {
             if (!AppState.user) {
                 showToast('Please sign in to download your data', 'error');
@@ -3265,35 +3275,72 @@
             }
 
             try {
-                const { collection, getDocs, doc, getDoc } = window.firebaseModules;
+                const { collection, getDocs, doc, getDoc, query, where } = window.firebaseModules;
                 const uid = AppState.user.uid;
 
-                // Gather all user data
+                // Gather all user data - run queries in parallel for performance
+                const [
+                    prayersSnapshot,
+                    completionsSnapshot,
+                    progressDoc,
+                    statsDoc,
+                    storyProgressSnapshot,
+                    topLevelPrayersSnapshot
+                ] = await Promise.all([
+                    getDocs(collection(window.firebaseDb, 'users', uid, 'prayers')),
+                    getDocs(collection(window.firebaseDb, 'users', uid, 'taskCompletions')),
+                    getDoc(doc(window.firebaseDb, 'users', uid, 'progress', 'stories')),
+                    getDoc(doc(window.firebaseDb, 'stats', uid)),
+                    getDocs(query(collection(window.firebaseDb, 'storyProgress'), where('userId', '==', uid))),
+                    getDocs(query(collection(window.firebaseDb, 'prayers'), where('userId', '==', uid)))
+                ]);
+
                 const userData = {
                     exportDate: new Date().toISOString(),
-                    profile: AppState.profile,
+                    exportVersion: '1.0',
+                    profile: {
+                        ...AppState.profile,
+                        // Include COPPA consent metadata
+                        parentalConsentGiven: AppState.profile?.parentalConsentGiven || false,
+                        parentalConsentDate: AppState.profile?.parentalConsentDate?.toDate?.()?.toISOString() || null,
+                        privacyPolicyVersion: AppState.profile?.privacyPolicyVersion || null
+                    },
                     prayers: [],
                     taskCompletions: [],
-                    progress: {}
+                    progress: {},
+                    stats: null,
+                    storyProgress: []
                 };
 
-                // Get prayers
-                const prayersSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'prayers'));
-                prayersSnapshot.forEach(doc => {
-                    userData.prayers.push({ date: doc.id, ...doc.data() });
+                // Process prayers subcollection
+                prayersSnapshot.forEach(docSnap => {
+                    userData.prayers.push({ date: docSnap.id, ...docSnap.data() });
                 });
 
-                // Get task completions
-                const completionsSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'taskCompletions'));
-                completionsSnapshot.forEach(doc => {
-                    userData.taskCompletions.push({ id: doc.id, ...doc.data() });
+                // Process top-level prayer records
+                topLevelPrayersSnapshot.forEach(docSnap => {
+                    userData.prayers.push({ id: docSnap.id, source: 'top-level', ...docSnap.data() });
                 });
 
-                // Get progress
-                const progressDoc = await getDoc(doc(window.firebaseDb, 'users', uid, 'progress', 'stories'));
+                // Process task completions
+                completionsSnapshot.forEach(docSnap => {
+                    userData.taskCompletions.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                // Process progress
                 if (progressDoc.exists()) {
                     userData.progress.stories = progressDoc.data();
                 }
+
+                // Process stats
+                if (statsDoc.exists()) {
+                    userData.stats = statsDoc.data();
+                }
+
+                // Process story progress (top-level)
+                storyProgressSnapshot.forEach(docSnap => {
+                    userData.storyProgress.push({ id: docSnap.id, ...docSnap.data() });
+                });
 
                 // Download as JSON
                 const dataStr = JSON.stringify(userData, null, 2);
@@ -3344,36 +3391,64 @@
         };
 
         // COPPA Compliance: Delete account and all data (Issue #10)
+        // P1-2: Fixed batch limit (>500 docs) with chunked deletions
+        // P1-3: Fixed incomplete deletion by including all user data collections
         async function deleteAccount() {
             if (!AppState.user) return;
 
             try {
-                const { collection, getDocs, doc, deleteDoc, writeBatch } = window.firebaseModules;
+                const { collection, getDocs, doc, deleteDoc, writeBatch, query, where } = window.firebaseModules;
                 const uid = AppState.user.uid;
-                const batch = writeBatch(window.firebaseDb);
+                const BATCH_SIZE = 450; // Firestore limit is 500, leave margin for safety
 
-                // Delete prayers subcollection
+                // Helper function to delete documents in batches
+                async function deleteInBatches(docsToDelete) {
+                    for (let i = 0; i < docsToDelete.length; i += BATCH_SIZE) {
+                        const batch = writeBatch(window.firebaseDb);
+                        const chunk = docsToDelete.slice(i, i + BATCH_SIZE);
+                        chunk.forEach(docRef => batch.delete(docRef));
+                        await batch.commit();
+                    }
+                }
+
+                // Collect all documents to delete
+                const docsToDelete = [];
+
+                // 1. Delete prayers subcollection
                 const prayersSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'prayers'));
-                prayersSnapshot.forEach(docSnapshot => {
-                    batch.delete(docSnapshot.ref);
-                });
+                prayersSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
 
-                // Delete task completions subcollection
+                // 2. Delete task completions subcollection
                 const completionsSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'taskCompletions'));
-                completionsSnapshot.forEach(docSnapshot => {
-                    batch.delete(docSnapshot.ref);
-                });
+                completionsSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
 
-                // Delete progress subcollection
+                // 3. Delete progress subcollection
                 const progressSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'progress'));
-                progressSnapshot.forEach(docSnapshot => {
-                    batch.delete(docSnapshot.ref);
-                });
+                progressSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
 
-                // Commit subcollection deletions
-                await batch.commit();
+                // 4. Delete stats document (top-level collection)
+                docsToDelete.push(doc(window.firebaseDb, 'stats', uid));
 
-                // Delete the main user document
+                // 5. Delete story progress documents (top-level, userId prefix pattern)
+                // Note: These are stored as {userId}_{storyDay}
+                const storyProgressSnapshot = await getDocs(
+                    query(collection(window.firebaseDb, 'storyProgress'), where('userId', '==', uid))
+                );
+                storyProgressSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
+
+                // 6. Delete prayer records (top-level, userId prefix pattern)
+                // Note: These are stored as {userId}_{date}
+                const prayerRecordsSnapshot = await getDocs(
+                    query(collection(window.firebaseDb, 'prayers'), where('userId', '==', uid))
+                );
+                prayerRecordsSnapshot.forEach(docSnapshot => docsToDelete.push(docSnapshot.ref));
+
+                // Delete all collected documents in batches
+                if (docsToDelete.length > 0) {
+                    await deleteInBatches(docsToDelete);
+                }
+
+                // Delete the main user document (after subcollections)
                 await deleteDoc(doc(window.firebaseDb, 'users', uid));
 
                 // Delete the Firebase Auth user
