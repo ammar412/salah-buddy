@@ -2426,37 +2426,52 @@
         'use strict';
 
         // Story data for 30 days
+        // Issue #20: Consolidated gradient definitions - 6 rotating gradients instead of 30 unique ones
+        const STORY_GRADIENTS = [
+            'linear-gradient(135deg, #667eea, #764ba2)',  // Purple/Violet
+            'linear-gradient(135deg, #4facfe, #00f2fe)',  // Cyan/Teal
+            'linear-gradient(135deg, #fa709a, #fee140)',  // Pink/Gold
+            'linear-gradient(135deg, #11998e, #38ef7d)',  // Teal/Green
+            'linear-gradient(135deg, #ffecd2, #fcb69f)',  // Peach/Coral
+            'linear-gradient(135deg, #a18cd1, #fbc2eb)',  // Lavender/Pink
+        ];
+
+        // Get gradient for a story day (rotates through 6 gradients)
+        function getStoryGradient(day) {
+            return STORY_GRADIENTS[(day - 1) % STORY_GRADIENTS.length];
+        }
+
         const stories = [
-            { day: 1, title: "What is Salah?", desc: "Introduction to the beautiful gift of prayer", emoji: "🕌", color: "linear-gradient(135deg, #667eea, #764ba2)" },
-            { day: 2, title: "Making Wudu", desc: "Learn how to prepare for prayer", emoji: "💧", color: "linear-gradient(135deg, #4facfe, #00f2fe)" },
-            { day: 3, title: "The 5 Daily Prayers", desc: "Meet Fajr, Dhuhr, Asr, Maghrib & Isha", emoji: "🌅", color: "linear-gradient(135deg, #fa709a, #fee140)" },
-            { day: 4, title: "Facing the Qibla", desc: "Why we face Makkah when we pray", emoji: "🧭", color: "linear-gradient(135deg, #a8edea, #fed6e3)" },
-            { day: 5, title: "Standing Before Allah", desc: "The meaning of Qiyam", emoji: "🧍", color: "linear-gradient(135deg, #d299c2, #fef9d7)" },
-            { day: 6, title: "Surah Al-Fatiha", desc: "The opening chapter we recite", emoji: "📖", color: "linear-gradient(135deg, #89f7fe, #66a6ff)" },
-            { day: 7, title: "Bowing in Ruku", desc: "Showing humility to Allah", emoji: "🙇", color: "linear-gradient(135deg, #a18cd1, #fbc2eb)" },
-            { day: 8, title: "Prostrating in Sujood", desc: "The closest to Allah", emoji: "🤲", color: "linear-gradient(135deg, #ffecd2, #fcb69f)" },
-            { day: 9, title: "Sitting & Tashahhud", desc: "Greeting the Prophet ﷺ", emoji: "✋", color: "linear-gradient(135deg, #ff9a9e, #fecfef)" },
-            { day: 10, title: "Ending with Salam", desc: "Peace to those around us", emoji: "☮️", color: "linear-gradient(135deg, #a1c4fd, #c2e9fb)" },
-            { day: 11, title: "Praying Together", desc: "The beauty of congregation", emoji: "👨‍👩‍👧‍👦", color: "linear-gradient(135deg, #f093fb, #f5576c)" },
-            { day: 12, title: "The Night Journey", desc: "How we got 5 daily prayers", emoji: "🌙", color: "linear-gradient(135deg, #667eea, #764ba2)" },
-            { day: 13, title: "Fajr - The Dawn Prayer", desc: "Starting the day with Allah", emoji: "🌅", color: "linear-gradient(135deg, #ff9a9e, #fad0c4)" },
-            { day: 14, title: "Dhuhr - The Noon Prayer", desc: "A midday break for Allah", emoji: "☀️", color: "linear-gradient(135deg, #ffecd2, #fcb69f)" },
-            { day: 15, title: "Asr - The Afternoon Prayer", desc: "Taking time before sunset", emoji: "🌤️", color: "linear-gradient(135deg, #fbc2eb, #a6c1ee)" },
-            { day: 16, title: "Maghrib - The Sunset Prayer", desc: "Thanking Allah as day ends", emoji: "🌇", color: "linear-gradient(135deg, #fa709a, #fee140)" },
-            { day: 17, title: "Isha - The Night Prayer", desc: "Ending the day peacefully", emoji: "🌙", color: "linear-gradient(135deg, #5f72bd, #9b23ea)" },
-            { day: 18, title: "The Mosque", desc: "Allah's house on Earth", emoji: "🕌", color: "linear-gradient(135deg, #11998e, #38ef7d)" },
-            { day: 19, title: "Friday Prayer", desc: "The special weekly gathering", emoji: "📿", color: "linear-gradient(135deg, #396afc, #2948ff)" },
-            { day: 20, title: "Praying at Home", desc: "Making any place special", emoji: "🏠", color: "linear-gradient(135deg, #ee9ca7, #ffdde1)" },
-            { day: 21, title: "The Prayer Mat", desc: "Your special place for Allah", emoji: "🧎", color: "linear-gradient(135deg, #c471f5, #fa71cd)" },
-            { day: 22, title: "Dua After Salah", desc: "Talking to Allah", emoji: "🤲", color: "linear-gradient(135deg, #48c6ef, #6f86d6)" },
-            { day: 23, title: "Helping Others Pray", desc: "Teaching younger siblings", emoji: "🤝", color: "linear-gradient(135deg, #f78ca0, #fe9a8b)" },
-            { day: 24, title: "When Prayer is Hard", desc: "Tips for staying focused", emoji: "💪", color: "linear-gradient(135deg, #a8caba, #5d4157)" },
-            { day: 25, title: "Prayers of the Prophets", desc: "Learning from the best", emoji: "⭐", color: "linear-gradient(135deg, #ffd89b, #19547b)" },
-            { day: 26, title: "Night of Power", desc: "The most special night", emoji: "✨", color: "linear-gradient(135deg, #0f0c29, #302b63)" },
-            { day: 27, title: "Taraweeh Prayers", desc: "Special Ramadan prayers", emoji: "🌟", color: "linear-gradient(135deg, #360033, #0b8793)" },
-            { day: 28, title: "Eid Prayer", desc: "Celebrating together", emoji: "🎉", color: "linear-gradient(135deg, #f5af19, #f12711)" },
-            { day: 29, title: "Prayer as a Gift", desc: "Why salah is special", emoji: "🎁", color: "linear-gradient(135deg, #c33764, #1d2671)" },
-            { day: 30, title: "Prayer Forever", desc: "Keeping salah in your heart", emoji: "❤️", color: "linear-gradient(135deg, #ed4264, #ffedbc)" }
+            { day: 1, title: "What is Salah?", desc: "Introduction to the beautiful gift of prayer", emoji: "🕌" },
+            { day: 2, title: "Making Wudu", desc: "Learn how to prepare for prayer", emoji: "💧" },
+            { day: 3, title: "The 5 Daily Prayers", desc: "Meet Fajr, Dhuhr, Asr, Maghrib & Isha", emoji: "🌅" },
+            { day: 4, title: "Facing the Qibla", desc: "Why we face Makkah when we pray", emoji: "🧭" },
+            { day: 5, title: "Standing Before Allah", desc: "The meaning of Qiyam", emoji: "🧍" },
+            { day: 6, title: "Surah Al-Fatiha", desc: "The opening chapter we recite", emoji: "📖" },
+            { day: 7, title: "Bowing in Ruku", desc: "Showing humility to Allah", emoji: "🙇" },
+            { day: 8, title: "Prostrating in Sujood", desc: "The closest to Allah", emoji: "🤲" },
+            { day: 9, title: "Sitting & Tashahhud", desc: "Greeting the Prophet ﷺ", emoji: "✋" },
+            { day: 10, title: "Ending with Salam", desc: "Peace to those around us", emoji: "☮️" },
+            { day: 11, title: "Praying Together", desc: "The beauty of congregation", emoji: "👨‍👩‍👧‍👦" },
+            { day: 12, title: "The Night Journey", desc: "How we got 5 daily prayers", emoji: "🌙" },
+            { day: 13, title: "Fajr - The Dawn Prayer", desc: "Starting the day with Allah", emoji: "🌅" },
+            { day: 14, title: "Dhuhr - The Noon Prayer", desc: "A midday break for Allah", emoji: "☀️" },
+            { day: 15, title: "Asr - The Afternoon Prayer", desc: "Taking time before sunset", emoji: "🌤️" },
+            { day: 16, title: "Maghrib - The Sunset Prayer", desc: "Thanking Allah as day ends", emoji: "🌇" },
+            { day: 17, title: "Isha - The Night Prayer", desc: "Ending the day peacefully", emoji: "🌙" },
+            { day: 18, title: "The Mosque", desc: "Allah's house on Earth", emoji: "🕌" },
+            { day: 19, title: "Friday Prayer", desc: "The special weekly gathering", emoji: "📿" },
+            { day: 20, title: "Praying at Home", desc: "Making any place special", emoji: "🏠" },
+            { day: 21, title: "The Prayer Mat", desc: "Your special place for Allah", emoji: "🧎" },
+            { day: 22, title: "Dua After Salah", desc: "Talking to Allah", emoji: "🤲" },
+            { day: 23, title: "Helping Others Pray", desc: "Teaching younger siblings", emoji: "🤝" },
+            { day: 24, title: "When Prayer is Hard", desc: "Tips for staying focused", emoji: "💪" },
+            { day: 25, title: "Prayers of the Prophets", desc: "Learning from the best", emoji: "⭐" },
+            { day: 26, title: "Night of Power", desc: "The most special night", emoji: "✨" },
+            { day: 27, title: "Taraweeh Prayers", desc: "Special Ramadan prayers", emoji: "🌟" },
+            { day: 28, title: "Eid Prayer", desc: "Celebrating together", emoji: "🎉" },
+            { day: 29, title: "Prayer as a Gift", desc: "Why salah is special", emoji: "🎁" },
+            { day: 30, title: "Prayer Forever", desc: "Keeping salah in your heart", emoji: "❤️" }
         ];
 
         // Calculate current day of Ramadan (2025 Ramadan starts March 1)
@@ -2510,7 +2525,7 @@
                 card.style.cursor = isLocked ? 'not-allowed' : 'pointer';
 
                 card.innerHTML = `
-                    <div class="story-card-thumbnail" style="background: ${story.color};">
+                    <div class="story-card-thumbnail" style="background: ${getStoryGradient(story.day)};">
                         <div class="story-card-day">Day ${story.day}</div>
                         ${story.emoji}
                         ${isWatched ? '<div class="story-card-check">✓</div>' : ''}
