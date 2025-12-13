@@ -1903,16 +1903,8 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, orderBy, limit, getDocs, onSnapshot, serverTimestamp, increment, writeBatch } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD95yMLj73ZzVAagG1SZZsloZf2efs90Bg",
-            authDomain: "salah-buddy-b3ac8.firebaseapp.com",
-            projectId: "salah-buddy-b3ac8",
-            storageBucket: "salah-buddy-b3ac8.firebasestorage.app",
-            messagingSenderId: "675921169506",
-            appId: "1:675921169506:web:be4ee90b41e8251b8c153b"
-        };
+        // P2-1: Import shared Firebase configuration
+        import { firebaseConfig } from '/js/firebase-config.js';
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -2745,6 +2737,15 @@
         };
         window.AppState = AppState;
 
+        // P1-3: HTML sanitization helper to prevent XSS attacks
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(str);
+            return div.innerHTML;
+        }
+        window.escapeHtml = escapeHtml;
+
         // DOM Element Cache - cache frequently accessed elements to avoid repeated DOM queries
         const DOMCache = {
             // Modals
@@ -3196,17 +3197,23 @@
 
             container.innerHTML = tasks.map(task => {
                 const isCompleted = completedIds.includes(task.id);
+                // P1-3: Sanitize user-controlled content to prevent XSS
+                const safeTitle = escapeHtml(task.title);
+                const safeDesc = escapeHtml(task.description || '');
+                const safeEmoji = escapeHtml(task.emoji || '⭐');
+                const safeId = escapeHtml(task.id);
+                const safeReward = parseInt(task.starsReward, 10) || 0;
                 return `
                     <div class="bonus-task-item ${isCompleted ? 'completed' : ''}"
-                         onclick="${isCompleted ? '' : `completeTask('${task.id}')`}">
-                        <div class="bonus-task-emoji">${task.emoji || '⭐'}</div>
+                         onclick="${isCompleted ? '' : `completeTask('${safeId}')`}">
+                        <div class="bonus-task-emoji">${safeEmoji}</div>
                         <div class="bonus-task-content">
-                            <div class="bonus-task-name">${task.title}</div>
-                            <div class="bonus-task-desc">${task.description || ''}</div>
+                            <div class="bonus-task-name">${safeTitle}</div>
+                            <div class="bonus-task-desc">${safeDesc}</div>
                         </div>
                         <div class="bonus-task-reward">
                             <span>⭐</span>
-                            <span>${task.starsReward}</span>
+                            <span>${safeReward}</span>
                         </div>
                         <div class="bonus-task-check">${isCompleted ? '✓' : ''}</div>
                     </div>
@@ -3214,7 +3221,7 @@
             }).join('');
         }
 
-        // Complete a bonus task
+        // Complete a bonus task (with idempotency check and atomic batch write)
         window.completeTask = async function(taskId) {
             if (!AppState.user || AppState.completedTaskIds.includes(taskId)) {
                 return;
@@ -3223,13 +3230,30 @@
             const task = AppState.bonusTasks.find(t => t.id === taskId);
             if (!task) return;
 
-            const { doc, setDoc, updateDoc, increment, serverTimestamp } = window.firebaseModules;
+            const { doc, getDoc, writeBatch, increment, serverTimestamp } = window.firebaseModules;
             const today = new Date().toISOString().split('T')[0];
             const completionId = `${taskId}_${today}`;
+            const completionRef = doc(window.firebaseDb, 'users', AppState.user.uid, 'taskCompletions', completionId);
+            const userRef = doc(window.firebaseDb, 'users', AppState.user.uid);
 
             try {
-                // Save completion record
-                await setDoc(doc(window.firebaseDb, 'users', AppState.user.uid, 'taskCompletions', completionId), {
+                // P1-4: Idempotency check - verify task not already completed
+                const existingCompletion = await getDoc(completionRef);
+                if (existingCompletion.exists()) {
+                    // Task already completed - update local state to match and return
+                    if (!AppState.completedTaskIds.includes(taskId)) {
+                        AppState.completedTaskIds.push(taskId);
+                        renderBonusTasks();
+                    }
+                    showToast('Task already completed today!', 'info');
+                    return;
+                }
+
+                // P1-1: Use batch write for atomic operation
+                const batch = writeBatch(window.firebaseDb);
+
+                // Add completion record
+                batch.set(completionRef, {
                     taskId: taskId,
                     userId: AppState.user.uid,
                     completedDate: today,
@@ -3238,11 +3262,13 @@
                     completedAt: serverTimestamp()
                 });
 
-                // Update user's star count
-                const userRef = doc(window.firebaseDb, 'users', AppState.user.uid);
-                await updateDoc(userRef, {
+                // Update user's star count atomically
+                batch.update(userRef, {
                     stars: increment(task.starsReward)
                 });
+
+                // Commit both operations atomically
+                await batch.commit();
 
                 // Update local state
                 AppState.completedTaskIds.push(taskId);

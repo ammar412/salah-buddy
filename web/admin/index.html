@@ -1092,16 +1092,8 @@
             getDocs,
             serverTimestamp
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD95yMLj73ZzVAagG1SZZsloZf2efs90Bg",
-            authDomain: "salah-buddy-b3ac8.firebaseapp.com",
-            projectId: "salah-buddy-b3ac8",
-            storageBucket: "salah-buddy-b3ac8.firebasestorage.app",
-            messagingSenderId: "675921169506",
-            appId: "1:675921169506:web:be4ee90b41e8251b8c153b"
-        };
+        // P2-1: Import shared Firebase configuration
+        import { firebaseConfig } from '/js/firebase-config.js';
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -1114,6 +1106,39 @@
         let selectedTaskDay = 1;
         let stories = {};
         let tasks = {};
+
+        // P1-3: HTML sanitization helper to prevent XSS attacks
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(str);
+            return div.innerHTML;
+        }
+
+        // P2-3: Verify admin claim before sensitive operations
+        async function verifyAdminClaim() {
+            if (!currentUser) {
+                showToast('Not authenticated', 'error');
+                window.location.href = '/admin/login';
+                return false;
+            }
+            try {
+                // Force token refresh to get latest claims
+                const idTokenResult = await currentUser.getIdTokenResult(true);
+                if (idTokenResult.claims.admin !== true) {
+                    showToast('Admin access revoked. Please log in again.', 'error');
+                    await signOut(auth);
+                    window.location.href = '/admin/login';
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Error verifying admin claim:', error);
+                showToast('Authentication error. Please log in again.', 'error');
+                window.location.href = '/admin/login';
+                return false;
+            }
+        }
 
         // DOM Elements
         const loadingOverlay = document.getElementById('loadingOverlay');
@@ -1304,6 +1329,9 @@
         storyForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            // P2-3: Verify admin claim before save operation
+            if (!await verifyAdminClaim()) return;
+
             const storyData = {
                 day: selectedStoryDay,
                 title: document.getElementById('storyTitle').value.trim(),
@@ -1433,24 +1461,32 @@
                 return;
             }
 
-            tasksList.innerHTML = dayTasks.map(task => `
-                <div class="task-item" data-task-id="${task.id}">
-                    <div class="task-emoji">${task.emoji || '⭐'}</div>
+            tasksList.innerHTML = dayTasks.map(task => {
+                // P1-3: Sanitize user-controlled content to prevent XSS
+                const safeTitle = escapeHtml(task.title);
+                const safeDesc = escapeHtml(task.description || '');
+                const safeEmoji = escapeHtml(task.emoji || '⭐');
+                const safeId = escapeHtml(task.id);
+                const safeCategory = escapeHtml(task.category);
+                const safeReward = parseInt(task.starsReward, 10) || 0;
+                return `
+                <div class="task-item" data-task-id="${safeId}">
+                    <div class="task-emoji">${safeEmoji}</div>
                     <div class="task-details">
-                        <div class="task-title">${task.title}</div>
-                        <div class="task-description">${task.description || ''}</div>
+                        <div class="task-title">${safeTitle}</div>
+                        <div class="task-description">${safeDesc}</div>
                         <div class="task-meta">
-                            <span class="category-badge category-${task.category}">${getCategoryLabel(task.category)}</span>
-                            <span class="task-stars">⭐ ${task.starsReward}</span>
+                            <span class="category-badge category-${safeCategory}">${getCategoryLabel(task.category)}</span>
+                            <span class="task-stars">⭐ ${safeReward}</span>
                             ${!task.isPublished ? '<span style="color: var(--coral); font-size: 12px;">Draft</span>' : ''}
                         </div>
                     </div>
                     <div class="task-actions">
-                        <button class="task-btn task-btn-edit" onclick="editTask('${task.id}')">✏️</button>
-                        <button class="task-btn task-btn-delete" onclick="deleteTask('${task.id}')">🗑️</button>
+                        <button class="task-btn task-btn-edit" onclick="editTask('${safeId}')">✏️</button>
+                        <button class="task-btn task-btn-delete" onclick="deleteTask('${safeId}')">🗑️</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function getCategoryLabel(category) {
@@ -1518,6 +1554,9 @@
                 return;
             }
 
+            // P2-3: Verify admin claim before delete operation
+            if (!await verifyAdminClaim()) return;
+
             try {
                 await deleteDoc(doc(db, 'bonusTasks', taskId));
 
@@ -1543,6 +1582,9 @@
         // Task Form Submit
         taskForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // P2-3: Verify admin claim before save operation
+            if (!await verifyAdminClaim()) return;
 
             const taskId = document.getElementById('taskId').value;
             const taskDay = parseInt(document.getElementById('taskDay').value) || selectedTaskDay;

@@ -45,11 +45,23 @@ service cloud.firestore {
       }
 
       // User's task completions subcollection (Issue #26)
+      // P1-5: Enforce one completion per task per day via document ID format {taskId}_{date}
       match /taskCompletions/{completionId} {
         allow read: if isOwner(userId);
-        // Users can create completions for themselves, but only once per task per day
+        // Users can create completions for themselves, with these constraints:
+        // 1. User ID must match authenticated user
+        // 2. Document ID must match format: {taskId}_{completedDate}
+        // 3. Required fields must be present
+        // 4. starsEarned must be a positive number <= 100 (prevent manipulation)
         allow create: if isOwner(userId) &&
-          request.resource.data.userId == request.auth.uid;
+          request.resource.data.userId == request.auth.uid &&
+          request.resource.data.taskId is string &&
+          request.resource.data.completedDate is string &&
+          request.resource.data.starsEarned is number &&
+          request.resource.data.starsEarned > 0 &&
+          request.resource.data.starsEarned <= 100 &&
+          // Verify document ID matches the expected format: taskId_date
+          completionId == request.resource.data.taskId + '_' + request.resource.data.completedDate;
         allow update: if false; // No updates allowed - completions are immutable
         allow delete: if false;
       }
