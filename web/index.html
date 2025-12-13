@@ -1792,26 +1792,26 @@
                             <span class="prayer-progress-text" id="prayerProgressText">3 of 5 completed</span>
                         </div>
 
-                        <div class="prayer-cards">
-                            <div class="prayer-card completed" data-prayer="fajr" onclick="togglePrayer(this)">
+                        <div class="prayer-cards" id="prayerCards">
+                            <div class="prayer-card current" data-prayer="fajr" onclick="togglePrayer(this)">
                                 <div class="prayer-card-icon">🌅</div>
                                 <div class="prayer-card-name">Fajr</div>
                                 <div class="prayer-card-time">5:12 AM</div>
                                 <div class="prayer-card-check">✓</div>
                             </div>
-                            <div class="prayer-card completed" data-prayer="dhuhr" onclick="togglePrayer(this)">
+                            <div class="prayer-card" data-prayer="dhuhr" onclick="togglePrayer(this)">
                                 <div class="prayer-card-icon">☀️</div>
                                 <div class="prayer-card-name">Dhuhr</div>
                                 <div class="prayer-card-time">12:30 PM</div>
                                 <div class="prayer-card-check">✓</div>
                             </div>
-                            <div class="prayer-card completed" data-prayer="asr" onclick="togglePrayer(this)">
+                            <div class="prayer-card" data-prayer="asr" onclick="togglePrayer(this)">
                                 <div class="prayer-card-icon">🌤️</div>
                                 <div class="prayer-card-name">Asr</div>
                                 <div class="prayer-card-time">3:45 PM</div>
                                 <div class="prayer-card-check">✓</div>
                             </div>
-                            <div class="prayer-card current" data-prayer="maghrib" onclick="togglePrayer(this)">
+                            <div class="prayer-card" data-prayer="maghrib" onclick="togglePrayer(this)">
                                 <div class="prayer-card-icon">🌇</div>
                                 <div class="prayer-card-name">Maghrib</div>
                                 <div class="prayer-card-time">6:32 PM</div>
@@ -2082,7 +2082,10 @@
             </div>
             <div class="video-player-placeholder">
                 <div class="video-player-icon">🎬</div>
-                <div class="video-player-text">Video Player</div>
+                <div class="video-player-text">Video Coming Soon!</div>
+                <div style="color: var(--gold-light); font-size: 14px; margin-top: 8px; opacity: 0.8;">
+                    Amazing Islamic stories for kids will be here soon insha'Allah
+                </div>
             </div>
             <div class="video-modal-footer">
                 <div class="video-modal-story-title" id="videoStoryTitle">The Night Journey (Al-Isra)</div>
@@ -2186,11 +2189,18 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenName + 'Screen').classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+
+            // Load leaderboard when navigating to leaderboard screen
+            if (screenName === 'leaderboard' && window.loadLeaderboard) {
+                window.loadLeaderboard();
+            }
         }
 
-        // Prayer toggle
-        let completedPrayers = 3;
+        // Prayer toggle - now saves to Firestore
+        let completedPrayers = 0;
 
         function togglePrayer(element) {
             if (element.classList.contains('completed')) return;
@@ -2208,9 +2218,25 @@
 
             triggerConfetti();
 
+            // Save to Firestore
+            if (window.trackPrayer) {
+                window.trackPrayer(prayerName.toLowerCase());
+            }
+
+            // Update stats display
+            updatePrayerStats();
+
             const next = element.nextElementSibling;
             if (next && next.classList.contains('prayer-card')) {
                 next.classList.add('current');
+            }
+        }
+
+        // Update prayer stats in UI
+        function updatePrayerStats() {
+            const totalPrayersEl = document.querySelector('.header-stat-value');
+            if (totalPrayersEl && window.AppState && window.AppState.profile) {
+                totalPrayersEl.textContent = window.AppState.profile.totalPrayers || 0;
             }
         }
 
@@ -2227,6 +2253,24 @@
             document.getElementById('videoStoryTitle').textContent = story.title;
             document.getElementById('videoStoryDesc').textContent = story.desc;
             document.getElementById('videoModal').classList.add('active');
+
+            // Track story watched in Firestore
+            if (window.trackStory) {
+                window.trackStory(day);
+            }
+
+            // Update the story card UI to show as watched
+            updateStoryCardUI(day);
+        }
+
+        function updateStoryCardUI(day) {
+            const storyCards = document.querySelectorAll('.story-card');
+            storyCards.forEach(card => {
+                const onclick = card.getAttribute('onclick');
+                if (onclick && onclick.includes(`openStory(${day})`)) {
+                    card.classList.add('watched');
+                }
+            });
         }
 
         function closeVideoModal() {
@@ -2357,14 +2401,15 @@
             });
         };
 
-        // App State
+        // App State - make globally accessible
         const AppState = {
             user: null,
             profile: null,
-            prayers: {},
-            stories: [],
+            todayPrayers: { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false },
+            watchedStories: [],
             isGuest: false
         };
+        window.AppState = AppState;
 
         // Initialize app
         async function initApp() {
@@ -2376,6 +2421,8 @@
                 if (user) {
                     AppState.user = user;
                     await loadUserProfile(user.uid);
+                    await loadTodayPrayers(user.uid);
+                    await loadWatchedStories(user.uid);
                     hideAuthModal();
                     updateUIWithProfile();
                 } else if (!AppState.isGuest) {
@@ -2412,7 +2459,8 @@
                         totalStories: 0,
                         currentStreak: 0,
                         longestStreak: 0,
-                        stars: 0
+                        stars: 0,
+                        rank: 0
                     });
                 } else {
                     await signInWithEmailAndPassword(window.firebaseAuth, email, password);
@@ -2428,11 +2476,16 @@
             AppState.profile = {
                 name: 'Guest',
                 totalPrayers: 0,
+                totalStories: 0,
                 currentStreak: 0,
-                stars: 0
+                longestStreak: 0,
+                stars: 0,
+                rank: '-'
             };
             hideAuthModal();
             updateUIWithProfile();
+            // Reset prayers to uncompleted for guests
+            document.getElementById('prayerProgressText').textContent = '0 of 5 completed';
         };
 
         async function loadUserProfile(uid) {
@@ -2448,6 +2501,71 @@
             }
         }
 
+        async function loadTodayPrayers(uid) {
+            const { doc, getDoc } = window.firebaseModules;
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+            try {
+                const prayerDoc = await getDoc(doc(window.firebaseDb, 'users', uid, 'prayers', today));
+                if (prayerDoc.exists()) {
+                    AppState.todayPrayers = prayerDoc.data();
+                    updatePrayerUI();
+                }
+            } catch (error) {
+                console.error('Error loading today prayers:', error);
+            }
+        }
+
+        async function loadWatchedStories(uid) {
+            const { doc, getDoc } = window.firebaseModules;
+
+            try {
+                const storiesDoc = await getDoc(doc(window.firebaseDb, 'users', uid, 'progress', 'stories'));
+                if (storiesDoc.exists()) {
+                    AppState.watchedStories = storiesDoc.data().watched || [];
+                    updateStoryUI();
+                }
+            } catch (error) {
+                console.error('Error loading watched stories:', error);
+            }
+        }
+
+        function updatePrayerUI() {
+            const prayers = AppState.todayPrayers;
+            const prayerCards = document.querySelectorAll('.prayer-card');
+            let completed = 0;
+
+            prayerCards.forEach(card => {
+                const prayerName = card.dataset.prayer;
+                if (prayers[prayerName]) {
+                    card.classList.add('completed');
+                    card.classList.remove('current');
+                    completed++;
+                }
+            });
+
+            // Set first uncompleted prayer as current
+            const firstUncompleted = document.querySelector('.prayer-card:not(.completed)');
+            if (firstUncompleted) {
+                firstUncompleted.classList.add('current');
+            }
+
+            document.getElementById('prayerProgressText').textContent = completed + ' of 5 completed';
+            window.completedPrayers = completed;
+        }
+
+        function updateStoryUI() {
+            const watched = AppState.watchedStories;
+            const storyCards = document.querySelectorAll('.story-card');
+
+            storyCards.forEach(card => {
+                const day = parseInt(card.dataset.day);
+                if (watched.includes(day)) {
+                    card.classList.add('watched');
+                }
+            });
+        }
+
         function updateUIWithProfile() {
             const profile = AppState.profile;
             if (!profile) return;
@@ -2456,13 +2574,39 @@
             const sidebarName = document.querySelector('.sidebar-user-info h4');
             if (sidebarName) sidebarName.textContent = profile.name || 'Guest';
 
-            // Update streak display
-            const streakDisplay = document.querySelector('.sidebar-user-level');
-            if (streakDisplay) streakDisplay.textContent = (profile.currentStreak || 0) + ' Day Streak!';
+            // Update sidebar streak
+            const sidebarStreak = document.querySelector('.sidebar-user-level');
+            if (sidebarStreak) sidebarStreak.textContent = (profile.currentStreak || 0) + ' Day Streak!';
 
-            // Update greeting
-            const greeting = document.querySelector('.hero-title');
-            if (greeting) greeting.innerHTML = 'Assalamu Alaikum, <span class="user-name">' + (profile.name || 'Guest') + '</span>!';
+            // Update greeting on home screen
+            const greetingName = document.querySelector('.greeting h1 span');
+            if (greetingName) greetingName.textContent = (profile.name || 'Guest') + '!';
+
+            // Update header stats
+            const statValues = document.querySelectorAll('.header-stat-value');
+            if (statValues[0]) statValues[0].textContent = profile.totalPrayers || 0;
+            if (statValues[1]) statValues[1].textContent = profile.rank ? '#' + profile.rank : '-';
+
+            // Update streak card
+            const streakValue = document.querySelector('.streak-value');
+            if (streakValue) streakValue.textContent = profile.currentStreak || 0;
+            const streakBest = document.querySelector('.streak-best');
+            if (streakBest) streakBest.textContent = 'Personal Best: ' + (profile.longestStreak || 0) + ' days';
+
+            // Update quick stats
+            const quickStatValues = document.querySelectorAll('.quick-stat-value');
+            if (quickStatValues[0]) quickStatValues[0].textContent = profile.totalStories || 0;
+            if (quickStatValues[1]) quickStatValues[1].textContent = profile.stars || 0;
+
+            // Update progress screen stats
+            const dashboardStats = document.querySelectorAll('.dashboard-stat .stat-value');
+            if (dashboardStats[0]) dashboardStats[0].textContent = profile.totalPrayers || 0;
+            if (dashboardStats[1]) dashboardStats[1].textContent = profile.currentStreak || 0;
+            if (dashboardStats[2]) dashboardStats[2].textContent = profile.totalStories || 0;
+            if (dashboardStats[3]) dashboardStats[3].textContent = profile.stars || 0;
+
+            // Update prayer progress text
+            document.getElementById('prayerProgressText').textContent = '0 of 5 completed';
 
             console.log('UI updated with profile:', profile);
         }
@@ -2478,13 +2622,20 @@
         // Track prayer completion
         window.trackPrayer = async function(prayerName) {
             if (AppState.isGuest) {
-                alert('Sign up to save your prayer progress!');
+                console.log('Guest mode - prayer not saved');
                 return;
             }
 
-            const { doc, updateDoc, increment, serverTimestamp } = window.firebaseModules;
+            const { doc, setDoc, updateDoc, increment, serverTimestamp } = window.firebaseModules;
+            const today = new Date().toISOString().split('T')[0];
 
             try {
+                // Save to today's prayers
+                AppState.todayPrayers[prayerName] = true;
+                await setDoc(doc(window.firebaseDb, 'users', AppState.user.uid, 'prayers', today),
+                    AppState.todayPrayers, { merge: true });
+
+                // Update user stats
                 await updateDoc(doc(window.firebaseDb, 'users', AppState.user.uid), {
                     totalPrayers: increment(1),
                     stars: increment(10),
@@ -2495,12 +2646,103 @@
                 AppState.profile.totalPrayers = (AppState.profile.totalPrayers || 0) + 1;
                 AppState.profile.stars = (AppState.profile.stars || 0) + 10;
 
+                // Update UI
+                const statValues = document.querySelectorAll('.header-stat-value');
+                if (statValues[0]) statValues[0].textContent = AppState.profile.totalPrayers;
+                const quickStatValues = document.querySelectorAll('.quick-stat-value');
+                if (quickStatValues[1]) quickStatValues[1].textContent = AppState.profile.stars;
+
                 console.log('Prayer tracked:', prayerName);
-                showConfetti();
             } catch (error) {
                 console.error('Error tracking prayer:', error);
             }
         };
+
+        // Track story watched
+        window.trackStory = async function(day) {
+            if (AppState.isGuest) {
+                console.log('Guest mode - story not saved');
+                return;
+            }
+
+            if (AppState.watchedStories.includes(day)) return;
+
+            const { doc, setDoc, updateDoc, increment, arrayUnion, serverTimestamp } = window.firebaseModules;
+
+            try {
+                AppState.watchedStories.push(day);
+
+                // Save to stories progress
+                await setDoc(doc(window.firebaseDb, 'users', AppState.user.uid, 'progress', 'stories'), {
+                    watched: AppState.watchedStories,
+                    lastWatchedAt: serverTimestamp()
+                }, { merge: true });
+
+                // Update user stats
+                await updateDoc(doc(window.firebaseDb, 'users', AppState.user.uid), {
+                    totalStories: increment(1),
+                    stars: increment(20)
+                });
+
+                // Update local state
+                AppState.profile.totalStories = (AppState.profile.totalStories || 0) + 1;
+                AppState.profile.stars = (AppState.profile.stars || 0) + 20;
+
+                // Update UI
+                const quickStatValues = document.querySelectorAll('.quick-stat-value');
+                if (quickStatValues[0]) quickStatValues[0].textContent = AppState.profile.totalStories;
+                if (quickStatValues[1]) quickStatValues[1].textContent = AppState.profile.stars;
+
+                console.log('Story tracked:', day);
+            } catch (error) {
+                console.error('Error tracking story:', error);
+            }
+        };
+
+        // Load leaderboard
+        window.loadLeaderboard = async function() {
+            const { collection, query, orderBy, limit, getDocs } = window.firebaseModules;
+
+            try {
+                const q = query(collection(window.firebaseDb, 'users'), orderBy('stars', 'desc'), limit(10));
+                const snapshot = await getDocs(q);
+
+                const leaderboard = [];
+                snapshot.forEach(doc => {
+                    leaderboard.push({ id: doc.id, ...doc.data() });
+                });
+
+                updateLeaderboardUI(leaderboard);
+                return leaderboard;
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                return [];
+            }
+        };
+
+        function updateLeaderboardUI(users) {
+            // Update top 3 podium - order is: [0]=2nd place, [1]=1st place, [2]=3rd place in DOM
+            const podiumNames = document.querySelectorAll('.podium-name');
+            const podiumPoints = document.querySelectorAll('.podium-points');
+
+            // 2nd place (first in DOM - left podium)
+            if (users[1] && podiumNames[0]) {
+                podiumNames[0].textContent = users[1].name || 'Player 2';
+                podiumPoints[0].textContent = (users[1].stars || 0).toLocaleString() + ' ⭐';
+            }
+            // 1st place (middle in DOM - center podium)
+            if (users[0] && podiumNames[1]) {
+                podiumNames[1].textContent = users[0].name || 'Player 1';
+                podiumPoints[1].textContent = (users[0].stars || 0).toLocaleString() + ' ⭐';
+            }
+            // 3rd place (last in DOM - right podium)
+            if (users[2] && podiumNames[2]) {
+                podiumNames[2].textContent = users[2].name || 'Player 3';
+                podiumPoints[2].textContent = (users[2].stars || 0).toLocaleString() + ' ⭐';
+            }
+
+            console.log('Leaderboard updated:', users);
+        }
 
         // Start the app
         initApp();

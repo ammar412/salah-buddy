@@ -22,11 +22,22 @@ service cloud.firestore {
     }
 
     // Users collection - users can only read/write their own document
+    // Leaderboard: allow reading limited fields (name, stars) for all authenticated users
     match /users/{userId} {
-      allow read: if isOwner(userId);
+      allow read: if isAuthenticated(); // Allow reading for leaderboard
       allow create: if isOwner(userId);
       allow update: if isOwner(userId);
       allow delete: if false; // Users cannot delete their accounts directly
+
+      // User's prayer subcollection
+      match /prayers/{date} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // User's progress subcollection
+      match /progress/{docId} {
+        allow read, write: if isOwner(userId);
+      }
     }
 
     // Families collection - only family members can access
