@@ -62,8 +62,9 @@ service cloud.firestore {
     // Users collection - users can only read/write their own document
     // Leaderboard: allow reading limited fields (name, stars) for all authenticated users
     // Issue #12: Added validation to prevent stat manipulation
+    // Issue #31: Admins can read all users for user management
     match /users/{userId} {
-      allow read: if isAuthenticated(); // Allow reading for leaderboard
+      allow read: if isAuthenticated(); // Allow reading for leaderboard + admin
       allow create: if isOwner(userId);
       // Update requires ownership AND valid stat changes (prevents manipulation)
       allow update: if isOwner(userId) && isValidStatsUpdate();
@@ -103,8 +104,9 @@ service cloud.firestore {
     }
 
     // Families collection - only family members can access
+    // Issue #31: Admins can read all families for user management
     match /families/{familyId} {
-      allow read: if belongsToFamily(familyId);
+      allow read: if belongsToFamily(familyId) || isAdmin();
       allow create: if isAuthenticated(); // Any authenticated user can create a family
       allow update: if isParentInFamily(familyId);
       allow delete: if false; // Families cannot be deleted
@@ -168,6 +170,13 @@ service cloud.firestore {
       allow create: if isAdmin();
       allow update: if isAdmin();
       allow delete: if isAdmin();
+    }
+
+    // Admin Audit Logs collection (Issue #31) - admin can read/create, immutable
+    match /adminLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false; // Audit trail is immutable
     }
 
     // Leaderboard - read-only for family members

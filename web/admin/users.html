@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Salah Buddy Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream: #F5F0E8;
+            --cream-dark: #EBE4D8;
+            --gold: #F5B526;
+            --gold-light: #FFE082;
+            --gold-dark: #E5A516;
+            --dark: #1C170D;
+            --dark-soft: #3D3527;
+            --white: #FFFFFF;
+            --border: #E8E0CF;
+            --green: #22C55E;
+            --green-light: #86EFAC;
+            --coral: #FF6B6B;
+            --coral-light: #FF8E8E;
+            --purple: #A78BFA;
+            --teal: #14B8A6;
+            --blue: #3B82F6;
+            --blue-light: #93C5FD;
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: var(--spacing-lg);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .sidebar-logo {
+            font-size: 40px;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: var(--dark-soft);
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-soft);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: var(--cream);
+            color: var(--dark);
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .sidebar-footer {
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--cream);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--dark-soft);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            width: 100%;
+            padding: var(--spacing-md);
+            background: transparent;
+            border: 2px solid var(--coral);
+            color: var(--coral);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Lexend', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--spacing-xl);
+        }
+
+        .page-header {
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-header-left {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .page-description {
+            font-size: 16px;
+            color: var(--dark-soft);
+        }
+
+        .page-actions {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--dark-soft);
+            font-weight: 600;
+        }
+
+        /* Search and Filters */
+        .search-filters {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-input-wrapper {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--dark-soft);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            padding-left: 48px;
+            font-size: 16px;
+            font-family: 'Lexend', sans-serif;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--cream);
+            color: var(--dark);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: var(--white);
+        }
+
+        .filter-select {
+            padding: var(--spacing-md);
+            font-size: 16px;
+            font-family: 'Lexend', sans-serif;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--cream);
+            color: var(--dark);
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        /* Users Table */
+        .users-table-container {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: var(--spacing-md) var(--spacing-lg);
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .users-table th {
+            background: var(--cream);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--dark-soft);
+            letter-spacing: 0.5px;
+        }
+
+        .users-table tr:hover {
+            background: var(--cream);
+        }
+
+        .users-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-row {
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .user-cell-main {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .user-cell-info {
+            flex: 1;
+        }
+
+        .user-cell-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .user-cell-email {
+            font-size: 12px;
+            color: var(--dark-soft);
+        }
+
+        .children-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: var(--purple);
+            color: var(--white);
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-active {
+            background: var(--green-light);
+            color: var(--dark);
+        }
+
+        .status-inactive {
+            background: var(--coral-light);
+            color: var(--dark);
+        }
+
+        .date-cell {
+            font-size: 12px;
+            color: var(--dark-soft);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn-view {
+            background: var(--blue-light);
+            color: var(--dark);
+        }
+
+        .action-btn-view:hover {
+            background: var(--blue);
+            color: var(--white);
+        }
+
+        .action-btn-reset {
+            background: var(--gold-light);
+            color: var(--dark);
+        }
+
+        .action-btn-reset:hover {
+            background: var(--gold);
+        }
+
+        .action-btn-delete {
+            background: var(--coral-light);
+            color: var(--dark);
+        }
+
+        .action-btn-delete:hover {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            background: var(--cream);
+            border-top: 1px solid var(--border);
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: var(--dark-soft);
+        }
+
+        .pagination-btns {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .pagination-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Lexend', sans-serif;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: var(--gold);
+            background: var(--gold-light);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Lexend', sans-serif;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--cream);
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--dark-soft);
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: #1EA550;
+        }
+
+        .btn-danger {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #E55A5A;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(28, 23, 13, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-lg {
+            max-width: 800px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: var(--cream);
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--coral-light);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--dark-soft);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: var(--spacing-md);
+            font-size: 16px;
+            font-family: 'Lexend', sans-serif;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--cream);
+            color: var(--dark);
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: var(--white);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border);
+        }
+
+        /* User Detail Styles */
+        .user-detail-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .user-detail-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .user-detail-info h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .user-detail-info p {
+            font-size: 14px;
+            color: var(--dark-soft);
+        }
+
+        .user-detail-section {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .user-detail-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-sm);
+            padding-bottom: var(--spacing-xs);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .user-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+        }
+
+        .user-detail-label {
+            font-size: 14px;
+            color: var(--dark-soft);
+        }
+
+        .user-detail-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .children-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .child-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--cream);
+            border-radius: var(--radius-md);
+        }
+
+        .child-avatar {
+            font-size: 32px;
+        }
+
+        .child-info {
+            flex: 1;
+        }
+
+        .child-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .child-meta {
+            font-size: 12px;
+            color: var(--dark-soft);
+        }
+
+        .child-stars {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gold-dark);
+        }
+
+        .user-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .user-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-lg);
+            background: var(--cream);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-action-btn:hover {
+            border-color: var(--gold);
+            background: var(--gold-light);
+        }
+
+        .user-action-btn.danger:hover {
+            border-color: var(--coral);
+            background: var(--coral-light);
+        }
+
+        .user-action-icon {
+            font-size: 24px;
+        }
+
+        .user-action-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--dark-soft);
+        }
+
+        /* Children Form Section */
+        .children-form-section {
+            background: var(--cream);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+        }
+
+        .children-form-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .children-form-title {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .child-form-row {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: flex-end;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .child-form-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .child-form-field {
+            flex: 1;
+        }
+
+        .child-form-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dark-soft);
+            margin-bottom: 4px;
+        }
+
+        .child-form-field input, .child-form-field select {
+            width: 100%;
+            padding: var(--spacing-sm);
+            font-size: 14px;
+            font-family: 'Lexend', sans-serif;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+        }
+
+        .remove-child-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--coral-light);
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .remove-child-btn:hover {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        .add-child-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            width: 100%;
+            padding: var(--spacing-md);
+            background: transparent;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-soft);
+            transition: all 0.2s ease;
+        }
+
+        .add-child-btn:hover {
+            border-color: var(--gold);
+            color: var(--dark);
+            background: var(--gold-light);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: var(--spacing-lg);
+            right: var(--spacing-lg);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .toast {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast-success {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .toast-error {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        .toast-info {
+            background: var(--blue);
+            color: var(--white);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(245, 240, 232, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-2xl);
+            color: var(--dark-soft);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-md);
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .empty-state-description {
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                padding: var(--spacing-md);
+            }
+
+            .sidebar-header,
+            .nav-item span:not(.nav-icon),
+            .user-details,
+            .logout-btn span:not(:first-child) {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: var(--spacing-md);
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-md);
+            }
+
+            .search-filters {
+                flex-direction: column;
+            }
+
+            .search-input-wrapper {
+                width: 100%;
+            }
+
+            .users-table th:nth-child(4),
+            .users-table td:nth-child(4),
+            .users-table th:nth-child(5),
+            .users-table td:nth-child(5) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🌙</div>
+                <div>
+                    <div class="sidebar-title">Salah Buddy</div>
+                    <div class="sidebar-subtitle">Admin Dashboard</div>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <a href="/admin/index.html" class="nav-item">
+                    <span class="nav-icon">🎬</span>
+                    <span>Daily Stories</span>
+                </a>
+                <a href="/admin/index.html" class="nav-item">
+                    <span class="nav-icon">⭐</span>
+                    <span>Bonus Tasks</span>
+                </a>
+                <a href="/admin/users.html" class="nav-item active">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="adminName">Admin</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <span>🚪</span>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h1 class="page-title">👥 User Management</h1>
+                    <p class="page-description">View and manage all registered users and families</p>
+                </div>
+                <div class="page-actions">
+                    <button id="exportBtn" class="btn btn-secondary">
+                        <span>📥</span>
+                        <span>Export CSV</span>
+                    </button>
+                    <button id="addUserBtn" class="btn btn-primary">
+                        <span>➕</span>
+                        <span>Add User</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👤</div>
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👨‍👩‍👧</div>
+                    <div class="stat-value" id="totalFamilies">0</div>
+                    <div class="stat-label">Families</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👶</div>
+                    <div class="stat-value" id="totalChildren">0</div>
+                    <div class="stat-label">Children</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✨</div>
+                    <div class="stat-value" id="activeToday">0</div>
+                    <div class="stat-label">Active Today</div>
+                </div>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="search-filters">
+                <div class="search-input-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by name or email...">
+                </div>
+                <select id="sortSelect" class="filter-select">
+                    <option value="createdAt-desc">Newest First</option>
+                    <option value="createdAt-asc">Oldest First</option>
+                    <option value="displayName-asc">Name (A-Z)</option>
+                    <option value="displayName-desc">Name (Z-A)</option>
+                </select>
+                <button id="refreshBtn" class="btn btn-secondary">
+                    <span>🔄</span>
+                    <span>Refresh</span>
+                </button>
+            </div>
+
+            <!-- Users Table -->
+            <div class="users-table-container">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Children</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Users will be loaded here -->
+                    </tbody>
+                </table>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">👥</div>
+                    <div class="empty-state-title">No users found</div>
+                    <div class="empty-state-description">Try adjusting your search or add a new user.</div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination">
+                    <div class="pagination-info" id="paginationInfo">Showing 0 users</div>
+                    <div class="pagination-btns" id="paginationBtns">
+                        <!-- Pagination buttons will be generated -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="userDetailModal" class="modal-overlay">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h2 class="modal-title">👤 User Details</h2>
+                <button type="button" class="modal-close" id="closeDetailModal">&times;</button>
+            </div>
+
+            <div id="userDetailContent">
+                <!-- User detail content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal-overlay">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h2 class="modal-title">➕ Add New User</h2>
+                <button type="button" class="modal-close" id="closeAddModal">&times;</button>
+            </div>
+
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label class="form-label">Parent Email *</label>
+                    <input type="email" id="newUserEmail" class="form-input" placeholder="parent@example.com" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Parent Name *</label>
+                        <input type="text" id="newUserName" class="form-input" placeholder="Ahmed Khan" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div style="display: flex; gap: var(--spacing-sm);">
+                            <input type="text" id="newUserPassword" class="form-input" placeholder="Auto-generated" style="flex: 1;">
+                            <button type="button" id="generatePasswordBtn" class="btn btn-secondary" style="white-space: nowrap;">🎲 Generate</button>
+                        </div>
+                        <div class="form-hint">Leave empty to require password reset on first login</div>
+                    </div>
+                </div>
+
+                <div class="children-form-section">
+                    <div class="children-form-header">
+                        <span class="children-form-title">👶 Children (Optional)</span>
+                    </div>
+                    <div id="childrenFormList">
+                        <!-- Child form rows will be added here -->
+                    </div>
+                    <button type="button" id="addChildFormBtn" class="add-child-btn">
+                        <span>➕</span>
+                        <span>Add Child</span>
+                    </button>
+                </div>
+
+                <div class="form-group" style="margin-top: var(--spacing-lg);">
+                    <label style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+                        <input type="checkbox" id="sendWelcomeEmail" checked>
+                        <span>Send welcome email with login instructions</span>
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <span>✓</span>
+                        <span>Create User</span>
+                    </button>
+                    <button type="button" id="cancelAddBtn" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Reset Modal -->
+    <div id="passwordResetModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">🔑 Reset Password</h2>
+                <button type="button" class="modal-close" id="closeResetModal">&times;</button>
+            </div>
+
+            <div id="resetModalContent">
+                <p style="margin-bottom: var(--spacing-lg);">Choose how to reset the password for <strong id="resetUserEmail"></strong>:</p>
+
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                    <button id="sendResetEmailBtn" class="btn btn-primary" style="width: 100%;">
+                        <span>📧</span>
+                        <span>Send Password Reset Email</span>
+                    </button>
+                    <div style="text-align: center; color: var(--dark-soft); font-size: 12px;">or</div>
+                    <button id="setTempPasswordBtn" class="btn btn-secondary" style="width: 100%;">
+                        <span>🔑</span>
+                        <span>Set Temporary Password</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="tempPasswordContent" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">New Temporary Password</label>
+                    <div style="display: flex; gap: var(--spacing-sm);">
+                        <input type="text" id="tempPassword" class="form-input" style="flex: 1;">
+                        <button type="button" id="generateTempPasswordBtn" class="btn btn-secondary">🎲</button>
+                        <button type="button" id="copyPasswordBtn" class="btn btn-secondary">📋</button>
+                    </div>
+                    <div class="form-hint">User will be required to change this on next login</div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="confirmTempPasswordBtn" class="btn btn-primary">Set Password</button>
+                    <button type="button" id="backToResetOptions" class="btn btn-secondary">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">⚠️ Delete User</h2>
+                <button type="button" class="modal-close" id="closeDeleteModal">&times;</button>
+            </div>
+
+            <p style="margin-bottom: var(--spacing-lg);">
+                Are you sure you want to delete <strong id="deleteUserEmail"></strong>?
+                <br><br>
+                This will permanently remove:
+            </p>
+            <ul style="margin-bottom: var(--spacing-lg); padding-left: var(--spacing-lg);">
+                <li>The parent account</li>
+                <li>All associated child profiles</li>
+                <li>All prayer records and progress</li>
+            </ul>
+            <p style="color: var(--coral); font-weight: 600; margin-bottom: var(--spacing-lg);">
+                This action cannot be undone.
+            </p>
+
+            <div class="form-actions">
+                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+                    <span>🗑️</span>
+                    <span>Delete User</span>
+                </button>
+                <button type="button" id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import {
+            getFirestore,
+            collection,
+            doc,
+            getDoc,
+            getDocs,
+            setDoc,
+            addDoc,
+            updateDoc,
+            deleteDoc,
+            query,
+            where,
+            orderBy,
+            limit,
+            startAfter,
+            serverTimestamp,
+            Timestamp
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { firebaseConfig } from '/js/firebase-config.js';
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // State
+        let currentUser = null;
+        let users = [];
+        let families = {};
+        let currentPage = 1;
+        const USERS_PER_PAGE = 20;
+        let totalUsers = 0;
+        let selectedUserId = null;
+
+        // HTML sanitization helper to prevent XSS attacks
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(str);
+            return div.innerHTML;
+        }
+
+        // Verify admin claim before sensitive operations
+        async function verifyAdminClaim() {
+            if (!currentUser) {
+                showToast('Not authenticated', 'error');
+                window.location.href = '/admin/login.html';
+                return false;
+            }
+            try {
+                const idTokenResult = await currentUser.getIdTokenResult(true);
+                if (idTokenResult.claims.admin !== true) {
+                    showToast('Admin access revoked. Please log in again.', 'error');
+                    await signOut(auth);
+                    window.location.href = '/admin/login.html';
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Error verifying admin claim:', error);
+                showToast('Authentication error. Please log in again.', 'error');
+                window.location.href = '/admin/login.html';
+                return false;
+            }
+        }
+
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const toastContainer = document.getElementById('toastContainer');
+        const adminName = document.getElementById('adminName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const addUserBtn = document.getElementById('addUserBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const usersTableBody = document.getElementById('usersTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const pagination = document.getElementById('pagination');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const paginationBtns = document.getElementById('paginationBtns');
+
+        // Modals
+        const userDetailModal = document.getElementById('userDetailModal');
+        const addUserModal = document.getElementById('addUserModal');
+        const passwordResetModal = document.getElementById('passwordResetModal');
+        const deleteModal = document.getElementById('deleteModal');
+
+        // Utility Functions
+        function showLoading() {
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.add('hidden');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <span>${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>
+                <span>${escapeHtml(message)}</span>
+            `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'N/A';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function formatDateTime(timestamp) {
+            if (!timestamp) return 'N/A';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function generatePassword(length = 12) {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%';
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        function getInitials(name) {
+            if (!name) return '?';
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+
+        // Authentication
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            const idTokenResult = await user.getIdTokenResult();
+            if (idTokenResult.claims.admin !== true) {
+                await signOut(auth);
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            currentUser = user;
+            adminName.textContent = user.email.split('@')[0];
+
+            await loadAllData();
+            hideLoading();
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = '/admin/login.html';
+        });
+
+        // Load All Data
+        async function loadAllData() {
+            showLoading();
+            try {
+                await Promise.all([
+                    loadUsers(),
+                    loadFamilies()
+                ]);
+                updateStats();
+                renderUsersTable();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showToast('Failed to load data', 'error');
+            }
+            hideLoading();
+        }
+
+        // Load Users
+        async function loadUsers() {
+            const usersRef = collection(db, 'users');
+            const usersQuery = query(usersRef, where('isParent', '==', true));
+            const snapshot = await getDocs(usersQuery);
+
+            users = [];
+            snapshot.forEach(doc => {
+                users.push({ id: doc.id, ...doc.data() });
+            });
+
+            totalUsers = users.length;
+        }
+
+        // Load Families
+        async function loadFamilies() {
+            const familiesRef = collection(db, 'families');
+            const snapshot = await getDocs(familiesRef);
+
+            families = {};
+            snapshot.forEach(doc => {
+                families[doc.id] = { id: doc.id, ...doc.data() };
+            });
+        }
+
+        // Update Stats
+        function updateStats() {
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('totalFamilies').textContent = Object.keys(families).length;
+
+            // Count total children
+            let childCount = 0;
+            Object.values(families).forEach(family => {
+                if (family.children && Array.isArray(family.children)) {
+                    childCount += family.children.length;
+                }
+            });
+            document.getElementById('totalChildren').textContent = childCount;
+
+            // Count active today (users who logged in today)
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            let activeCount = 0;
+            users.forEach(user => {
+                if (user.lastLogin) {
+                    const lastLogin = user.lastLogin.toDate ? user.lastLogin.toDate() : new Date(user.lastLogin);
+                    if (lastLogin >= today) {
+                        activeCount++;
+                    }
+                }
+            });
+            document.getElementById('activeToday').textContent = activeCount;
+        }
+
+        // Render Users Table
+        function renderUsersTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const [sortField, sortDir] = sortSelect.value.split('-');
+
+            // Filter users
+            let filteredUsers = users.filter(user => {
+                const name = (user.displayName || '').toLowerCase();
+                const email = (user.email || '').toLowerCase();
+                return name.includes(searchTerm) || email.includes(searchTerm);
+            });
+
+            // Sort users
+            filteredUsers.sort((a, b) => {
+                let aVal = a[sortField] || '';
+                let bVal = b[sortField] || '';
+
+                if (sortField === 'createdAt') {
+                    aVal = aVal.toDate ? aVal.toDate().getTime() : 0;
+                    bVal = bVal.toDate ? bVal.toDate().getTime() : 0;
+                } else {
+                    aVal = String(aVal).toLowerCase();
+                    bVal = String(bVal).toLowerCase();
+                }
+
+                if (sortDir === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+
+            // Paginate
+            const startIdx = (currentPage - 1) * USERS_PER_PAGE;
+            const endIdx = startIdx + USERS_PER_PAGE;
+            const paginatedUsers = filteredUsers.slice(startIdx, endIdx);
+
+            // Show/hide empty state
+            if (filteredUsers.length === 0) {
+                emptyState.style.display = 'block';
+                usersTableBody.innerHTML = '';
+                pagination.style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            pagination.style.display = 'flex';
+
+            // Render table rows
+            usersTableBody.innerHTML = paginatedUsers.map(user => {
+                const family = families[user.familyId] || {};
+                const childCount = family.children ? family.children.length : 0;
+                const isActive = true; // Could check last login here
+
+                return `
+                    <tr class="user-row" data-user-id="${escapeHtml(user.id)}">
+                        <td>
+                            <div class="user-cell-main">
+                                <div class="user-avatar-small">${escapeHtml(getInitials(user.displayName))}</div>
+                                <div class="user-cell-info">
+                                    <div class="user-cell-name">${escapeHtml(user.displayName || 'Unknown')}</div>
+                                    <div class="user-cell-email">${escapeHtml(user.email)}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="children-count">👶 ${childCount}</span>
+                        </td>
+                        <td>
+                            <span class="status-badge ${isActive ? 'status-active' : 'status-inactive'}">
+                                ${isActive ? '✓ Active' : '⚠ Inactive'}
+                            </span>
+                        </td>
+                        <td class="date-cell">${formatDate(user.createdAt)}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn action-btn-view" onclick="viewUser('${escapeHtml(user.id)}')" title="View Details">👁️</button>
+                                <button class="action-btn action-btn-reset" onclick="resetPassword('${escapeHtml(user.id)}')" title="Reset Password">🔑</button>
+                                <button class="action-btn action-btn-delete" onclick="deleteUser('${escapeHtml(user.id)}')" title="Delete User">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Update pagination info
+            paginationInfo.textContent = `Showing ${startIdx + 1}-${Math.min(endIdx, filteredUsers.length)} of ${filteredUsers.length} users`;
+
+            // Render pagination buttons
+            const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
+            paginationBtns.innerHTML = '';
+
+            if (totalPages > 1) {
+                // Previous button
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'pagination-btn';
+                prevBtn.textContent = '← Prev';
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.onclick = () => { currentPage--; renderUsersTable(); };
+                paginationBtns.appendChild(prevBtn);
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                        const pageBtn = document.createElement('button');
+                        pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                        pageBtn.textContent = i;
+                        pageBtn.onclick = () => { currentPage = i; renderUsersTable(); };
+                        paginationBtns.appendChild(pageBtn);
+                    } else if (i === currentPage - 2 || i === currentPage + 2) {
+                        const dots = document.createElement('span');
+                        dots.textContent = '...';
+                        dots.style.padding = '0 8px';
+                        paginationBtns.appendChild(dots);
+                    }
+                }
+
+                // Next button
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'pagination-btn';
+                nextBtn.textContent = 'Next →';
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.onclick = () => { currentPage++; renderUsersTable(); };
+                paginationBtns.appendChild(nextBtn);
+            }
+        }
+
+        // Search and Sort handlers
+        searchInput.addEventListener('input', () => {
+            currentPage = 1;
+            renderUsersTable();
+        });
+
+        sortSelect.addEventListener('change', () => {
+            currentPage = 1;
+            renderUsersTable();
+        });
+
+        refreshBtn.addEventListener('click', loadAllData);
+
+        // View User Details
+        window.viewUser = async function(userId) {
+            selectedUserId = userId;
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            const family = families[user.familyId] || {};
+            const children = family.children || [];
+
+            const content = document.getElementById('userDetailContent');
+            content.innerHTML = `
+                <div class="user-detail-header">
+                    <div class="user-detail-avatar">${escapeHtml(getInitials(user.displayName))}</div>
+                    <div class="user-detail-info">
+                        <h3>${escapeHtml(user.displayName || 'Unknown')}</h3>
+                        <p>${escapeHtml(user.email)}</p>
+                    </div>
+                </div>
+
+                <div class="user-detail-section">
+                    <div class="user-detail-section-title">Account Information</div>
+                    <div class="user-detail-row">
+                        <span class="user-detail-label">User ID</span>
+                        <span class="user-detail-value">${escapeHtml(user.id)}</span>
+                    </div>
+                    <div class="user-detail-row">
+                        <span class="user-detail-label">Family ID</span>
+                        <span class="user-detail-value">${escapeHtml(user.familyId || 'N/A')}</span>
+                    </div>
+                    <div class="user-detail-row">
+                        <span class="user-detail-label">Joined</span>
+                        <span class="user-detail-value">${formatDateTime(user.createdAt)}</span>
+                    </div>
+                    <div class="user-detail-row">
+                        <span class="user-detail-label">Role</span>
+                        <span class="user-detail-value">${user.isParent ? 'Parent' : 'Child'}</span>
+                    </div>
+                </div>
+
+                <div class="user-detail-section">
+                    <div class="user-detail-section-title">Children (${children.length})</div>
+                    ${children.length > 0 ? `
+                        <div class="children-list">
+                            ${children.map(child => `
+                                <div class="child-item">
+                                    <div class="child-avatar">${escapeHtml(child.avatar || '🧒')}</div>
+                                    <div class="child-info">
+                                        <div class="child-name">${escapeHtml(child.name)}</div>
+                                        <div class="child-meta">Age ${escapeHtml(String(child.age || '?'))}</div>
+                                    </div>
+                                    <div class="child-stars">⭐ ${child.stars || 0}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : '<p style="color: var(--dark-soft); font-size: 14px;">No children added yet</p>'}
+                </div>
+
+                <div class="user-actions-grid">
+                    <button class="user-action-btn" onclick="resetPassword('${escapeHtml(userId)}')">
+                        <span class="user-action-icon">🔑</span>
+                        <span class="user-action-label">Reset Password</span>
+                    </button>
+                    <button class="user-action-btn" onclick="sendTestEmail('${escapeHtml(userId)}')">
+                        <span class="user-action-icon">📧</span>
+                        <span class="user-action-label">Send Email</span>
+                    </button>
+                    <button class="user-action-btn" onclick="showAuditLog('${escapeHtml(userId)}')">
+                        <span class="user-action-icon">📋</span>
+                        <span class="user-action-label">View Activity</span>
+                    </button>
+                    <button class="user-action-btn danger" onclick="deleteUser('${escapeHtml(userId)}')">
+                        <span class="user-action-icon">🗑️</span>
+                        <span class="user-action-label">Delete User</span>
+                    </button>
+                </div>
+            `;
+
+            userDetailModal.classList.add('show');
+        };
+
+        document.getElementById('closeDetailModal').addEventListener('click', () => {
+            userDetailModal.classList.remove('show');
+        });
+
+        // Reset Password
+        window.resetPassword = function(userId) {
+            selectedUserId = userId;
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            document.getElementById('resetUserEmail').textContent = user.email;
+            document.getElementById('resetModalContent').style.display = 'block';
+            document.getElementById('tempPasswordContent').style.display = 'none';
+
+            userDetailModal.classList.remove('show');
+            passwordResetModal.classList.add('show');
+        };
+
+        document.getElementById('closeResetModal').addEventListener('click', () => {
+            passwordResetModal.classList.remove('show');
+        });
+
+        document.getElementById('sendResetEmailBtn').addEventListener('click', async () => {
+            if (!await verifyAdminClaim()) return;
+
+            const user = users.find(u => u.id === selectedUserId);
+            if (!user) return;
+
+            try {
+                await sendPasswordResetEmail(auth, user.email);
+
+                // Log the action
+                await logAdminAction('password_reset', selectedUserId, user.email, {
+                    method: 'email',
+                    sentTo: user.email
+                });
+
+                showToast(`Password reset email sent to ${user.email}`);
+                passwordResetModal.classList.remove('show');
+            } catch (error) {
+                console.error('Error sending reset email:', error);
+                showToast('Failed to send reset email: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('setTempPasswordBtn').addEventListener('click', () => {
+            document.getElementById('resetModalContent').style.display = 'none';
+            document.getElementById('tempPasswordContent').style.display = 'block';
+            document.getElementById('tempPassword').value = generatePassword();
+        });
+
+        document.getElementById('generateTempPasswordBtn').addEventListener('click', () => {
+            document.getElementById('tempPassword').value = generatePassword();
+        });
+
+        document.getElementById('copyPasswordBtn').addEventListener('click', () => {
+            const password = document.getElementById('tempPassword').value;
+            navigator.clipboard.writeText(password);
+            showToast('Password copied to clipboard', 'info');
+        });
+
+        document.getElementById('backToResetOptions').addEventListener('click', () => {
+            document.getElementById('resetModalContent').style.display = 'block';
+            document.getElementById('tempPasswordContent').style.display = 'none';
+        });
+
+        document.getElementById('confirmTempPasswordBtn').addEventListener('click', async () => {
+            // Note: Setting password directly requires Firebase Admin SDK via Cloud Function
+            // For now, we'll show a message that this feature requires backend setup
+            showToast('Setting temporary passwords requires Cloud Functions setup. Use email reset instead.', 'info');
+            passwordResetModal.classList.remove('show');
+        });
+
+        // Delete User
+        window.deleteUser = function(userId) {
+            selectedUserId = userId;
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            document.getElementById('deleteUserEmail').textContent = user.email;
+            userDetailModal.classList.remove('show');
+            deleteModal.classList.add('show');
+        };
+
+        document.getElementById('closeDeleteModal').addEventListener('click', () => {
+            deleteModal.classList.remove('show');
+        });
+
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+            deleteModal.classList.remove('show');
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            if (!await verifyAdminClaim()) return;
+
+            const user = users.find(u => u.id === selectedUserId);
+            if (!user) return;
+
+            try {
+                // Delete user document from Firestore
+                // Note: Deleting Firebase Auth user requires Cloud Functions
+                await deleteDoc(doc(db, 'users', selectedUserId));
+
+                // Delete family if it exists
+                if (user.familyId) {
+                    await deleteDoc(doc(db, 'families', user.familyId));
+                }
+
+                // Log the action
+                await logAdminAction('user_deleted', selectedUserId, user.email, {
+                    familyId: user.familyId,
+                    displayName: user.displayName
+                });
+
+                showToast('User deleted successfully');
+                deleteModal.classList.remove('show');
+
+                // Reload data
+                await loadAllData();
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                showToast('Failed to delete user: ' + error.message, 'error');
+            }
+        });
+
+        // Add User Modal
+        addUserBtn.addEventListener('click', () => {
+            document.getElementById('addUserForm').reset();
+            document.getElementById('childrenFormList').innerHTML = '';
+            addUserModal.classList.add('show');
+        });
+
+        document.getElementById('closeAddModal').addEventListener('click', () => {
+            addUserModal.classList.remove('show');
+        });
+
+        document.getElementById('cancelAddBtn').addEventListener('click', () => {
+            addUserModal.classList.remove('show');
+        });
+
+        document.getElementById('generatePasswordBtn').addEventListener('click', () => {
+            document.getElementById('newUserPassword').value = generatePassword();
+        });
+
+        // Children form handling
+        let childFormCount = 0;
+        const avatars = ['🧒', '👦', '👧', '🧒🏽', '👦🏽', '👧🏽', '🧒🏿', '👦🏿', '👧🏿'];
+
+        document.getElementById('addChildFormBtn').addEventListener('click', () => {
+            childFormCount++;
+            const childRow = document.createElement('div');
+            childRow.className = 'child-form-row';
+            childRow.id = `childRow${childFormCount}`;
+            childRow.innerHTML = `
+                <div class="child-form-field">
+                    <label>Name</label>
+                    <input type="text" name="childName${childFormCount}" placeholder="Child's name">
+                </div>
+                <div class="child-form-field" style="max-width: 80px;">
+                    <label>Age</label>
+                    <input type="number" name="childAge${childFormCount}" placeholder="7" min="1" max="18">
+                </div>
+                <div class="child-form-field" style="max-width: 100px;">
+                    <label>Avatar</label>
+                    <select name="childAvatar${childFormCount}">
+                        ${avatars.map(a => `<option value="${a}">${a}</option>`).join('')}
+                    </select>
+                </div>
+                <button type="button" class="remove-child-btn" onclick="document.getElementById('childRow${childFormCount}').remove()">✕</button>
+            `;
+            document.getElementById('childrenFormList').appendChild(childRow);
+        });
+
+        // Add User Form Submit
+        document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!await verifyAdminClaim()) return;
+
+            const email = document.getElementById('newUserEmail').value.trim();
+            const name = document.getElementById('newUserName').value.trim();
+            const password = document.getElementById('newUserPassword').value.trim();
+
+            // Collect children data
+            const childRows = document.querySelectorAll('.child-form-row');
+            const children = [];
+            childRows.forEach((row, idx) => {
+                const childName = row.querySelector(`input[name^="childName"]`)?.value.trim();
+                const childAge = parseInt(row.querySelector(`input[name^="childAge"]`)?.value) || 7;
+                const childAvatar = row.querySelector(`select[name^="childAvatar"]`)?.value || '🧒';
+
+                if (childName) {
+                    children.push({
+                        id: `child_${Date.now()}_${idx}`,
+                        name: childName,
+                        age: childAge,
+                        avatar: childAvatar,
+                        pinHash: '', // Will be set by parent
+                        createdAt: new Date()
+                    });
+                }
+            });
+
+            try {
+                // Note: Creating Firebase Auth user requires Cloud Functions
+                // For now, we'll create the Firestore documents only
+                // In production, you'd call a Cloud Function that:
+                // 1. Creates the Auth user
+                // 2. Creates Firestore documents
+                // 3. Sends welcome email
+
+                // Create family document
+                const familyRef = await addDoc(collection(db, 'families'), {
+                    parentEmail: email,
+                    parentName: name,
+                    children: children,
+                    createdAt: serverTimestamp()
+                });
+
+                // For demo purposes, create a placeholder user document
+                // In production, this would be done in the Cloud Function after Auth user creation
+                const userDocRef = doc(db, 'users', `manual_${Date.now()}`);
+                await setDoc(userDocRef, {
+                    email: email,
+                    displayName: name,
+                    familyId: familyRef.id,
+                    isParent: true,
+                    createdAt: serverTimestamp(),
+                    createdBy: currentUser.uid,
+                    requiresAuthSetup: true // Flag to indicate Auth user needs to be created
+                });
+
+                // Log the action
+                await logAdminAction('user_created', userDocRef.id, email, {
+                    displayName: name,
+                    familyId: familyRef.id,
+                    childrenCount: children.length,
+                    method: 'manual_admin'
+                });
+
+                showToast('User created successfully. Note: Firebase Auth user creation requires Cloud Functions setup.');
+                addUserModal.classList.remove('show');
+
+                await loadAllData();
+            } catch (error) {
+                console.error('Error creating user:', error);
+                showToast('Failed to create user: ' + error.message, 'error');
+            }
+        });
+
+        // Export CSV
+        exportBtn.addEventListener('click', () => {
+            const headers = ['Email', 'Name', 'Family ID', 'Children Count', 'Joined Date'];
+            const rows = users.map(user => {
+                const family = families[user.familyId] || {};
+                const childCount = family.children ? family.children.length : 0;
+                return [
+                    user.email,
+                    user.displayName || '',
+                    user.familyId || '',
+                    childCount,
+                    formatDate(user.createdAt)
+                ];
+            });
+
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csv += row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `salah-buddy-users-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            showToast('Users exported to CSV');
+        });
+
+        // Audit Logging
+        async function logAdminAction(action, targetUserId, targetEmail, details = {}) {
+            try {
+                await addDoc(collection(db, 'adminLogs'), {
+                    action: action,
+                    targetUserId: targetUserId,
+                    targetEmail: targetEmail,
+                    adminId: currentUser.uid,
+                    adminEmail: currentUser.email,
+                    details: details,
+                    timestamp: serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error logging admin action:', error);
+            }
+        }
+
+        // Placeholder functions
+        window.sendTestEmail = function(userId) {
+            showToast('Email functionality requires Cloud Functions setup', 'info');
+        };
+
+        window.showAuditLog = function(userId) {
+            showToast('Audit log view coming soon', 'info');
+        };
+
+        // Close modals on overlay click
+        [userDetailModal, addUserModal, passwordResetModal, deleteModal].forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

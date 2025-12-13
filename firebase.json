@@ -55,6 +55,10 @@
         "destination": "/admin/seed.html"
       },
       {
+        "source": "/admin/users",
+        "destination": "/admin/users.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
