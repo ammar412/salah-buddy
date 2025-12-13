@@ -1,0 +1,2509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salah Buddy - Ramadan Companion for Kids</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Luqmay Brand Palette */
+            --cream: #F5F0E8;
+            --cream-dark: #EBE4D8;
+            --gold: #F5B526;
+            --gold-light: #FFE082;
+            --gold-dark: #E5A516;
+            --dark: #1C170D;
+            --dark-soft: #3D3527;
+            --white: #FFFFFF;
+            --border: #E8E0CF;
+            --green: #22C55E;
+            --green-light: #86EFAC;
+            --green-dark: #16A34A;
+            --coral: #FF6B6B;
+            --coral-light: #FF8E8E;
+            --purple: #A78BFA;
+            --purple-light: #C4B5FD;
+            --teal: #14B8A6;
+            --teal-light: #5EEAD4;
+
+            /* Spacing */
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+
+            /* Border Radius */
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+
+            /* Typography */
+            --font-sm: 14px;
+            --font-base: 18px;
+            --font-lg: 22px;
+            --font-xl: 28px;
+            --font-2xl: 36px;
+            --font-3xl: 48px;
+            --font-4xl: 64px;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            min-height: 100vh;
+            font-size: var(--font-base);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Stars Background */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            padding: var(--spacing-xl);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 12px rgba(28, 23, 13, 0.06);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .logo-text {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--dark-soft);
+        }
+
+        .nav-item:hover {
+            background: var(--cream);
+            color: var(--dark);
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: var(--dark);
+            box-shadow: 0 4px 20px rgba(245, 181, 38, 0.3);
+        }
+
+        .nav-icon {
+            font-size: 28px;
+        }
+
+        /* User Profile in Sidebar */
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            margin-top: auto;
+            border: 1px solid var(--border);
+        }
+
+        .sidebar-avatar {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 3px solid var(--white);
+            box-shadow: 0 4px 12px rgba(245, 181, 38, 0.3);
+        }
+
+        .sidebar-user-info h4 {
+            font-size: var(--font-base);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .sidebar-user-level {
+            font-size: var(--font-sm);
+            color: var(--gold-dark);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--spacing-2xl);
+            min-height: 100vh;
+            max-width: calc(100vw - 280px);
+            overflow-x: hidden;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .greeting h1 {
+            font-size: var(--font-3xl);
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .greeting h1 span {
+            color: var(--gold);
+        }
+
+        .greeting p {
+            font-size: var(--font-lg);
+            color: var(--dark-soft);
+            margin-top: var(--spacing-xs);
+        }
+
+        .header-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .header-stat {
+            background: var(--white);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(28, 23, 13, 0.04);
+        }
+
+        .header-stat-value {
+            font-size: var(--font-2xl);
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .header-stat-label {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        /* Screen containers */
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== HOME SCREEN ==================== */
+        .home-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: var(--spacing-lg);
+        }
+
+        .prayer-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .prayer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .prayer-header h2 {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .prayer-progress-text {
+            font-size: var(--font-lg);
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        /* Prayer Cards Grid - Vertical Layout */
+        .prayer-cards {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .prayer-card {
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md) var(--spacing-xl);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .prayer-card:hover {
+            transform: translateX(5px);
+            border-color: var(--gold);
+        }
+
+        .prayer-card.completed {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-color: var(--green);
+        }
+
+        .prayer-card.current {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(245, 181, 38, 0.2);
+            animation: currentPulse 2s infinite;
+        }
+
+        @keyframes currentPulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(245, 181, 38, 0.2); }
+            50% { box-shadow: 0 0 0 6px rgba(245, 181, 38, 0.3); }
+        }
+
+        .prayer-card-icon {
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .prayer-card-name {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .prayer-card-time {
+            font-size: var(--font-base);
+            color: var(--dark-soft);
+            margin-left: auto;
+        }
+
+        .prayer-card-check {
+            width: 32px;
+            height: 32px;
+            background: var(--green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-left: var(--spacing-md);
+            color: var(--white);
+        }
+
+        .prayer-card.completed .prayer-card-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Right Sidebar */
+        .home-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        /* Streak Card */
+        .streak-card {
+            background: linear-gradient(135deg, var(--coral), var(--coral-light));
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            position: relative;
+            overflow: hidden;
+            color: var(--white);
+        }
+
+        .streak-card::before {
+            content: "🔥";
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            font-size: 150px;
+            opacity: 0.2;
+        }
+
+        .streak-label {
+            font-size: var(--font-base);
+            opacity: 0.9;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .streak-value {
+            font-size: var(--font-4xl);
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .streak-days {
+            font-size: var(--font-xl);
+            font-weight: 600;
+        }
+
+        .streak-best {
+            margin-top: var(--spacing-lg);
+            font-size: var(--font-base);
+            opacity: 0.9;
+        }
+
+        /* Today's Story Card */
+        .todays-story-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .todays-story-card:hover {
+            transform: scale(1.02);
+        }
+
+        .story-thumbnail {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+        }
+
+        .story-play-btn {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .story-day-badge {
+            position: absolute;
+            top: var(--spacing-sm);
+            left: var(--spacing-sm);
+            background: var(--gold);
+            color: var(--dark);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            font-weight: 700;
+        }
+
+        .todays-story-title {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .todays-story-desc {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .quick-stat {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .quick-stat-icon {
+            font-size: 36px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .quick-stat-value {
+            font-size: var(--font-2xl);
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .quick-stat-label {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        /* ==================== DASHBOARD SCREEN ==================== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            text-align: center;
+            transition: transform 0.2s ease;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card-icon {
+            font-size: 56px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-card-value {
+            font-size: var(--font-3xl);
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .stat-card-label {
+            font-size: var(--font-base);
+            color: var(--dark-soft);
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .calendar-header h2 {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .calendar-legend {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-dot.complete { background: linear-gradient(135deg, var(--green), var(--teal)); }
+        .legend-dot.partial { background: var(--gold); }
+        .legend-dot.today { border: 3px solid var(--coral); background: var(--white); }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--cream);
+            font-size: var(--font-lg);
+            font-weight: 700;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.05);
+        }
+
+        .calendar-day.completed {
+            background: linear-gradient(135deg, var(--green), var(--teal));
+            color: var(--white);
+            border-color: var(--green);
+        }
+
+        .calendar-day.partial {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            color: var(--dark);
+            border-color: var(--gold);
+        }
+
+        .calendar-day.today {
+            border: 4px solid var(--coral);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .calendar-day.future {
+            opacity: 0.4;
+        }
+
+        .calendar-day-prayers {
+            font-size: var(--font-sm);
+            opacity: 0.8;
+        }
+
+        /* ==================== LEADERBOARD SCREEN ==================== */
+        .leaderboard-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: var(--spacing-lg);
+        }
+
+        .leaderboard-main {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .leaderboard-tabs {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .leaderboard-tab {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            color: var(--dark-soft);
+        }
+
+        .leaderboard-tab:hover {
+            border-color: var(--gold);
+        }
+
+        .leaderboard-tab.active {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        /* Podium */
+        .podium {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+            padding: var(--spacing-xl) 0;
+        }
+
+        .podium-place {
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .podium-place:hover {
+            transform: translateY(-10px);
+        }
+
+        .podium-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto var(--spacing-sm);
+            border: 4px solid;
+        }
+
+        .podium-place.first .podium-avatar {
+            width: 100px;
+            height: 100px;
+            font-size: 50px;
+            border-color: var(--gold);
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        }
+
+        .podium-place.second .podium-avatar {
+            border-color: #C0C0C0;
+            background: linear-gradient(135deg, #E8E8E8, #C0C0C0);
+        }
+
+        .podium-place.third .podium-avatar {
+            border-color: #CD7F32;
+            background: linear-gradient(135deg, #E8B87D, #CD7F32);
+        }
+
+        .podium-name {
+            font-size: var(--font-base);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .podium-points {
+            font-size: var(--font-sm);
+            color: var(--gold);
+        }
+
+        .podium-stand {
+            width: 100px;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-3xl);
+            font-weight: 900;
+            margin-top: var(--spacing-md);
+        }
+
+        .podium-place.first .podium-stand {
+            height: 120px;
+            background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+            color: var(--dark);
+        }
+
+        .podium-place.second .podium-stand {
+            height: 90px;
+            background: linear-gradient(180deg, #E0E0E0, #A0A0A0);
+            color: var(--dark);
+        }
+
+        .podium-place.third .podium-stand {
+            height: 60px;
+            background: linear-gradient(180deg, #CD7F32, #8B5A2B);
+            color: var(--white);
+        }
+
+        /* Leaderboard List */
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+            background: var(--cream-dark);
+        }
+
+        .lb-rank {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-lg);
+            font-weight: 800;
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+
+        .lb-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .lb-info {
+            flex: 1;
+        }
+
+        .lb-name {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .lb-streak {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        .lb-points {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        /* Your Rank Card */
+        .your-rank-card {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            color: var(--dark);
+        }
+
+        .your-rank-label {
+            font-size: var(--font-base);
+            font-weight: 600;
+            opacity: 0.8;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .your-rank-number {
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .your-rank-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .your-rank-avatar {
+            width: 64px;
+            height: 64px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 3px solid var(--dark);
+        }
+
+        .your-rank-details h3 {
+            font-size: var(--font-xl);
+            font-weight: 700;
+        }
+
+        .your-rank-details p {
+            font-size: var(--font-base);
+            opacity: 0.8;
+        }
+
+        /* ==================== DAILY STORIES SCREEN ==================== */
+        .stories-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stories-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            background: var(--white);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .stories-progress-text {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .stories-progress-bar {
+            width: 200px;
+            height: 12px;
+            background: var(--cream);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .stories-progress-fill {
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(90deg, var(--gold), var(--green));
+            border-radius: 6px;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--spacing-lg);
+        }
+
+        .story-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+        }
+
+        .story-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(28, 23, 13, 0.12);
+        }
+
+        .story-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .story-card.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .story-card.watched {
+            border-color: var(--green);
+        }
+
+        .story-card.current {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(245, 181, 38, 0.2);
+        }
+
+        .story-card-thumbnail {
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+        }
+
+        .story-card-day {
+            position: absolute;
+            top: var(--spacing-sm);
+            left: var(--spacing-sm);
+            background: var(--dark);
+            color: var(--white);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-sm);
+            font-weight: 700;
+        }
+
+        .story-card.watched .story-card-day {
+            background: var(--green);
+        }
+
+        .story-card.current .story-card-day {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .story-card-play {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .story-card:hover .story-card-play {
+            opacity: 1;
+        }
+
+        .story-card.locked .story-card-play {
+            display: none;
+        }
+
+        .story-card-lock {
+            position: absolute;
+            font-size: 32px;
+        }
+
+        .story-card-content {
+            padding: var(--spacing-md);
+        }
+
+        .story-card-title {
+            font-size: var(--font-base);
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+            line-height: 1.3;
+        }
+
+        .story-card-duration {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .story-card-check {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            width: 28px;
+            height: 28px;
+            background: var(--green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 16px;
+        }
+
+        /* ==================== CONFETTI ==================== */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ==================== MODALS ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(28, 23, 13, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-3xl);
+            text-align: center;
+            max-width: 450px;
+            animation: modalPop 0.4s ease;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-emoji {
+            font-size: 100px;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .modal-title {
+            font-size: var(--font-2xl);
+            font-weight: 800;
+            color: var(--gold);
+            margin: var(--spacing-lg) 0 var(--spacing-md);
+        }
+
+        .modal-message {
+            font-size: var(--font-lg);
+            color: var(--dark-soft);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .modal-btn {
+            background: var(--gold);
+            border: none;
+            padding: var(--spacing-md) var(--spacing-2xl);
+            border-radius: var(--radius-lg);
+            font-family: 'Lexend', sans-serif;
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Video Modal */
+        .video-modal-content {
+            background: var(--dark);
+            border-radius: var(--radius-xl);
+            padding: 0;
+            max-width: 800px;
+            width: 90%;
+            overflow: hidden;
+        }
+
+        .video-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            background: var(--dark);
+            color: var(--white);
+        }
+
+        .video-modal-title {
+            font-size: var(--font-lg);
+            font-weight: 700;
+        }
+
+        .video-modal-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 32px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .video-modal-close:hover {
+            opacity: 1;
+        }
+
+        .video-player-placeholder {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+
+        .video-player-icon {
+            font-size: 80px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .video-player-text {
+            font-size: var(--font-xl);
+            font-weight: 700;
+        }
+
+        .video-modal-footer {
+            padding: var(--spacing-xl);
+            background: var(--white);
+        }
+
+        .video-modal-story-title {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .video-modal-story-desc {
+            font-size: var(--font-base);
+            color: var(--dark-soft);
+        }
+
+        /* Mobile Navigation Toggle */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            padding: var(--spacing-sm) var(--spacing-md);
+            box-shadow: 0 -4px 20px rgba(28, 23, 13, 0.1);
+            z-index: 1000;
+            border-top: 1px solid var(--border);
+        }
+
+        .mobile-nav-toggle .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .mobile-nav-toggle .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            color: var(--dark-soft);
+        }
+
+        .mobile-nav-toggle .mobile-nav-item.active {
+            color: var(--gold-dark);
+        }
+
+        .mobile-nav-toggle .mobile-nav-item .nav-icon {
+            font-size: 24px;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 240px;
+            }
+
+            .sidebar {
+                width: 240px;
+            }
+
+            .home-content {
+                grid-template-columns: 1fr;
+            }
+
+            .home-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: var(--spacing-md);
+                padding-bottom: 100px;
+                overflow-x: hidden;
+                max-width: 100vw;
+                width: 100%;
+            }
+
+            .screen {
+                width: 100%;
+                overflow-x: hidden;
+            }
+
+            .home-grid {
+                display: block !important;
+                width: 100%;
+            }
+
+            .home-sidebar {
+                display: none !important;
+            }
+
+            .prayer-section {
+                padding: var(--spacing-lg);
+                width: 100%;
+            }
+
+            .home-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
+            }
+
+            .home-header h1 {
+                font-size: 24px;
+                line-height: 1.2;
+            }
+
+            .home-header p {
+                font-size: 14px;
+            }
+
+            .greeting-section {
+                margin-bottom: var(--spacing-md);
+            }
+
+            .greeting h1 {
+                font-size: 24px;
+                line-height: 1.3;
+            }
+
+            .greeting p {
+                font-size: 14px;
+            }
+
+            .home-main-header {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+
+            .header-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .header-stat {
+                padding: var(--spacing-sm) var(--spacing-md);
+            }
+
+            .header-stat .stat-value {
+                font-size: var(--font-lg);
+            }
+
+            .header-stat .stat-label {
+                font-size: 11px;
+            }
+
+            .quick-stats {
+                width: 100%;
+            }
+
+            .stat-card {
+                padding: var(--spacing-md);
+            }
+
+            .stat-card .stat-value {
+                font-size: var(--font-xl);
+            }
+
+            .prayers-card {
+                padding: var(--spacing-lg);
+            }
+
+            .prayers-card h2 {
+                font-size: var(--font-lg);
+            }
+
+            .prayer-item {
+                padding: var(--spacing-md);
+            }
+
+            .prayer-icon {
+                font-size: 28px;
+            }
+
+            .prayer-name {
+                font-size: var(--font-sm);
+            }
+
+            .prayer-time {
+                font-size: 12px;
+            }
+
+            /* Stories Grid Mobile */
+            .stories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-md);
+            }
+
+            .story-card {
+                padding: var(--spacing-md);
+            }
+
+            .story-thumbnail {
+                height: 80px;
+            }
+
+            .story-emoji {
+                font-size: 32px;
+            }
+
+            .story-title {
+                font-size: var(--font-sm);
+            }
+
+            /* Dashboard Mobile */
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-md);
+            }
+
+            .dashboard-stat {
+                padding: var(--spacing-md);
+            }
+
+            .dashboard-stat .stat-icon {
+                font-size: 32px;
+            }
+
+            .dashboard-stat .stat-value {
+                font-size: var(--font-xl);
+            }
+
+            .calendar-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: var(--spacing-xs);
+            }
+
+            .calendar-day {
+                padding: var(--spacing-sm);
+                font-size: var(--font-sm);
+            }
+
+            .calendar-day .day-prayers {
+                font-size: 10px;
+            }
+
+            /* Leaderboard Mobile */
+            .podium {
+                gap: var(--spacing-sm);
+            }
+
+            .podium-item .podium-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            .podium-item.first .podium-avatar {
+                width: 70px;
+                height: 70px;
+            }
+
+            .podium-item .podium-name {
+                font-size: var(--font-sm);
+            }
+
+            .podium-item .podium-stand {
+                width: 60px;
+                font-size: var(--font-lg);
+            }
+
+            .podium-item.first .podium-stand {
+                width: 70px;
+            }
+
+            .leaderboard-tabs {
+                flex-wrap: wrap;
+                gap: var(--spacing-xs);
+            }
+
+            .leaderboard-tab {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: var(--font-sm);
+            }
+
+            .user-position-card {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--spacing-md);
+            }
+
+            /* Video Modal Mobile */
+            .video-modal-content {
+                width: 95%;
+                max-width: none;
+                margin: var(--spacing-md);
+            }
+
+            .video-modal-header {
+                padding: var(--spacing-md);
+            }
+
+            .video-modal-header h3 {
+                font-size: var(--font-base);
+            }
+
+            .video-placeholder {
+                height: 200px;
+            }
+
+            .video-modal-info {
+                padding: var(--spacing-md);
+            }
+
+            /* Screen Headers Mobile */
+            .stories-header h1,
+            .dashboard-header h1,
+            .leaderboard-header h1 {
+                font-size: var(--font-xl);
+            }
+
+            .stories-header p,
+            .dashboard-header p,
+            .leaderboard-header p {
+                font-size: var(--font-sm);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: var(--spacing-sm);
+                padding-bottom: 90px;
+            }
+
+            .home-header h1 {
+                font-size: 20px;
+            }
+
+            .home-header p {
+                font-size: 13px;
+            }
+
+            .stories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-sm);
+            }
+
+            .story-card {
+                padding: var(--spacing-sm);
+            }
+
+            .story-thumbnail {
+                height: 70px;
+            }
+
+            .story-emoji {
+                font-size: 28px;
+            }
+
+            .story-title {
+                font-size: 12px;
+            }
+
+            .story-duration {
+                font-size: 10px;
+            }
+
+            .calendar-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+            }
+
+            .calendar-day {
+                padding: var(--spacing-xs);
+                font-size: 12px;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: var(--spacing-sm);
+            }
+
+            .dashboard-stat {
+                padding: var(--spacing-sm);
+            }
+
+            .dashboard-stat .stat-icon {
+                font-size: 28px;
+            }
+
+            .dashboard-stat .stat-value {
+                font-size: var(--font-lg);
+            }
+
+            .dashboard-stat .stat-label {
+                font-size: 11px;
+            }
+        }
+    </style>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, orderBy, limit, getDocs, onSnapshot, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD95yMLj73ZzVAagG1SZZsloZf2efs90Bg",
+            authDomain: "salah-buddy-b3ac8.firebaseapp.com",
+            projectId: "salah-buddy-b3ac8",
+            storageBucket: "salah-buddy-b3ac8.firebasestorage.app",
+            messagingSenderId: "675921169506",
+            appId: "1:675921169506:web:be4ee90b41e8251b8c153b"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Make Firebase available globally
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        window.firebaseModules = {
+            signInAnonymously,
+            onAuthStateChanged,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            collection,
+            query,
+            where,
+            orderBy,
+            limit,
+            getDocs,
+            onSnapshot,
+            serverTimestamp,
+            increment
+        };
+
+        console.log('Firebase initialized successfully');
+    </script>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-container" id="starsContainer"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">🌙</span>
+                <span class="logo-text">Salah Buddy</span>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item active" onclick="showScreen('home')">
+                    <span class="nav-icon">🏠</span>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('stories')">
+                    <span class="nav-icon">📺</span>
+                    <span>Daily Stories</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span>My Progress</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('leaderboard')">
+                    <span class="nav-icon">🏆</span>
+                    <span>Leaderboard</span>
+                </div>
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="sidebar-avatar">😊</div>
+                <div class="sidebar-user-info">
+                    <h4>Ahmad</h4>
+                    <p class="sidebar-user-level">12 Day Streak!</p>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- ==================== HOME SCREEN ==================== -->
+            <div class="screen active" id="homeScreen">
+                <div class="page-header">
+                    <div class="greeting">
+                        <h1>Assalamu Alaikum, <span>Ahmad!</span></h1>
+                        <p>Day 12 of Ramadan - Keep up the great work!</p>
+                    </div>
+                    <div class="header-stats">
+                        <div class="header-stat">
+                            <div class="header-stat-value">57</div>
+                            <div class="header-stat-label">Total Prayers</div>
+                        </div>
+                        <div class="header-stat">
+                            <div class="header-stat-value">#24</div>
+                            <div class="header-stat-label">Your Rank</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="home-grid">
+                    <div class="prayer-section">
+                        <div class="prayer-header">
+                            <h2>Today's Prayers</h2>
+                            <span class="prayer-progress-text" id="prayerProgressText">3 of 5 completed</span>
+                        </div>
+
+                        <div class="prayer-cards">
+                            <div class="prayer-card completed" data-prayer="fajr" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">🌅</div>
+                                <div class="prayer-card-name">Fajr</div>
+                                <div class="prayer-card-time">5:12 AM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                            <div class="prayer-card completed" data-prayer="dhuhr" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">☀️</div>
+                                <div class="prayer-card-name">Dhuhr</div>
+                                <div class="prayer-card-time">12:30 PM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                            <div class="prayer-card completed" data-prayer="asr" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">🌤️</div>
+                                <div class="prayer-card-name">Asr</div>
+                                <div class="prayer-card-time">3:45 PM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                            <div class="prayer-card current" data-prayer="maghrib" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">🌇</div>
+                                <div class="prayer-card-name">Maghrib</div>
+                                <div class="prayer-card-time">6:32 PM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                            <div class="prayer-card" data-prayer="isha" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">🌙</div>
+                                <div class="prayer-card-name">Isha</div>
+                                <div class="prayer-card-time">8:00 PM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="home-sidebar">
+                        <div class="streak-card">
+                            <div class="streak-label">Current Streak</div>
+                            <div class="streak-value">12</div>
+                            <div class="streak-days">days in a row!</div>
+                            <div class="streak-best">Personal Best: 15 days</div>
+                        </div>
+
+                        <div class="todays-story-card" onclick="openStory(12)">
+                            <div class="story-thumbnail" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                <div class="story-day-badge">Day 12</div>
+                                <div class="story-play-btn">▶</div>
+                            </div>
+                            <div class="todays-story-title">The Night Journey</div>
+                            <div class="todays-story-desc">Learn about Al-Isra and why we pray 5 times</div>
+                        </div>
+
+                        <div class="quick-stats">
+                            <div class="quick-stat">
+                                <div class="quick-stat-icon">📺</div>
+                                <div class="quick-stat-value">11</div>
+                                <div class="quick-stat-label">Stories Watched</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="quick-stat-icon">⭐</div>
+                                <div class="quick-stat-value">1,240</div>
+                                <div class="quick-stat-label">Stars</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== DAILY STORIES SCREEN ==================== -->
+            <div class="screen" id="storiesScreen">
+                <div class="page-header">
+                    <div class="greeting">
+                        <h1>Daily <span>Stories</span></h1>
+                        <p>Learn about salah with a new video every day!</p>
+                    </div>
+                    <div class="stories-progress">
+                        <span class="stories-progress-text">11 of 30 watched</span>
+                        <div class="stories-progress-bar">
+                            <div class="stories-progress-fill" style="width: 37%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stories-grid" id="storiesGrid">
+                    <!-- Stories will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ==================== DASHBOARD SCREEN ==================== -->
+            <div class="screen" id="dashboardScreen">
+                <div class="page-header">
+                    <div class="greeting">
+                        <h1>Your <span>Progress</span></h1>
+                        <p>Ramadan 2025 - Day 12 of 30</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-icon">🕌</div>
+                        <div class="stat-card-value">57</div>
+                        <div class="stat-card-label">Prayers Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">🔥</div>
+                        <div class="stat-card-value">12</div>
+                        <div class="stat-card-label">Day Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">📺</div>
+                        <div class="stat-card-value">11</div>
+                        <div class="stat-card-label">Stories Watched</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">⭐</div>
+                        <div class="stat-card-value">1,240</div>
+                        <div class="stat-card-label">Stars Earned</div>
+                    </div>
+                </div>
+
+                <div class="calendar-section">
+                    <div class="calendar-header">
+                        <h2>Ramadan Calendar</h2>
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <div class="legend-dot complete"></div>
+                                <span>All 5 prayers</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot partial"></div>
+                                <span>Some prayers</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot today"></div>
+                                <span>Today</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="calendar-grid">
+                        <div class="calendar-day completed">1<div class="calendar-day-prayers">5/5</div></div>
+                        <div class="calendar-day completed">2<div class="calendar-day-prayers">5/5</div></div>
+                        <div class="calendar-day completed">3<div class="calendar-day-prayers">5/5</div></div>
+                        <div class="calendar-day completed">4<div class="calendar-day-prayers">5/5</div></div>
+                        <div class="calendar-day completed">5<div class="calendar-day-prayers">5/5</div></div>
+                        <div class="calendar-day partial">6<div class="calendar-day-prayers">4/5</div></div>
+                        <div class="calendar-day completed">7<div class="calendar-day-prayers">5/5</div></div>
+                        <div class="calendar-day completed">8<div class="calendar-day-prayers">5/5</div></div>
+                        <div class="calendar-day completed">9<div class="calendar-day-prayers">5/5</div></div>
+                        <div class="calendar-day completed">10<div class="calendar-day-prayers">5/5</div></div>
+                        <div class="calendar-day partial">11<div class="calendar-day-prayers">3/5</div></div>
+                        <div class="calendar-day today">12<div class="calendar-day-prayers">3/5</div></div>
+                        <div class="calendar-day future">13</div>
+                        <div class="calendar-day future">14</div>
+                        <div class="calendar-day future">15</div>
+                        <div class="calendar-day future">16</div>
+                        <div class="calendar-day future">17</div>
+                        <div class="calendar-day future">18</div>
+                        <div class="calendar-day future">19</div>
+                        <div class="calendar-day future">20</div>
+                        <div class="calendar-day future">21</div>
+                        <div class="calendar-day future">22</div>
+                        <div class="calendar-day future">23</div>
+                        <div class="calendar-day future">24</div>
+                        <div class="calendar-day future">25</div>
+                        <div class="calendar-day future">26</div>
+                        <div class="calendar-day future">27</div>
+                        <div class="calendar-day future">28</div>
+                        <div class="calendar-day future">29</div>
+                        <div class="calendar-day future">30</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== LEADERBOARD SCREEN ==================== -->
+            <div class="screen" id="leaderboardScreen">
+                <div class="page-header">
+                    <div class="greeting">
+                        <h1>Global <span>Leaderboard</span></h1>
+                        <p>See how you compare with other kids around the world!</p>
+                    </div>
+                </div>
+
+                <div class="leaderboard-container">
+                    <div class="leaderboard-main">
+                        <div class="leaderboard-tabs">
+                            <div class="leaderboard-tab active">🌍 Global</div>
+                            <div class="leaderboard-tab">👥 Friends</div>
+                            <div class="leaderboard-tab">👨‍👩‍👧‍👦 Family</div>
+                            <div class="leaderboard-tab">📈 Most Improved</div>
+                        </div>
+
+                        <div class="podium">
+                            <div class="podium-place second">
+                                <div class="podium-avatar">🌟</div>
+                                <div class="podium-name">Yusuf</div>
+                                <div class="podium-points">2,380 ⭐</div>
+                                <div class="podium-stand">2</div>
+                            </div>
+                            <div class="podium-place first">
+                                <div class="podium-avatar">👑</div>
+                                <div class="podium-name">Fatima</div>
+                                <div class="podium-points">2,450 ⭐</div>
+                                <div class="podium-stand">1</div>
+                            </div>
+                            <div class="podium-place third">
+                                <div class="podium-avatar">✨</div>
+                                <div class="podium-name">Aisha</div>
+                                <div class="podium-points">2,290 ⭐</div>
+                                <div class="podium-stand">3</div>
+                            </div>
+                        </div>
+
+                        <div class="leaderboard-list">
+                            <div class="leaderboard-item">
+                                <div class="lb-rank">4</div>
+                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--purple), var(--teal));">🌙</div>
+                                <div class="lb-info">
+                                    <div class="lb-name">Omar</div>
+                                    <div class="lb-streak">🔥 22 day streak</div>
+                                </div>
+                                <div class="lb-points">2,150</div>
+                            </div>
+                            <div class="leaderboard-item">
+                                <div class="lb-rank">5</div>
+                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--coral), var(--coral-light));">💫</div>
+                                <div class="lb-info">
+                                    <div class="lb-name">Maryam</div>
+                                    <div class="lb-streak">🔥 20 day streak</div>
+                                </div>
+                                <div class="lb-points">2,080</div>
+                            </div>
+                            <div class="leaderboard-item">
+                                <div class="lb-rank">6</div>
+                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--green), var(--teal));">🌟</div>
+                                <div class="lb-info">
+                                    <div class="lb-name">Ibrahim</div>
+                                    <div class="lb-streak">🔥 18 day streak</div>
+                                </div>
+                                <div class="lb-points">1,950</div>
+                            </div>
+                            <div class="leaderboard-item">
+                                <div class="lb-rank">7</div>
+                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--gold), var(--gold-light));">⭐</div>
+                                <div class="lb-info">
+                                    <div class="lb-name">Zainab</div>
+                                    <div class="lb-streak">🔥 15 day streak</div>
+                                </div>
+                                <div class="lb-points">1,820</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="your-rank-card">
+                        <div class="your-rank-label">Your Position</div>
+                        <div class="your-rank-number">#24</div>
+                        <div class="your-rank-info">
+                            <div class="your-rank-avatar">😊</div>
+                            <div class="your-rank-details">
+                                <h3>Ahmad</h3>
+                                <p>1,240 stars</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- Prayer Complete Modal -->
+    <div class="modal-overlay" id="prayerModal">
+        <div class="modal-content">
+            <div class="modal-emoji">🌟</div>
+            <h3 class="modal-title">Mashallah!</h3>
+            <p class="modal-message">You completed <span id="modalPrayerName">Maghrib</span> prayer!</p>
+            <button class="modal-btn" onclick="closeModal()">Keep Going!</button>
+        </div>
+    </div>
+
+    <!-- Video Story Modal -->
+    <div class="modal-overlay" id="videoModal">
+        <div class="video-modal-content">
+            <div class="video-modal-header">
+                <div class="video-modal-title" id="videoModalTitle">Day 12: The Night Journey</div>
+                <button class="video-modal-close" onclick="closeVideoModal()">×</button>
+            </div>
+            <div class="video-player-placeholder">
+                <div class="video-player-icon">🎬</div>
+                <div class="video-player-text">Video Player</div>
+            </div>
+            <div class="video-modal-footer">
+                <div class="video-modal-story-title" id="videoStoryTitle">The Night Journey (Al-Isra)</div>
+                <div class="video-modal-story-desc" id="videoStoryDesc">Learn about the miraculous night journey of Prophet Muhammad ﷺ and how the gift of 5 daily prayers was given to the Muslim ummah.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Story data for 30 days
+        const stories = [
+            { day: 1, title: "What is Salah?", desc: "Introduction to the beautiful gift of prayer", emoji: "🕌", color: "linear-gradient(135deg, #667eea, #764ba2)" },
+            { day: 2, title: "Making Wudu", desc: "Learn how to prepare for prayer", emoji: "💧", color: "linear-gradient(135deg, #4facfe, #00f2fe)" },
+            { day: 3, title: "The 5 Daily Prayers", desc: "Meet Fajr, Dhuhr, Asr, Maghrib & Isha", emoji: "🌅", color: "linear-gradient(135deg, #fa709a, #fee140)" },
+            { day: 4, title: "Facing the Qibla", desc: "Why we face Makkah when we pray", emoji: "🧭", color: "linear-gradient(135deg, #a8edea, #fed6e3)" },
+            { day: 5, title: "Standing Before Allah", desc: "The meaning of Qiyam", emoji: "🧍", color: "linear-gradient(135deg, #d299c2, #fef9d7)" },
+            { day: 6, title: "Surah Al-Fatiha", desc: "The opening chapter we recite", emoji: "📖", color: "linear-gradient(135deg, #89f7fe, #66a6ff)" },
+            { day: 7, title: "Bowing in Ruku", desc: "Showing humility to Allah", emoji: "🙇", color: "linear-gradient(135deg, #a18cd1, #fbc2eb)" },
+            { day: 8, title: "Prostrating in Sujood", desc: "The closest to Allah", emoji: "🤲", color: "linear-gradient(135deg, #ffecd2, #fcb69f)" },
+            { day: 9, title: "Sitting & Tashahhud", desc: "Greeting the Prophet ﷺ", emoji: "✋", color: "linear-gradient(135deg, #ff9a9e, #fecfef)" },
+            { day: 10, title: "Ending with Salam", desc: "Peace to those around us", emoji: "☮️", color: "linear-gradient(135deg, #a1c4fd, #c2e9fb)" },
+            { day: 11, title: "Praying Together", desc: "The beauty of congregation", emoji: "👨‍👩‍👧‍👦", color: "linear-gradient(135deg, #f093fb, #f5576c)" },
+            { day: 12, title: "The Night Journey", desc: "How we got 5 daily prayers", emoji: "🌙", color: "linear-gradient(135deg, #667eea, #764ba2)" },
+            { day: 13, title: "Fajr - The Dawn Prayer", desc: "Starting the day with Allah", emoji: "🌅", color: "linear-gradient(135deg, #ff9a9e, #fad0c4)" },
+            { day: 14, title: "Dhuhr - The Noon Prayer", desc: "A midday break for Allah", emoji: "☀️", color: "linear-gradient(135deg, #ffecd2, #fcb69f)" },
+            { day: 15, title: "Asr - The Afternoon Prayer", desc: "Taking time before sunset", emoji: "🌤️", color: "linear-gradient(135deg, #fbc2eb, #a6c1ee)" },
+            { day: 16, title: "Maghrib - The Sunset Prayer", desc: "Thanking Allah as day ends", emoji: "🌇", color: "linear-gradient(135deg, #fa709a, #fee140)" },
+            { day: 17, title: "Isha - The Night Prayer", desc: "Ending the day peacefully", emoji: "🌙", color: "linear-gradient(135deg, #5f72bd, #9b23ea)" },
+            { day: 18, title: "The Mosque", desc: "Allah's house on Earth", emoji: "🕌", color: "linear-gradient(135deg, #11998e, #38ef7d)" },
+            { day: 19, title: "Friday Prayer", desc: "The special weekly gathering", emoji: "📿", color: "linear-gradient(135deg, #396afc, #2948ff)" },
+            { day: 20, title: "Praying at Home", desc: "Making any place special", emoji: "🏠", color: "linear-gradient(135deg, #ee9ca7, #ffdde1)" },
+            { day: 21, title: "The Prayer Mat", desc: "Your special place for Allah", emoji: "🧎", color: "linear-gradient(135deg, #c471f5, #fa71cd)" },
+            { day: 22, title: "Dua After Salah", desc: "Talking to Allah", emoji: "🤲", color: "linear-gradient(135deg, #48c6ef, #6f86d6)" },
+            { day: 23, title: "Helping Others Pray", desc: "Teaching younger siblings", emoji: "🤝", color: "linear-gradient(135deg, #f78ca0, #fe9a8b)" },
+            { day: 24, title: "When Prayer is Hard", desc: "Tips for staying focused", emoji: "💪", color: "linear-gradient(135deg, #a8caba, #5d4157)" },
+            { day: 25, title: "Prayers of the Prophets", desc: "Learning from the best", emoji: "⭐", color: "linear-gradient(135deg, #ffd89b, #19547b)" },
+            { day: 26, title: "Night of Power", desc: "The most special night", emoji: "✨", color: "linear-gradient(135deg, #0f0c29, #302b63)" },
+            { day: 27, title: "Taraweeh Prayers", desc: "Special Ramadan prayers", emoji: "🌟", color: "linear-gradient(135deg, #360033, #0b8793)" },
+            { day: 28, title: "Eid Prayer", desc: "Celebrating together", emoji: "🎉", color: "linear-gradient(135deg, #f5af19, #f12711)" },
+            { day: 29, title: "Prayer as a Gift", desc: "Why salah is special", emoji: "🎁", color: "linear-gradient(135deg, #c33764, #1d2671)" },
+            { day: 30, title: "Prayer Forever", desc: "Keeping salah in your heart", emoji: "❤️", color: "linear-gradient(135deg, #ed4264, #ffedbc)" }
+        ];
+
+        const currentDay = 12;
+
+        // Generate stars
+        function generateStars() {
+            const container = document.getElementById('starsContainer');
+            for (let i = 0; i < 80; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.width = (Math.random() * 3 + 2) + 'px';
+                star.style.height = star.style.width;
+                container.appendChild(star);
+            }
+        }
+        generateStars();
+
+        // Generate story cards
+        function generateStoryCards() {
+            const grid = document.getElementById('storiesGrid');
+            grid.innerHTML = '';
+
+            stories.forEach(story => {
+                const isWatched = story.day < currentDay;
+                const isCurrent = story.day === currentDay;
+                const isLocked = story.day > currentDay;
+
+                let cardClass = 'story-card';
+                if (isWatched) cardClass += ' watched';
+                if (isCurrent) cardClass += ' current';
+                if (isLocked) cardClass += ' locked';
+
+                const card = document.createElement('div');
+                card.className = cardClass;
+                card.onclick = isLocked ? null : () => openStory(story.day);
+
+                card.innerHTML = `
+                    <div class="story-card-thumbnail" style="background: ${story.color};">
+                        <div class="story-card-day">Day ${story.day}</div>
+                        ${story.emoji}
+                        ${isWatched ? '<div class="story-card-check">✓</div>' : ''}
+                        ${isLocked ? '<div class="story-card-lock">🔒</div>' : '<div class="story-card-play">▶</div>'}
+                    </div>
+                    <div class="story-card-content">
+                        <div class="story-card-title">${story.title}</div>
+                        <div class="story-card-duration">⏱️ 3-5 min</div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+        generateStoryCards();
+
+        // Screen navigation
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenName + 'Screen').classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // Prayer toggle
+        let completedPrayers = 3;
+
+        function togglePrayer(element) {
+            if (element.classList.contains('completed')) return;
+
+            element.classList.remove('current');
+            element.classList.add('completed');
+            completedPrayers++;
+
+            document.getElementById('prayerProgressText').textContent =
+                completedPrayers + ' of 5 completed';
+
+            const prayerName = element.querySelector('.prayer-card-name').textContent;
+            document.getElementById('modalPrayerName').textContent = prayerName;
+            document.getElementById('prayerModal').classList.add('active');
+
+            triggerConfetti();
+
+            const next = element.nextElementSibling;
+            if (next && next.classList.contains('prayer-card')) {
+                next.classList.add('current');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('prayerModal').classList.remove('active');
+        }
+
+        // Video modal
+        function openStory(day) {
+            const story = stories.find(s => s.day === day);
+            if (!story || day > currentDay) return;
+
+            document.getElementById('videoModalTitle').textContent = `Day ${day}: ${story.title}`;
+            document.getElementById('videoStoryTitle').textContent = story.title;
+            document.getElementById('videoStoryDesc').textContent = story.desc;
+            document.getElementById('videoModal').classList.add('active');
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.remove('active');
+        }
+
+        function triggerConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.style.display = 'block';
+            container.innerHTML = '';
+
+            const colors = ['#F5B526', '#22C55E', '#14B8A6', '#FF6B6B', '#A78BFA', '#FFE082'];
+
+            for (let i = 0; i < 80; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                container.appendChild(confetti);
+            }
+
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 3000);
+        }
+
+        // Leaderboard tab switching
+        document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.leaderboard-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav-toggle">
+        <div class="nav-items">
+            <div class="mobile-nav-item active" onclick="showScreen('home'); updateMobileNav(this)">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </div>
+            <div class="mobile-nav-item" onclick="showScreen('stories'); updateMobileNav(this)">
+                <span class="nav-icon">📺</span>
+                <span>Stories</span>
+            </div>
+            <div class="mobile-nav-item" onclick="showScreen('dashboard'); updateMobileNav(this)">
+                <span class="nav-icon">📊</span>
+                <span>Progress</span>
+            </div>
+            <div class="mobile-nav-item" onclick="showScreen('leaderboard'); updateMobileNav(this)">
+                <span class="nav-icon">🏆</span>
+                <span>Rank</span>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        function updateMobileNav(element) {
+            document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+        }
+    </script>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal-overlay" style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999;">
+        <div style="background: var(--white); border-radius: var(--radius-lg); padding: var(--spacing-2xl); max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+            <div style="font-size: 64px; margin-bottom: var(--spacing-md);">🌙</div>
+            <h2 style="color: var(--gold); margin-bottom: var(--spacing-sm);">Welcome to Salah Buddy!</h2>
+            <p style="color: var(--dark-soft); margin-bottom: var(--spacing-xl);">Your Ramadan companion for prayers and learning</p>
+
+            <div id="authForm">
+                <div style="margin-bottom: var(--spacing-md);">
+                    <input type="text" id="childName" placeholder="Child's Name"
+                           style="width: 100%; padding: var(--spacing-md); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: var(--font-base); font-family: inherit;">
+                </div>
+                <div style="margin-bottom: var(--spacing-md);">
+                    <input type="email" id="parentEmail" placeholder="Parent's Email"
+                           style="width: 100%; padding: var(--spacing-md); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: var(--font-base); font-family: inherit;">
+                </div>
+                <div style="margin-bottom: var(--spacing-lg);">
+                    <input type="password" id="parentPassword" placeholder="Password (6+ characters)"
+                           style="width: 100%; padding: var(--spacing-md); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: var(--font-base); font-family: inherit;">
+                </div>
+                <button onclick="handleAuth('signup')"
+                        style="width: 100%; padding: var(--spacing-md); background: var(--gold); color: var(--dark); border: none; border-radius: var(--radius-sm); font-size: var(--font-base); font-weight: 600; cursor: pointer; margin-bottom: var(--spacing-sm); font-family: inherit;">
+                    Start Ramadan Journey
+                </button>
+                <button onclick="handleAuth('login')"
+                        style="width: 100%; padding: var(--spacing-md); background: transparent; color: var(--dark-soft); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: var(--font-base); font-weight: 500; cursor: pointer; font-family: inherit;">
+                    I already have an account
+                </button>
+                <p id="authError" style="color: var(--coral); margin-top: var(--spacing-md); display: none;"></p>
+            </div>
+
+            <p style="margin-top: var(--spacing-xl); font-size: var(--font-sm); color: var(--dark-soft);">
+                <button onclick="handleGuestMode()" style="background: none; border: none; color: var(--gold); cursor: pointer; font-size: var(--font-sm); text-decoration: underline; font-family: inherit;">
+                    Try as Guest
+                </button>
+            </p>
+        </div>
+    </div>
+
+    <!-- App State Management -->
+    <script type="module">
+        // Wait for Firebase to be ready
+        const waitForFirebase = () => {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (window.firebaseAuth && window.firebaseModules) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 100);
+                    }
+                };
+                check();
+            });
+        };
+
+        // App State
+        const AppState = {
+            user: null,
+            profile: null,
+            prayers: {},
+            stories: [],
+            isGuest: false
+        };
+
+        // Initialize app
+        async function initApp() {
+            await waitForFirebase();
+
+            const { onAuthStateChanged } = window.firebaseModules;
+
+            onAuthStateChanged(window.firebaseAuth, async (user) => {
+                if (user) {
+                    AppState.user = user;
+                    await loadUserProfile(user.uid);
+                    hideAuthModal();
+                    updateUIWithProfile();
+                } else if (!AppState.isGuest) {
+                    showAuthModal();
+                }
+            });
+        }
+
+        // Auth handlers
+        window.handleAuth = async function(mode) {
+            const name = document.getElementById('childName').value.trim();
+            const email = document.getElementById('parentEmail').value.trim();
+            const password = document.getElementById('parentPassword').value;
+            const errorEl = document.getElementById('authError');
+
+            errorEl.style.display = 'none';
+
+            try {
+                const { signInWithEmailAndPassword, createUserWithEmailAndPassword, doc, setDoc, serverTimestamp } = window.firebaseModules;
+
+                if (mode === 'signup') {
+                    if (!name) throw new Error('Please enter your child\'s name');
+                    if (!email) throw new Error('Please enter an email');
+                    if (password.length < 6) throw new Error('Password must be at least 6 characters');
+
+                    const userCred = await createUserWithEmailAndPassword(window.firebaseAuth, email, password);
+
+                    // Create user profile
+                    await setDoc(doc(window.firebaseDb, 'users', userCred.user.uid), {
+                        name: name,
+                        email: email,
+                        createdAt: serverTimestamp(),
+                        totalPrayers: 0,
+                        totalStories: 0,
+                        currentStreak: 0,
+                        longestStreak: 0,
+                        stars: 0
+                    });
+                } else {
+                    await signInWithEmailAndPassword(window.firebaseAuth, email, password);
+                }
+            } catch (error) {
+                errorEl.textContent = error.message;
+                errorEl.style.display = 'block';
+            }
+        };
+
+        window.handleGuestMode = function() {
+            AppState.isGuest = true;
+            AppState.profile = {
+                name: 'Guest',
+                totalPrayers: 0,
+                currentStreak: 0,
+                stars: 0
+            };
+            hideAuthModal();
+            updateUIWithProfile();
+        };
+
+        async function loadUserProfile(uid) {
+            const { doc, getDoc } = window.firebaseModules;
+
+            try {
+                const userDoc = await getDoc(doc(window.firebaseDb, 'users', uid));
+                if (userDoc.exists()) {
+                    AppState.profile = userDoc.data();
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        function updateUIWithProfile() {
+            const profile = AppState.profile;
+            if (!profile) return;
+
+            // Update name in sidebar
+            const sidebarName = document.querySelector('.sidebar-user-info h4');
+            if (sidebarName) sidebarName.textContent = profile.name || 'Guest';
+
+            // Update streak display
+            const streakDisplay = document.querySelector('.sidebar-user-level');
+            if (streakDisplay) streakDisplay.textContent = (profile.currentStreak || 0) + ' Day Streak!';
+
+            // Update greeting
+            const greeting = document.querySelector('.hero-title');
+            if (greeting) greeting.innerHTML = 'Assalamu Alaikum, <span class="user-name">' + (profile.name || 'Guest') + '</span>!';
+
+            console.log('UI updated with profile:', profile);
+        }
+
+        function showAuthModal() {
+            document.getElementById('authModal').style.display = 'flex';
+        }
+
+        function hideAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        // Track prayer completion
+        window.trackPrayer = async function(prayerName) {
+            if (AppState.isGuest) {
+                alert('Sign up to save your prayer progress!');
+                return;
+            }
+
+            const { doc, updateDoc, increment, serverTimestamp } = window.firebaseModules;
+
+            try {
+                await updateDoc(doc(window.firebaseDb, 'users', AppState.user.uid), {
+                    totalPrayers: increment(1),
+                    stars: increment(10),
+                    lastPrayerAt: serverTimestamp()
+                });
+
+                // Update local state
+                AppState.profile.totalPrayers = (AppState.profile.totalPrayers || 0) + 1;
+                AppState.profile.stars = (AppState.profile.stars || 0) + 10;
+
+                console.log('Prayer tracked:', prayerName);
+                showConfetti();
+            } catch (error) {
+                console.error('Error tracking prayer:', error);
+            }
+        };
+
+        // Start the app
+        initApp();
+    </script>
+</body>
+</html>
