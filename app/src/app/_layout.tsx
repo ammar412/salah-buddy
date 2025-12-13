@@ -16,6 +16,7 @@ import {
 } from '@expo-google-fonts/lexend';
 import { Colors } from '../constants';
 import { useAuthStore } from '../store/useAuthStore';
+import { useStore } from '../store/useStore';
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -32,10 +33,13 @@ export default function RootLayout() {
 
   const { initialize, isAuthenticated, isLoading, currentChild, isDemoMode } =
     useAuthStore();
+  const { loadAppSettings } = useStore();
 
   useEffect(() => {
     const setup = async () => {
       try {
+        // Load app settings (Ramadan dates, gamification values) first
+        await loadAppSettings();
         // Initialize auth state
         await initialize();
       } catch (error) {

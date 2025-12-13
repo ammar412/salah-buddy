@@ -16,6 +16,12 @@ import {
   getUserStats,
   updateStreak as updateStreakInFirestore,
   syncLocalDataToCloud,
+  getAppSettings,
+  getRamadanDayFromSettings,
+  DEFAULT_GAMIFICATION,
+  type AppSettings,
+  type GamificationSettings,
+  type RamadanSettings,
 } from '../services/firestore';
 import type {
   PrayerName,
@@ -26,14 +32,9 @@ import type {
 } from '../types';
 import { getTodayString } from '../utils/date';
 
-// Helper to get Ramadan day (1-30) based on start date
-const getRamadanDay = (): number => {
-  // This would be configured based on actual Ramadan start date
-  const startDate = new Date('2024-03-11'); // Example Ramadan start
-  const today = new Date();
-  const diffTime = Math.abs(today.getTime() - startDate.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return Math.min(Math.max(diffDays, 1), 30);
+// Helper to get Ramadan day (1-30) based on settings or fallback
+const getRamadanDay = (ramadanSettings: RamadanSettings | null): number => {
+  return getRamadanDayFromSettings(ramadanSettings);
 };
 
 interface StoreState {
@@ -72,7 +73,12 @@ interface StoreState {
   lastSyncAt: string | null;
   syncToCloud: () => Promise<void>;
 
-  // Settings
+  // App Settings (from Firestore)
+  ramadanSettings: RamadanSettings | null;
+  gamificationSettings: GamificationSettings;
+  loadAppSettings: () => Promise<void>;
+
+  // Local Settings
   prayerTimesLocation: {
     latitude: number;
     longitude: number;
@@ -102,26 +108,38 @@ export const useStore = create<StoreState>()(
       user: null,
       setUser: (user) => set({ user }),
 
+      // App Settings (from Firestore)
+      ramadanSettings: null,
+      gamificationSettings: DEFAULT_GAMIFICATION,
+      loadAppSettings: async () => {
+        try {
+          const settings = await getAppSettings();
+          const currentDay = getRamadanDay(settings.ramadan);
+          set({
+            ramadanSettings: settings.ramadan,
+            gamificationSettings: settings.gamification,
+            currentDay,
+          });
+        } catch (error) {
+          console.error('Failed to load app settings:', error);
+        }
+      },
+
       // Today's Prayers
       todayPrayers: { ...defaultPrayers },
       togglePrayer: async (prayerId) => {
         const current = get().todayPrayers[prayerId];
         const newValue = !current;
-
-        // Store previous state for rollback
-        const previousState = {
-          todayPrayers: { ...get().todayPrayers },
-          totalPrayersCompleted: get().totalPrayersCompleted,
-          stars: get().stars,
-        };
+        const { starsPerPrayer } = get().gamificationSettings;
 
         // Update local state immediately (optimistic update)
+        // Using functional update to avoid race conditions with concurrent toggles
         set((state) => ({
           todayPrayers: { ...state.todayPrayers, [prayerId]: newValue },
           totalPrayersCompleted: newValue
             ? state.totalPrayersCompleted + 1
             : state.totalPrayersCompleted - 1,
-          stars: newValue ? state.stars + 10 : state.stars - 10,
+          stars: newValue ? state.stars + starsPerPrayer : state.stars - starsPerPrayer,
         }));
 
         // Add to history
@@ -138,21 +156,24 @@ export const useStore = create<StoreState>()(
         const authState = useAuthStore.getState();
         if (authState.currentChild && !authState.isDemoMode) {
           try {
-            await togglePrayerInFirestore(authState.currentChild.id, prayerId, newValue);
+            await togglePrayerInFirestore(authState.currentChild.id, prayerId, newValue, starsPerPrayer);
           } catch (error) {
             console.error('Failed to sync prayer to cloud:', error);
-            // Rollback optimistic update on failure
-            set({
-              todayPrayers: previousState.todayPrayers,
-              totalPrayersCompleted: previousState.totalPrayersCompleted,
-              stars: previousState.stars,
-            });
+            // Rollback using functional update to handle concurrent state changes
+            // This reverses just THIS toggle, not the entire state
+            set((state) => ({
+              todayPrayers: { ...state.todayPrayers, [prayerId]: !newValue },
+              totalPrayersCompleted: newValue
+                ? state.totalPrayersCompleted - 1
+                : state.totalPrayersCompleted + 1,
+              stars: newValue ? state.stars - starsPerPrayer : state.stars + starsPerPrayer,
+            }));
             // Re-throw so UI can show error
             throw error;
           }
         }
 
-        // Update streak
+        // Update streak (pass streakBonus from settings)
         get().updateStreak();
       },
       resetTodayPrayers: () => set({ todayPrayers: { ...defaultPrayers } }),
@@ -188,11 +209,13 @@ export const useStore = create<StoreState>()(
       },
 
       // Stories
-      currentDay: getRamadanDay(),
+      currentDay: getRamadanDay(null), // Will be updated when loadAppSettings is called
       storyProgress: {},
       watchStory: async (storyId) => {
         const currentProgress = get().storyProgress[storyId];
         if (currentProgress?.status === 'watched') return;
+
+        const { storyBonus } = get().gamificationSettings;
 
         // Update local state immediately
         set((state) => ({
@@ -206,14 +229,14 @@ export const useStore = create<StoreState>()(
             },
           },
           totalStoriesWatched: state.totalStoriesWatched + 1,
-          stars: state.stars + 15,
+          stars: state.stars + storyBonus,
         }));
 
         // Sync to Firestore
         const authState = useAuthStore.getState();
         if (authState.currentChild && !authState.isDemoMode) {
           try {
-            await markStoryWatched(authState.currentChild.id, storyId);
+            await markStoryWatched(authState.currentChild.id, storyId, storyBonus);
           } catch (error) {
             console.error('Failed to sync story to cloud:', error);
           }
@@ -263,6 +286,7 @@ export const useStore = create<StoreState>()(
       updateStreak: async () => {
         const state = get();
         const todayCompleted = Object.values(state.todayPrayers).filter(Boolean).length;
+        const { streakBonus } = state.gamificationSettings;
 
         // If all 5 prayers completed today, update streak
         if (todayCompleted === 5) {
@@ -270,14 +294,14 @@ export const useStore = create<StoreState>()(
           set({
             currentStreak: newStreak,
             longestStreak: Math.max(newStreak, state.longestStreak),
-            stars: state.stars + 5, // Streak bonus
+            stars: state.stars + streakBonus, // Streak bonus from settings
           });
 
           // Sync to Firestore
           const authState = useAuthStore.getState();
           if (authState.currentChild && !authState.isDemoMode) {
             try {
-              await updateStreakInFirestore(authState.currentChild.id);
+              await updateStreakInFirestore(authState.currentChild.id, streakBonus);
             } catch (error) {
               console.error('Failed to update streak in cloud:', error);
             }
@@ -383,6 +407,9 @@ export const useStore = create<StoreState>()(
         prayerTimesLocation: state.prayerTimesLocation,
         notificationsEnabled: state.notificationsEnabled,
         lastSyncAt: state.lastSyncAt,
+        // Cache app settings locally for offline support
+        ramadanSettings: state.ramadanSettings,
+        gamificationSettings: state.gamificationSettings,
       }),
     }
   )
