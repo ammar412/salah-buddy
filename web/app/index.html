@@ -2345,6 +2345,64 @@
                         </div>
                     </div>
 
+                    <!-- Family Section - Manage Children -->
+                    <div class="story-card" style="cursor: default;" id="familySection">
+                        <h3 style="margin-bottom: var(--spacing-md); color: var(--dark);">👨‍👩‍👧‍👦 Family</h3>
+
+                        <!-- Children List -->
+                        <div id="childrenListSection" style="margin-bottom: var(--spacing-md);">
+                            <div id="childrenListContainer" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                                <!-- Children will be loaded here -->
+                                <p id="noChildrenMessage" style="color: var(--dark-soft); font-size: 14px; text-align: center; padding: var(--spacing-md);">
+                                    No children added yet
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Add Child Form (collapsible) -->
+                        <div id="addChildFormContainer">
+                            <button onclick="toggleAddChildForm()" id="toggleAddChildBtn" style="width: 100%; padding: var(--spacing-md); background: var(--gold); color: var(--dark); border: none; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>+</span> Add Child
+                            </button>
+
+                            <div id="addChildFormFields" style="display: none; margin-top: var(--spacing-md); padding: var(--spacing-md); background: var(--cream); border-radius: var(--radius-sm);">
+                                <div style="margin-bottom: var(--spacing-md);">
+                                    <label style="display: block; font-weight: 600; margin-bottom: 4px; color: var(--dark);">Child's Name</label>
+                                    <input type="text" id="settingsChildNameInput" placeholder="Enter child's name" style="width: 100%; padding: var(--spacing-sm); border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; box-sizing: border-box;">
+                                </div>
+                                <div style="margin-bottom: var(--spacing-md);">
+                                    <label style="display: block; font-weight: 600; margin-bottom: 4px; color: var(--dark);">Age</label>
+                                    <select id="settingsChildAgeSelect" style="width: 100%; padding: var(--spacing-sm); border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; background: var(--white);">
+                                        <option value="">Select age</option>
+                                        <option value="4">4 years</option>
+                                        <option value="5">5 years</option>
+                                        <option value="6">6 years</option>
+                                        <option value="7">7 years</option>
+                                        <option value="8">8 years</option>
+                                        <option value="9">9 years</option>
+                                        <option value="10">10 years</option>
+                                        <option value="11">11 years</option>
+                                        <option value="12">12 years</option>
+                                        <option value="13">13 years</option>
+                                        <option value="14">14 years</option>
+                                        <option value="15">15 years</option>
+                                        <option value="16">16 years</option>
+                                        <option value="17">17 years</option>
+                                    </select>
+                                </div>
+                                <p id="settingsAddChildError" style="color: var(--coral); font-size: 14px; margin-bottom: var(--spacing-sm); display: none;"></p>
+                                <div style="display: flex; gap: var(--spacing-sm);">
+                                    <button onclick="cancelAddChild()" style="flex: 1; padding: var(--spacing-sm); background: var(--white); border: 2px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-weight: 600;">
+                                        Cancel
+                                    </button>
+                                    <button onclick="addChildFromSettings()" id="settingsAddChildBtn" style="flex: 1; padding: var(--spacing-sm); background: var(--gold); border: none; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-weight: 600;">
+                                        Add Child
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Privacy Section -->
                     <div class="story-card" style="cursor: default;">
                         <h3 style="margin-bottom: var(--spacing-md); color: var(--dark);">🔒 Privacy</h3>
@@ -3648,6 +3706,150 @@
             if (createdEl) {
                 const created = AppState.profile.createdAt?.toDate?.() || new Date();
                 createdEl.textContent = created.toLocaleDateString();
+            }
+
+            // Load children for family section
+            loadChildrenFromSettings();
+        }
+
+        // Toggle add child form visibility
+        window.toggleAddChildForm = function() {
+            const formFields = document.getElementById('addChildFormFields');
+            const toggleBtn = document.getElementById('toggleAddChildBtn');
+
+            if (formFields.style.display === 'none') {
+                formFields.style.display = 'block';
+                toggleBtn.style.display = 'none';
+            } else {
+                formFields.style.display = 'none';
+                toggleBtn.style.display = 'flex';
+            }
+        };
+
+        // Cancel add child form
+        window.cancelAddChild = function() {
+            document.getElementById('settingsChildNameInput').value = '';
+            document.getElementById('settingsChildAgeSelect').value = '';
+            document.getElementById('settingsAddChildError').style.display = 'none';
+            document.getElementById('addChildFormFields').style.display = 'none';
+            document.getElementById('toggleAddChildBtn').style.display = 'flex';
+        };
+
+        // Add child from settings
+        window.addChildFromSettings = async function() {
+            const nameInput = document.getElementById('settingsChildNameInput');
+            const ageSelect = document.getElementById('settingsChildAgeSelect');
+            const errorEl = document.getElementById('settingsAddChildError');
+            const addBtn = document.getElementById('settingsAddChildBtn');
+
+            const childName = nameInput.value.trim();
+            const childAge = ageSelect.value;
+
+            // Validation
+            if (!childName) {
+                errorEl.textContent = 'Please enter the child\'s name';
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (!childAge) {
+                errorEl.textContent = 'Please select the child\'s age';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            addBtn.disabled = true;
+            addBtn.textContent = 'Adding...';
+
+            try {
+                const { collection, addDoc, doc, updateDoc, arrayUnion, serverTimestamp } = window.firebaseModules;
+                const user = AppState.user;
+
+                if (!user) {
+                    throw new Error('Not signed in');
+                }
+
+                // Create child profile document
+                const childRef = await addDoc(collection(window.firebaseDb, 'users', user.uid, 'children'), {
+                    name: childName,
+                    age: parseInt(childAge),
+                    createdAt: serverTimestamp(),
+                    totalPrayers: 0,
+                    totalStories: 0,
+                    currentStreak: 0,
+                    longestStreak: 0,
+                    stars: 0
+                });
+
+                // Update parent's children array
+                await updateDoc(doc(window.firebaseDb, 'users', user.uid), {
+                    children: arrayUnion(childRef.id),
+                    parentalConsentGiven: true,
+                    parentalConsentDate: serverTimestamp()
+                });
+
+                // Reset form and reload children
+                nameInput.value = '';
+                ageSelect.value = '';
+                document.getElementById('addChildFormFields').style.display = 'none';
+                document.getElementById('toggleAddChildBtn').style.display = 'flex';
+
+                showToast('Child added successfully!', 'success');
+                loadChildrenFromSettings();
+
+            } catch (error) {
+                console.error('Error adding child:', error);
+                errorEl.textContent = error.message || 'Failed to add child. Please try again.';
+                errorEl.style.display = 'block';
+            } finally {
+                addBtn.disabled = false;
+                addBtn.textContent = 'Add Child';
+            }
+        };
+
+        // Load children from Firestore
+        async function loadChildrenFromSettings() {
+            if (!AppState.user) return;
+
+            const { collection, getDocs } = window.firebaseModules;
+            const container = document.getElementById('childrenListContainer');
+            const noChildrenMsg = document.getElementById('noChildrenMessage');
+
+            try {
+                const childrenSnapshot = await getDocs(collection(window.firebaseDb, 'users', AppState.user.uid, 'children'));
+
+                if (childrenSnapshot.empty) {
+                    noChildrenMsg.style.display = 'block';
+                    return;
+                }
+
+                noChildrenMsg.style.display = 'none';
+
+                // Clear existing children (except the no children message)
+                const existingChildren = container.querySelectorAll('.child-item');
+                existingChildren.forEach(el => el.remove());
+
+                // Render each child
+                childrenSnapshot.forEach((doc) => {
+                    const child = doc.data();
+                    const childEl = document.createElement('div');
+                    childEl.className = 'child-item';
+                    childEl.style.cssText = 'display: flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-sm); background: var(--cream); border-radius: var(--radius-sm);';
+                    childEl.innerHTML = `
+                        <span style="font-size: 24px;">👦</span>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: var(--dark);">${child.name}</div>
+                            <div style="font-size: 12px; color: var(--dark-soft);">${child.age} years old</div>
+                        </div>
+                        <div style="text-align: right; font-size: 12px; color: var(--dark-soft);">
+                            <div>⭐ ${child.stars || 0}</div>
+                        </div>
+                    `;
+                    container.insertBefore(childEl, noChildrenMsg);
+                });
+
+            } catch (error) {
+                console.error('Error loading children:', error);
             }
         }
 
