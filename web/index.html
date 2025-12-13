@@ -1,0 +1,3603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salah Buddy - Ramadan Companion for Kids</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Luqmay Brand Palette */
+            --cream: #F5F0E8;
+            --cream-dark: #EBE4D8;
+            --gold: #F5B526;
+            --gold-light: #FFE082;
+            --gold-dark: #E5A516;
+            --dark: #1C170D;
+            --dark-soft: #3D3527;
+            --white: #FFFFFF;
+            --border: #E8E0CF;
+            --green: #22C55E;
+            --green-light: #86EFAC;
+            --green-dark: #16A34A;
+            --coral: #FF6B6B;
+            --coral-light: #FF8E8E;
+            --purple: #A78BFA;
+            --purple-light: #C4B5FD;
+            --teal: #14B8A6;
+            --teal-light: #5EEAD4;
+
+            /* Gradients - avoid duplication */
+            --gradient-gold: linear-gradient(135deg, var(--gold-light), var(--gold));
+            --gradient-gold-alt: linear-gradient(135deg, var(--gold), var(--gold-light));
+            --gradient-coral: linear-gradient(135deg, var(--coral), var(--coral-light));
+            --gradient-green: linear-gradient(135deg, var(--green), var(--teal));
+            --gradient-purple: linear-gradient(135deg, var(--purple), var(--teal));
+            --gradient-success: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+
+            /* Spacing */
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+
+            /* Border Radius */
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+
+            /* Typography */
+            --font-sm: 14px;
+            --font-base: 18px;
+            --font-lg: 22px;
+            --font-xl: 28px;
+            --font-2xl: 36px;
+            --font-3xl: 48px;
+            --font-4xl: 64px;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            min-height: 100vh;
+            font-size: var(--font-base);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Stars Background */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            padding: var(--spacing-xl);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 12px rgba(28, 23, 13, 0.06);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .logo-text {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--dark-soft);
+        }
+
+        .nav-item:hover {
+            background: var(--cream);
+            color: var(--dark);
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: var(--dark);
+            box-shadow: 0 4px 20px rgba(245, 181, 38, 0.3);
+        }
+
+        .nav-icon {
+            font-size: 28px;
+        }
+
+        /* User Profile in Sidebar */
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            margin-top: auto;
+            border: 1px solid var(--border);
+        }
+
+        .sidebar-avatar {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 3px solid var(--white);
+            box-shadow: 0 4px 12px rgba(245, 181, 38, 0.3);
+        }
+
+        .sidebar-user-info h4 {
+            font-size: var(--font-base);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .sidebar-user-level {
+            font-size: var(--font-sm);
+            color: var(--gold-dark);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--spacing-2xl);
+            min-height: 100vh;
+            max-width: calc(100vw - 280px);
+            overflow-x: hidden;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .greeting h1 {
+            font-size: var(--font-3xl);
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .greeting h1 span {
+            color: var(--gold);
+        }
+
+        .greeting p {
+            font-size: var(--font-lg);
+            color: var(--dark-soft);
+            margin-top: var(--spacing-xs);
+        }
+
+        .header-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .header-stat {
+            background: var(--white);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(28, 23, 13, 0.04);
+        }
+
+        .header-stat-value {
+            font-size: var(--font-2xl);
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .header-stat-label {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        /* Screen containers */
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== HOME SCREEN ==================== */
+        .home-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: var(--spacing-lg);
+        }
+
+        .prayer-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .prayer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .prayer-header h2 {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .prayer-progress-text {
+            font-size: var(--font-lg);
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        /* Prayer Cards Grid - Vertical Layout */
+        .prayer-cards {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .prayer-card {
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md) var(--spacing-xl);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .prayer-card:hover {
+            transform: translateX(5px);
+            border-color: var(--gold);
+        }
+
+        .prayer-card.completed {
+            background: var(--gradient-success);
+            border-color: var(--green);
+        }
+
+        .prayer-card.current {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(245, 181, 38, 0.2);
+            animation: currentPulse 2s infinite;
+        }
+
+        @keyframes currentPulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(245, 181, 38, 0.2); }
+            50% { box-shadow: 0 0 0 6px rgba(245, 181, 38, 0.3); }
+        }
+
+        .prayer-card-icon {
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .prayer-card-name {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .prayer-card-time {
+            font-size: var(--font-base);
+            color: var(--dark-soft);
+            margin-left: auto;
+        }
+
+        .prayer-card-check {
+            width: 32px;
+            height: 32px;
+            background: var(--green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-left: var(--spacing-md);
+            color: var(--white);
+        }
+
+        .prayer-card.completed .prayer-card-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Right Sidebar */
+        .home-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        /* Streak Card */
+        .streak-card {
+            background: var(--gradient-coral);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            position: relative;
+            overflow: hidden;
+            color: var(--white);
+        }
+
+        .streak-card::before {
+            content: "🔥";
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            font-size: 150px;
+            opacity: 0.2;
+        }
+
+        .streak-label {
+            font-size: var(--font-base);
+            opacity: 0.9;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .streak-value {
+            font-size: var(--font-4xl);
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .streak-days {
+            font-size: var(--font-xl);
+            font-weight: 600;
+        }
+
+        .streak-best {
+            margin-top: var(--spacing-lg);
+            font-size: var(--font-base);
+            opacity: 0.9;
+        }
+
+        /* Today's Story Card */
+        .todays-story-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .todays-story-card:hover {
+            transform: scale(1.02);
+        }
+
+        .story-thumbnail {
+            width: 100%;
+            height: 140px;
+            background: var(--gradient-purple);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+        }
+
+        .story-play-btn {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .story-day-badge {
+            position: absolute;
+            top: var(--spacing-sm);
+            left: var(--spacing-sm);
+            background: var(--gold);
+            color: var(--dark);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            font-weight: 700;
+        }
+
+        .todays-story-title {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .todays-story-desc {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .quick-stat {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .quick-stat-icon {
+            font-size: 36px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .quick-stat-value {
+            font-size: var(--font-2xl);
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .quick-stat-label {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        /* ==================== DASHBOARD SCREEN ==================== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            text-align: center;
+            transition: transform 0.2s ease;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card-icon {
+            font-size: 56px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-card-value {
+            font-size: var(--font-3xl);
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .stat-card-label {
+            font-size: var(--font-base);
+            color: var(--dark-soft);
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .calendar-header h2 {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .calendar-legend {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-dot.complete { background: linear-gradient(135deg, var(--green), var(--teal)); }
+        .legend-dot.partial { background: var(--gold); }
+        .legend-dot.today { border: 3px solid var(--coral); background: var(--white); }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--cream);
+            font-size: var(--font-lg);
+            font-weight: 700;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.05);
+        }
+
+        .calendar-day.completed {
+            background: var(--gradient-green);
+            color: var(--white);
+            border-color: var(--green);
+        }
+
+        .calendar-day.partial {
+            background: var(--gradient-gold);
+            color: var(--dark);
+            border-color: var(--gold);
+        }
+
+        .calendar-day.today {
+            border: 4px solid var(--coral);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .calendar-day.future {
+            opacity: 0.4;
+        }
+
+        .calendar-day-prayers {
+            font-size: var(--font-sm);
+            opacity: 0.8;
+        }
+
+        /* Achievements Section */
+        .achievements-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .achievements-section h2 {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .achievement-card {
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .achievement-card.unlocked {
+            background: var(--gradient-gold);
+            border-color: var(--gold-dark);
+        }
+
+        .achievement-card.locked {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+
+        .achievement-icon {
+            font-size: 40px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .achievement-name {
+            font-size: var(--font-sm);
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .achievement-desc {
+            font-size: 12px;
+            color: var(--dark-soft);
+        }
+
+        /* ==================== LEADERBOARD SCREEN ==================== */
+        .leaderboard-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: var(--spacing-lg);
+        }
+
+        .leaderboard-main {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(28, 23, 13, 0.04);
+        }
+
+        .leaderboard-tabs {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .leaderboard-tab {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            color: var(--dark-soft);
+        }
+
+        .leaderboard-tab:hover {
+            border-color: var(--gold);
+        }
+
+        .leaderboard-tab.active {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        /* Podium */
+        .podium {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+            padding: var(--spacing-xl) 0;
+        }
+
+        .podium-place {
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .podium-place:hover {
+            transform: translateY(-10px);
+        }
+
+        .podium-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto var(--spacing-sm);
+            border: 4px solid;
+        }
+
+        .podium-place.first .podium-avatar {
+            width: 100px;
+            height: 100px;
+            font-size: 50px;
+            border-color: var(--gold);
+            background: var(--gradient-gold-alt);
+        }
+
+        .podium-place.second .podium-avatar {
+            border-color: #C0C0C0;
+            background: linear-gradient(135deg, #E8E8E8, #C0C0C0);
+        }
+
+        .podium-place.third .podium-avatar {
+            border-color: #CD7F32;
+            background: linear-gradient(135deg, #E8B87D, #CD7F32);
+        }
+
+        .podium-name {
+            font-size: var(--font-base);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .podium-points {
+            font-size: var(--font-sm);
+            color: var(--gold);
+        }
+
+        .podium-stand {
+            width: 100px;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-3xl);
+            font-weight: 900;
+            margin-top: var(--spacing-md);
+        }
+
+        .podium-place.first .podium-stand {
+            height: 120px;
+            background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+            color: var(--dark);
+        }
+
+        .podium-place.second .podium-stand {
+            height: 90px;
+            background: linear-gradient(180deg, #E0E0E0, #A0A0A0);
+            color: var(--dark);
+        }
+
+        .podium-place.third .podium-stand {
+            height: 60px;
+            background: linear-gradient(180deg, #CD7F32, #8B5A2B);
+            color: var(--white);
+        }
+
+        /* Leaderboard List */
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+            background: var(--cream-dark);
+        }
+
+        .lb-rank {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-lg);
+            font-weight: 800;
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+
+        .lb-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .lb-info {
+            flex: 1;
+        }
+
+        .lb-name {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .lb-streak {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+        }
+
+        .lb-points {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        /* Your Rank Card */
+        .your-rank-card {
+            background: var(--gradient-gold-alt);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            color: var(--dark);
+        }
+
+        .your-rank-label {
+            font-size: var(--font-base);
+            font-weight: 600;
+            opacity: 0.8;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .your-rank-number {
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .your-rank-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .your-rank-avatar {
+            width: 64px;
+            height: 64px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 3px solid var(--dark);
+        }
+
+        .your-rank-details h3 {
+            font-size: var(--font-xl);
+            font-weight: 700;
+        }
+
+        .your-rank-details p {
+            font-size: var(--font-base);
+            opacity: 0.8;
+        }
+
+        /* ==================== DAILY STORIES SCREEN ==================== */
+        .stories-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stories-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            background: var(--white);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .stories-progress-text {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .stories-progress-bar {
+            width: 200px;
+            height: 12px;
+            background: var(--cream);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .stories-progress-fill {
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(90deg, var(--gold), var(--green));
+            border-radius: 6px;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--spacing-lg);
+        }
+
+        .story-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+        }
+
+        .story-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(28, 23, 13, 0.12);
+        }
+
+        .story-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .story-card.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .story-card.watched {
+            border-color: var(--green);
+        }
+
+        .story-card.current {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(245, 181, 38, 0.2);
+        }
+
+        .story-card-thumbnail {
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+        }
+
+        .story-card-day {
+            position: absolute;
+            top: var(--spacing-sm);
+            left: var(--spacing-sm);
+            background: var(--dark);
+            color: var(--white);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-sm);
+            font-weight: 700;
+        }
+
+        .story-card.watched .story-card-day {
+            background: var(--green);
+        }
+
+        .story-card.current .story-card-day {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .story-card-play {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .story-card:hover .story-card-play {
+            opacity: 1;
+        }
+
+        .story-card.locked .story-card-play {
+            display: none;
+        }
+
+        .story-card-lock {
+            position: absolute;
+            font-size: 32px;
+        }
+
+        .story-card-content {
+            padding: var(--spacing-md);
+        }
+
+        .story-card-title {
+            font-size: var(--font-base);
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+            line-height: 1.3;
+        }
+
+        .story-card-desc {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+            margin-bottom: var(--spacing-xs);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .story-card-duration {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .story-card-check {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            width: 28px;
+            height: 28px;
+            background: var(--green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 16px;
+        }
+
+        /* ==================== CONFETTI ==================== */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ==================== MODALS ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(28, 23, 13, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-3xl);
+            text-align: center;
+            max-width: 450px;
+            animation: modalPop 0.4s ease;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-emoji {
+            font-size: 100px;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .modal-title {
+            font-size: var(--font-2xl);
+            font-weight: 800;
+            color: var(--gold);
+            margin: var(--spacing-lg) 0 var(--spacing-md);
+        }
+
+        .modal-message {
+            font-size: var(--font-lg);
+            color: var(--dark-soft);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .modal-btn {
+            background: var(--gold);
+            border: none;
+            padding: var(--spacing-md) var(--spacing-2xl);
+            border-radius: var(--radius-lg);
+            font-family: 'Lexend', sans-serif;
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--dark);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Video Modal */
+        .video-modal-content {
+            background: var(--dark);
+            border-radius: var(--radius-xl);
+            padding: 0;
+            max-width: 800px;
+            width: 90%;
+            overflow: hidden;
+        }
+
+        .video-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            background: var(--dark);
+            color: var(--white);
+        }
+
+        .video-modal-title {
+            font-size: var(--font-lg);
+            font-weight: 700;
+        }
+
+        .video-modal-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 32px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .video-modal-close:hover {
+            opacity: 1;
+        }
+
+        .video-player-placeholder {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: var(--gradient-purple);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+
+        .video-player-icon {
+            font-size: 80px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .video-player-text {
+            font-size: var(--font-xl);
+            font-weight: 700;
+        }
+
+        .video-modal-footer {
+            padding: var(--spacing-xl);
+            background: var(--white);
+        }
+
+        .video-modal-story-title {
+            font-size: var(--font-xl);
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .video-modal-story-desc {
+            font-size: var(--font-base);
+            color: var(--dark-soft);
+        }
+
+        /* Mobile Navigation Toggle */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            padding: var(--spacing-sm) var(--spacing-md);
+            box-shadow: 0 -4px 20px rgba(28, 23, 13, 0.1);
+            z-index: 1000;
+            border-top: 1px solid var(--border);
+        }
+
+        .mobile-nav-toggle .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .mobile-nav-toggle .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            color: var(--dark-soft);
+        }
+
+        .mobile-nav-toggle .mobile-nav-item.active {
+            color: var(--gold-dark);
+        }
+
+        .mobile-nav-toggle .mobile-nav-item .nav-icon {
+            font-size: 24px;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 240px;
+            }
+
+            .sidebar {
+                width: 240px;
+            }
+
+            .home-content {
+                grid-template-columns: 1fr;
+            }
+
+            .home-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: var(--spacing-md);
+                padding-bottom: 100px;
+                overflow-x: hidden;
+                max-width: 100vw;
+                width: 100%;
+            }
+
+            .screen {
+                width: 100%;
+                overflow-x: hidden;
+            }
+
+            .home-grid {
+                display: block !important;
+                width: 100%;
+            }
+
+            .home-sidebar {
+                display: none !important;
+            }
+
+            .prayer-section {
+                padding: var(--spacing-lg);
+                width: 100%;
+            }
+
+            .home-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
+            }
+
+            .home-header h1 {
+                font-size: 24px;
+                line-height: 1.2;
+            }
+
+            .home-header p {
+                font-size: 14px;
+            }
+
+            .greeting-section {
+                margin-bottom: var(--spacing-md);
+            }
+
+            .greeting h1 {
+                font-size: 24px;
+                line-height: 1.3;
+            }
+
+            .greeting p {
+                font-size: 14px;
+            }
+
+            .home-main-header {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+
+            .header-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .header-stat {
+                padding: var(--spacing-sm) var(--spacing-md);
+            }
+
+            .header-stat .stat-value {
+                font-size: var(--font-lg);
+            }
+
+            .header-stat .stat-label {
+                font-size: 11px;
+            }
+
+            .quick-stats {
+                width: 100%;
+            }
+
+            .stat-card {
+                padding: var(--spacing-md);
+            }
+
+            .stat-card .stat-value {
+                font-size: var(--font-xl);
+            }
+
+            .prayers-card {
+                padding: var(--spacing-lg);
+            }
+
+            .prayers-card h2 {
+                font-size: var(--font-lg);
+            }
+
+            .prayer-item {
+                padding: var(--spacing-md);
+            }
+
+            .prayer-icon {
+                font-size: 28px;
+            }
+
+            .prayer-name {
+                font-size: var(--font-sm);
+            }
+
+            .prayer-time {
+                font-size: 12px;
+            }
+
+            /* Stories Grid Mobile */
+            .stories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-md);
+            }
+
+            .story-card {
+                padding: var(--spacing-md);
+            }
+
+            .story-thumbnail {
+                height: 80px;
+            }
+
+            .story-emoji {
+                font-size: 32px;
+            }
+
+            .story-title {
+                font-size: var(--font-sm);
+            }
+
+            /* Dashboard Mobile */
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-md);
+            }
+
+            .dashboard-stat {
+                padding: var(--spacing-md);
+            }
+
+            .dashboard-stat .stat-icon {
+                font-size: 32px;
+            }
+
+            .dashboard-stat .stat-value {
+                font-size: var(--font-xl);
+            }
+
+            .calendar-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: var(--spacing-xs);
+            }
+
+            .calendar-day {
+                padding: var(--spacing-sm);
+                font-size: var(--font-sm);
+            }
+
+            .calendar-day .day-prayers {
+                font-size: 10px;
+            }
+
+            /* Leaderboard Mobile */
+            .podium {
+                gap: var(--spacing-sm);
+            }
+
+            .podium-item .podium-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            .podium-item.first .podium-avatar {
+                width: 70px;
+                height: 70px;
+            }
+
+            .podium-item .podium-name {
+                font-size: var(--font-sm);
+            }
+
+            .podium-item .podium-stand {
+                width: 60px;
+                font-size: var(--font-lg);
+            }
+
+            .podium-item.first .podium-stand {
+                width: 70px;
+            }
+
+            .leaderboard-tabs {
+                flex-wrap: wrap;
+                gap: var(--spacing-xs);
+            }
+
+            .leaderboard-tab {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: var(--font-sm);
+            }
+
+            .user-position-card {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--spacing-md);
+            }
+
+            /* Video Modal Mobile */
+            .video-modal-content {
+                width: 95%;
+                max-width: none;
+                margin: var(--spacing-md);
+            }
+
+            .video-modal-header {
+                padding: var(--spacing-md);
+            }
+
+            .video-modal-header h3 {
+                font-size: var(--font-base);
+            }
+
+            .video-placeholder {
+                height: 200px;
+            }
+
+            .video-modal-info {
+                padding: var(--spacing-md);
+            }
+
+            /* Screen Headers Mobile */
+            .stories-header h1,
+            .dashboard-header h1,
+            .leaderboard-header h1 {
+                font-size: var(--font-xl);
+            }
+
+            .stories-header p,
+            .dashboard-header p,
+            .leaderboard-header p {
+                font-size: var(--font-sm);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: var(--spacing-sm);
+                padding-bottom: 90px;
+            }
+
+            .home-header h1 {
+                font-size: 20px;
+            }
+
+            .home-header p {
+                font-size: 13px;
+            }
+
+            .stories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-sm);
+            }
+
+            .story-card {
+                padding: var(--spacing-sm);
+            }
+
+            .story-thumbnail {
+                height: 70px;
+            }
+
+            .story-emoji {
+                font-size: 28px;
+            }
+
+            .story-title {
+                font-size: 12px;
+            }
+
+            .story-duration {
+                font-size: 10px;
+            }
+
+            .calendar-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+            }
+
+            .calendar-day {
+                padding: var(--spacing-xs);
+                font-size: 12px;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: var(--spacing-sm);
+            }
+
+            .dashboard-stat {
+                padding: var(--spacing-sm);
+            }
+
+            .dashboard-stat .stat-icon {
+                font-size: 28px;
+            }
+
+            .dashboard-stat .stat-value {
+                font-size: var(--font-lg);
+            }
+
+            .dashboard-stat .stat-label {
+                font-size: 11px;
+            }
+        }
+
+        /* Bonus Tasks Section */
+        .bonus-tasks-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .bonus-tasks-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .bonus-tasks-title {
+            font-size: var(--font-lg);
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .bonus-tasks-count {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+            font-weight: 600;
+        }
+
+        .bonus-task-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--cream);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .bonus-task-item:hover {
+            border-color: var(--gold-light);
+            transform: translateY(-2px);
+        }
+
+        .bonus-task-item.completed {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .bonus-task-item.completed:hover {
+            transform: none;
+            border-color: transparent;
+        }
+
+        .bonus-task-emoji {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .bonus-task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bonus-task-name {
+            font-size: var(--font-base);
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 2px;
+        }
+
+        .bonus-task-desc {
+            font-size: var(--font-sm);
+            color: var(--dark-soft);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bonus-task-reward {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: var(--font-sm);
+            font-weight: 700;
+            color: var(--gold-dark);
+            flex-shrink: 0;
+        }
+
+        .bonus-task-check {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .bonus-task-item:hover .bonus-task-check {
+            border-color: var(--gold);
+        }
+
+        .bonus-task-item.completed .bonus-task-check {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--white);
+        }
+
+        .bonus-tasks-empty {
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: var(--dark-soft);
+        }
+
+        .bonus-tasks-empty-icon {
+            font-size: 40px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* Category badges */
+        .bonus-task-category {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        .category-family { background: #A78BFA; color: white; }
+        .category-charity { background: #22C55E; color: white; }
+        .category-prayer { background: #F5B526; color: #1C170D; }
+        .category-quran { background: #14B8A6; color: white; }
+        .category-kindness { background: #FF6B6B; color: white; }
+    </style>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, orderBy, limit, getDocs, onSnapshot, serverTimestamp, increment, writeBatch } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD95yMLj73ZzVAagG1SZZsloZf2efs90Bg",
+            authDomain: "salah-buddy-b3ac8.firebaseapp.com",
+            projectId: "salah-buddy-b3ac8",
+            storageBucket: "salah-buddy-b3ac8.firebasestorage.app",
+            messagingSenderId: "675921169506",
+            appId: "1:675921169506:web:be4ee90b41e8251b8c153b"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Make Firebase available globally
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        window.firebaseModules = {
+            signInAnonymously,
+            onAuthStateChanged,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            collection,
+            query,
+            where,
+            orderBy,
+            limit,
+            getDocs,
+            onSnapshot,
+            serverTimestamp,
+            increment,
+            writeBatch
+        };
+
+        console.log('Firebase initialized successfully');
+    </script>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-container" id="starsContainer"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">🌙</span>
+                <span class="logo-text">Salah Buddy</span>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item active" onclick="showScreen('home')">
+                    <span class="nav-icon">🏠</span>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('stories')">
+                    <span class="nav-icon">📺</span>
+                    <span>Daily Stories</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span>My Progress</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('leaderboard')">
+                    <span class="nav-icon">🏆</span>
+                    <span>Leaderboard</span>
+                </div>
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="sidebar-avatar">😊</div>
+                <div class="sidebar-user-info">
+                    <h4>Ahmad</h4>
+                    <p class="sidebar-user-level">12 Day Streak!</p>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- ==================== HOME SCREEN ==================== -->
+            <div class="screen active" id="homeScreen">
+                <div class="page-header">
+                    <div class="greeting">
+                        <h1>Assalamu Alaikum, <span>Ahmad!</span></h1>
+                        <p>Day 12 of Ramadan - Keep up the great work!</p>
+                    </div>
+                    <div class="header-stats">
+                        <div class="header-stat">
+                            <div class="header-stat-value">57</div>
+                            <div class="header-stat-label">Total Prayers</div>
+                        </div>
+                        <div class="header-stat">
+                            <div class="header-stat-value">#24</div>
+                            <div class="header-stat-label">Your Rank</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="home-grid">
+                    <div class="prayer-section">
+                        <div class="prayer-header">
+                            <h2>Today's Prayers</h2>
+                            <span class="prayer-progress-text" id="prayerProgressText">3 of 5 completed</span>
+                        </div>
+
+                        <div class="prayer-cards" id="prayerCards">
+                            <div class="prayer-card current" data-prayer="fajr" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">🌅</div>
+                                <div class="prayer-card-name">Fajr</div>
+                                <div class="prayer-card-time">5:12 AM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                            <div class="prayer-card" data-prayer="dhuhr" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">☀️</div>
+                                <div class="prayer-card-name">Dhuhr</div>
+                                <div class="prayer-card-time">12:30 PM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                            <div class="prayer-card" data-prayer="asr" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">🌤️</div>
+                                <div class="prayer-card-name">Asr</div>
+                                <div class="prayer-card-time">3:45 PM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                            <div class="prayer-card" data-prayer="maghrib" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">🌇</div>
+                                <div class="prayer-card-name">Maghrib</div>
+                                <div class="prayer-card-time">6:32 PM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                            <div class="prayer-card" data-prayer="isha" onclick="togglePrayer(this)">
+                                <div class="prayer-card-icon">🌙</div>
+                                <div class="prayer-card-name">Isha</div>
+                                <div class="prayer-card-time">8:00 PM</div>
+                                <div class="prayer-card-check">✓</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="home-sidebar">
+                        <div class="streak-card">
+                            <div class="streak-label">Current Streak</div>
+                            <div class="streak-value" id="homeStreakValue">12</div>
+                            <div class="streak-days">days in a row!</div>
+                            <div class="streak-best" id="homeStreakBest">Personal Best: 15 days</div>
+                        </div>
+
+                        <!-- Bonus Tasks Section -->
+                        <div class="bonus-tasks-card">
+                            <div class="bonus-tasks-header">
+                                <div class="bonus-tasks-title">
+                                    <span>⭐</span>
+                                    <span>Bonus Tasks</span>
+                                </div>
+                                <div class="bonus-tasks-count" id="bonusTasksCount">0/3 done</div>
+                            </div>
+                            <div id="bonusTasksList">
+                                <!-- Tasks will be loaded by JavaScript -->
+                                <div class="bonus-tasks-empty">
+                                    <div class="bonus-tasks-empty-icon">📋</div>
+                                    <div>Loading tasks...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="todays-story-card" id="todaysStoryCard" onclick="openStory(currentDay)">
+                            <div class="story-thumbnail" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                <div class="story-day-badge">Day 12</div>
+                                <div class="story-play-btn">▶</div>
+                            </div>
+                            <div class="todays-story-title">The Night Journey</div>
+                            <div class="todays-story-desc">Learn about Al-Isra and why we pray 5 times</div>
+                        </div>
+
+                        <div class="quick-stats">
+                            <div class="quick-stat">
+                                <div class="quick-stat-icon">📺</div>
+                                <div class="quick-stat-value">11</div>
+                                <div class="quick-stat-label">Stories Watched</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="quick-stat-icon">⭐</div>
+                                <div class="quick-stat-value">1,240</div>
+                                <div class="quick-stat-label">Stars</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== DAILY STORIES SCREEN ==================== -->
+            <div class="screen" id="storiesScreen">
+                <div class="page-header">
+                    <div class="greeting">
+                        <h1>Daily <span>Stories</span></h1>
+                        <p>Learn about salah with a new video every day!</p>
+                    </div>
+                    <div class="stories-progress">
+                        <span class="stories-progress-text">11 of 30 watched</span>
+                        <div class="stories-progress-bar">
+                            <div class="stories-progress-fill" style="width: 37%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stories-grid" id="storiesGrid">
+                    <!-- Stories will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ==================== DASHBOARD SCREEN ==================== -->
+            <div class="screen" id="dashboardScreen">
+                <div class="page-header">
+                    <div class="greeting">
+                        <h1>Your <span>Progress</span></h1>
+                        <p id="dashboardSubtitle">Ramadan 2025 - Day 12 of 30</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-icon">🕌</div>
+                        <div class="stat-card-value" id="dashPrayers">0</div>
+                        <div class="stat-card-label">Prayers Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">🔥</div>
+                        <div class="stat-card-value" id="dashStreak">0</div>
+                        <div class="stat-card-label">Day Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">📺</div>
+                        <div class="stat-card-value" id="dashStories">0</div>
+                        <div class="stat-card-label">Stories Watched</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">⭐</div>
+                        <div class="stat-card-value" id="dashStars">0</div>
+                        <div class="stat-card-label">Stars Earned</div>
+                    </div>
+                </div>
+
+                <!-- Achievements Section -->
+                <div class="achievements-section">
+                    <h2>Achievements</h2>
+                    <div class="achievements-grid" id="achievementsGrid">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="calendar-section">
+                    <div class="calendar-header">
+                        <h2>Ramadan Calendar</h2>
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <div class="legend-dot complete"></div>
+                                <span>All 5 prayers</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot partial"></div>
+                                <span>Some prayers</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot today"></div>
+                                <span>Today</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== LEADERBOARD SCREEN ==================== -->
+            <div class="screen" id="leaderboardScreen">
+                <div class="page-header">
+                    <div class="greeting">
+                        <h1>Global <span>Leaderboard</span></h1>
+                        <p>See how you compare with other kids around the world!</p>
+                    </div>
+                </div>
+
+                <div class="leaderboard-container">
+                    <div class="leaderboard-main">
+                        <div class="leaderboard-tabs">
+                            <div class="leaderboard-tab active">🌍 Global</div>
+                            <div class="leaderboard-tab">👨‍👩‍👧‍👦 Family</div>
+                            <div class="leaderboard-tab">📈 Most Improved</div>
+                        </div>
+
+                        <div class="podium">
+                            <div class="podium-place second">
+                                <div class="podium-avatar">🌟</div>
+                                <div class="podium-name">Yusuf</div>
+                                <div class="podium-points">2,380 ⭐</div>
+                                <div class="podium-stand">2</div>
+                            </div>
+                            <div class="podium-place first">
+                                <div class="podium-avatar">👑</div>
+                                <div class="podium-name">Fatima</div>
+                                <div class="podium-points">2,450 ⭐</div>
+                                <div class="podium-stand">1</div>
+                            </div>
+                            <div class="podium-place third">
+                                <div class="podium-avatar">✨</div>
+                                <div class="podium-name">Aisha</div>
+                                <div class="podium-points">2,290 ⭐</div>
+                                <div class="podium-stand">3</div>
+                            </div>
+                        </div>
+
+                        <div class="leaderboard-list">
+                            <div class="leaderboard-item">
+                                <div class="lb-rank">4</div>
+                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--purple), var(--teal));">🌙</div>
+                                <div class="lb-info">
+                                    <div class="lb-name">Omar</div>
+                                    <div class="lb-streak">🔥 22 day streak</div>
+                                </div>
+                                <div class="lb-points">2,150</div>
+                            </div>
+                            <div class="leaderboard-item">
+                                <div class="lb-rank">5</div>
+                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--coral), var(--coral-light));">💫</div>
+                                <div class="lb-info">
+                                    <div class="lb-name">Maryam</div>
+                                    <div class="lb-streak">🔥 20 day streak</div>
+                                </div>
+                                <div class="lb-points">2,080</div>
+                            </div>
+                            <div class="leaderboard-item">
+                                <div class="lb-rank">6</div>
+                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--green), var(--teal));">🌟</div>
+                                <div class="lb-info">
+                                    <div class="lb-name">Ibrahim</div>
+                                    <div class="lb-streak">🔥 18 day streak</div>
+                                </div>
+                                <div class="lb-points">1,950</div>
+                            </div>
+                            <div class="leaderboard-item">
+                                <div class="lb-rank">7</div>
+                                <div class="lb-avatar" style="background: linear-gradient(135deg, var(--gold), var(--gold-light));">⭐</div>
+                                <div class="lb-info">
+                                    <div class="lb-name">Zainab</div>
+                                    <div class="lb-streak">🔥 15 day streak</div>
+                                </div>
+                                <div class="lb-points">1,820</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="your-rank-card">
+                        <div class="your-rank-label">Your Position</div>
+                        <div class="your-rank-number">#24</div>
+                        <div class="your-rank-info">
+                            <div class="your-rank-avatar">😊</div>
+                            <div class="your-rank-details">
+                                <h3>Ahmad</h3>
+                                <p>1,240 stars</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- Prayer Complete Modal -->
+    <div class="modal-overlay" id="prayerModal">
+        <div class="modal-content">
+            <div class="modal-emoji">🌟</div>
+            <h3 class="modal-title">Mashallah!</h3>
+            <p class="modal-message">You completed <span id="modalPrayerName">Maghrib</span> prayer!</p>
+            <button class="modal-btn" onclick="closeModal()">Keep Going!</button>
+        </div>
+    </div>
+
+    <!-- Video Story Modal -->
+    <div class="modal-overlay" id="videoModal">
+        <div class="video-modal-content">
+            <div class="video-modal-header">
+                <div class="video-modal-title" id="videoModalTitle">Day 12: The Night Journey</div>
+                <button class="video-modal-close" onclick="closeVideoModal()">×</button>
+            </div>
+            <div class="video-player-placeholder">
+                <div class="video-player-icon">🎬</div>
+                <div class="video-player-text">Video Coming Soon!</div>
+                <div style="color: var(--gold-light); font-size: 14px; margin-top: 8px; opacity: 0.8;">
+                    Amazing Islamic stories for kids will be here soon insha'Allah
+                </div>
+            </div>
+            <div class="video-modal-footer">
+                <div class="video-modal-story-title" id="videoStoryTitle">The Night Journey (Al-Isra)</div>
+                <div class="video-modal-story-desc" id="videoStoryDesc">Learn about the miraculous night journey of Prophet Muhammad ﷺ and how the gift of 5 daily prayers was given to the Muslim ummah.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Story data for 30 days
+        const stories = [
+            { day: 1, title: "What is Salah?", desc: "Introduction to the beautiful gift of prayer", emoji: "🕌", color: "linear-gradient(135deg, #667eea, #764ba2)" },
+            { day: 2, title: "Making Wudu", desc: "Learn how to prepare for prayer", emoji: "💧", color: "linear-gradient(135deg, #4facfe, #00f2fe)" },
+            { day: 3, title: "The 5 Daily Prayers", desc: "Meet Fajr, Dhuhr, Asr, Maghrib & Isha", emoji: "🌅", color: "linear-gradient(135deg, #fa709a, #fee140)" },
+            { day: 4, title: "Facing the Qibla", desc: "Why we face Makkah when we pray", emoji: "🧭", color: "linear-gradient(135deg, #a8edea, #fed6e3)" },
+            { day: 5, title: "Standing Before Allah", desc: "The meaning of Qiyam", emoji: "🧍", color: "linear-gradient(135deg, #d299c2, #fef9d7)" },
+            { day: 6, title: "Surah Al-Fatiha", desc: "The opening chapter we recite", emoji: "📖", color: "linear-gradient(135deg, #89f7fe, #66a6ff)" },
+            { day: 7, title: "Bowing in Ruku", desc: "Showing humility to Allah", emoji: "🙇", color: "linear-gradient(135deg, #a18cd1, #fbc2eb)" },
+            { day: 8, title: "Prostrating in Sujood", desc: "The closest to Allah", emoji: "🤲", color: "linear-gradient(135deg, #ffecd2, #fcb69f)" },
+            { day: 9, title: "Sitting & Tashahhud", desc: "Greeting the Prophet ﷺ", emoji: "✋", color: "linear-gradient(135deg, #ff9a9e, #fecfef)" },
+            { day: 10, title: "Ending with Salam", desc: "Peace to those around us", emoji: "☮️", color: "linear-gradient(135deg, #a1c4fd, #c2e9fb)" },
+            { day: 11, title: "Praying Together", desc: "The beauty of congregation", emoji: "👨‍👩‍👧‍👦", color: "linear-gradient(135deg, #f093fb, #f5576c)" },
+            { day: 12, title: "The Night Journey", desc: "How we got 5 daily prayers", emoji: "🌙", color: "linear-gradient(135deg, #667eea, #764ba2)" },
+            { day: 13, title: "Fajr - The Dawn Prayer", desc: "Starting the day with Allah", emoji: "🌅", color: "linear-gradient(135deg, #ff9a9e, #fad0c4)" },
+            { day: 14, title: "Dhuhr - The Noon Prayer", desc: "A midday break for Allah", emoji: "☀️", color: "linear-gradient(135deg, #ffecd2, #fcb69f)" },
+            { day: 15, title: "Asr - The Afternoon Prayer", desc: "Taking time before sunset", emoji: "🌤️", color: "linear-gradient(135deg, #fbc2eb, #a6c1ee)" },
+            { day: 16, title: "Maghrib - The Sunset Prayer", desc: "Thanking Allah as day ends", emoji: "🌇", color: "linear-gradient(135deg, #fa709a, #fee140)" },
+            { day: 17, title: "Isha - The Night Prayer", desc: "Ending the day peacefully", emoji: "🌙", color: "linear-gradient(135deg, #5f72bd, #9b23ea)" },
+            { day: 18, title: "The Mosque", desc: "Allah's house on Earth", emoji: "🕌", color: "linear-gradient(135deg, #11998e, #38ef7d)" },
+            { day: 19, title: "Friday Prayer", desc: "The special weekly gathering", emoji: "📿", color: "linear-gradient(135deg, #396afc, #2948ff)" },
+            { day: 20, title: "Praying at Home", desc: "Making any place special", emoji: "🏠", color: "linear-gradient(135deg, #ee9ca7, #ffdde1)" },
+            { day: 21, title: "The Prayer Mat", desc: "Your special place for Allah", emoji: "🧎", color: "linear-gradient(135deg, #c471f5, #fa71cd)" },
+            { day: 22, title: "Dua After Salah", desc: "Talking to Allah", emoji: "🤲", color: "linear-gradient(135deg, #48c6ef, #6f86d6)" },
+            { day: 23, title: "Helping Others Pray", desc: "Teaching younger siblings", emoji: "🤝", color: "linear-gradient(135deg, #f78ca0, #fe9a8b)" },
+            { day: 24, title: "When Prayer is Hard", desc: "Tips for staying focused", emoji: "💪", color: "linear-gradient(135deg, #a8caba, #5d4157)" },
+            { day: 25, title: "Prayers of the Prophets", desc: "Learning from the best", emoji: "⭐", color: "linear-gradient(135deg, #ffd89b, #19547b)" },
+            { day: 26, title: "Night of Power", desc: "The most special night", emoji: "✨", color: "linear-gradient(135deg, #0f0c29, #302b63)" },
+            { day: 27, title: "Taraweeh Prayers", desc: "Special Ramadan prayers", emoji: "🌟", color: "linear-gradient(135deg, #360033, #0b8793)" },
+            { day: 28, title: "Eid Prayer", desc: "Celebrating together", emoji: "🎉", color: "linear-gradient(135deg, #f5af19, #f12711)" },
+            { day: 29, title: "Prayer as a Gift", desc: "Why salah is special", emoji: "🎁", color: "linear-gradient(135deg, #c33764, #1d2671)" },
+            { day: 30, title: "Prayer Forever", desc: "Keeping salah in your heart", emoji: "❤️", color: "linear-gradient(135deg, #ed4264, #ffedbc)" }
+        ];
+
+        // Calculate current day of Ramadan (2025 Ramadan starts March 1)
+        function getCurrentRamadanDay() {
+            const ramadanStart = new Date('2025-03-01');
+            const today = new Date();
+            const diffTime = today - ramadanStart;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            return Math.min(Math.max(diffDays, 1), 30); // Clamp between 1 and 30
+        }
+        const currentDay = getCurrentRamadanDay();
+
+        // Generate stars - reduced count for better performance on low-end devices
+        function generateStars() {
+            const container = document.getElementById('starsContainer');
+            for (let i = 0; i < 30; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.width = (Math.random() * 3 + 2) + 'px';
+                star.style.height = star.style.width;
+                container.appendChild(star);
+            }
+        }
+        generateStars();
+
+        // Generate story cards - uses AppState.watchedStories for watched status
+        function generateStoryCards() {
+            const grid = document.getElementById('storiesGrid');
+            grid.innerHTML = '';
+
+            // Get watched stories from AppState (defaults to empty array)
+            const watchedStories = (window.AppState && window.AppState.watchedStories) || [];
+
+            stories.forEach(story => {
+                const isWatched = watchedStories.includes(story.day);
+                const isCurrent = story.day === currentDay;
+                const isLocked = story.day > currentDay;
+                const isAvailable = story.day <= currentDay;
+
+                let cardClass = 'story-card';
+                if (isWatched) cardClass += ' watched';
+                if (isCurrent && !isWatched) cardClass += ' current';
+                if (isLocked) cardClass += ' locked';
+
+                const card = document.createElement('div');
+                card.className = cardClass;
+                card.onclick = isLocked ? null : () => openStory(story.day);
+                card.style.cursor = isLocked ? 'not-allowed' : 'pointer';
+
+                card.innerHTML = `
+                    <div class="story-card-thumbnail" style="background: ${story.color};">
+                        <div class="story-card-day">Day ${story.day}</div>
+                        ${story.emoji}
+                        ${isWatched ? '<div class="story-card-check">✓</div>' : ''}
+                        ${isLocked ? '<div class="story-card-lock">🔒</div>' : '<div class="story-card-play">▶</div>'}
+                    </div>
+                    <div class="story-card-content">
+                        <div class="story-card-title">${story.title}</div>
+                        <div class="story-card-desc">${story.desc}</div>
+                        <div class="story-card-duration">⏱️ 3-5 min</div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+        generateStoryCards();
+
+        // Re-generate story cards when AppState updates
+        window.refreshStoryCards = generateStoryCards;
+
+        // Define achievements
+        const achievements = [
+            { id: 'first_prayer', icon: '🕌', name: 'First Prayer', desc: 'Complete your first prayer', condition: (p) => p.totalPrayers >= 1 },
+            { id: 'week_streak', icon: '🔥', name: '7 Day Streak', desc: 'Pray all 5 for a week', condition: (p) => p.longestStreak >= 7 },
+            { id: 'story_starter', icon: '📺', name: 'Story Starter', desc: 'Watch your first story', condition: (p) => p.totalStories >= 1 },
+            { id: 'five_stories', icon: '📚', name: 'Story Lover', desc: 'Watch 5 stories', condition: (p) => p.totalStories >= 5 },
+            { id: 'star_100', icon: '⭐', name: '100 Stars', desc: 'Earn 100 stars', condition: (p) => p.stars >= 100 },
+            { id: 'star_500', icon: '🌟', name: '500 Stars', desc: 'Earn 500 stars', condition: (p) => p.stars >= 500 },
+            { id: 'two_weeks', icon: '💪', name: '2 Week Hero', desc: '14 day streak!', condition: (p) => p.longestStreak >= 14 },
+            { id: 'ramadan_half', icon: '🌙', name: 'Halfway There', desc: '15 days of prayers', condition: (p) => p.totalPrayers >= 75 }
+        ];
+
+        // Generate achievements grid
+        function generateAchievements() {
+            const grid = document.getElementById('achievementsGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const profile = (window.AppState && window.AppState.profile) || {};
+
+            achievements.forEach(achievement => {
+                const unlocked = achievement.condition(profile);
+                const card = document.createElement('div');
+                card.className = 'achievement-card ' + (unlocked ? 'unlocked' : 'locked');
+                card.innerHTML = `
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-name">${achievement.name}</div>
+                    <div class="achievement-desc">${achievement.desc}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Generate calendar grid
+        function generateCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            for (let day = 1; day <= 30; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+
+                if (day < currentDay) {
+                    // Past days - show as completed or partial (for now show as completed)
+                    dayEl.classList.add('completed');
+                    dayEl.innerHTML = `${day}<div class="calendar-day-prayers">5/5</div>`;
+                } else if (day === currentDay) {
+                    dayEl.classList.add('today');
+                    const todayCount = window.AppState ? Object.values(window.AppState.todayPrayers).filter(v => v).length : 0;
+                    dayEl.innerHTML = `${day}<div class="calendar-day-prayers">${todayCount}/5</div>`;
+                } else {
+                    dayEl.classList.add('future');
+                    dayEl.innerHTML = `${day}`;
+                }
+
+                grid.appendChild(dayEl);
+            }
+        }
+
+        // Update dashboard with real data
+        function updateDashboard() {
+            const profile = (window.AppState && window.AppState.profile) || {};
+
+            // Update dashboard subtitle
+            const subtitle = document.getElementById('dashboardSubtitle');
+            if (subtitle) subtitle.textContent = `Ramadan 2025 - Day ${currentDay} of 30`;
+
+            // Update stat cards
+            const dashPrayers = document.getElementById('dashPrayers');
+            const dashStreak = document.getElementById('dashStreak');
+            const dashStories = document.getElementById('dashStories');
+            const dashStars = document.getElementById('dashStars');
+
+            if (dashPrayers) dashPrayers.textContent = profile.totalPrayers || 0;
+            if (dashStreak) dashStreak.textContent = profile.currentStreak || 0;
+            if (dashStories) dashStories.textContent = profile.totalStories || 0;
+            if (dashStars) dashStars.textContent = (profile.stars || 0).toLocaleString();
+
+            // Generate achievements and calendar
+            generateAchievements();
+            generateCalendar();
+        }
+
+        // Initialize dashboard
+        generateCalendar();
+        generateAchievements();
+        window.updateDashboard = updateDashboard;
+
+        // Screen navigation
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenName + 'Screen').classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+
+            // Load leaderboard when navigating to leaderboard screen
+            if (screenName === 'leaderboard' && window.loadLeaderboard) {
+                window.loadLeaderboard();
+            }
+
+            // Update dashboard when navigating to it
+            if (screenName === 'dashboard' && window.updateDashboard) {
+                window.updateDashboard();
+            }
+        }
+
+        // Prayer toggle - now saves to Firestore
+        let completedPrayers = 0;
+
+        function togglePrayer(element) {
+            if (element.classList.contains('completed')) return;
+
+            element.classList.remove('current');
+            element.classList.add('completed');
+            completedPrayers++;
+
+            document.getElementById('prayerProgressText').textContent =
+                completedPrayers + ' of 5 completed';
+
+            const prayerName = element.querySelector('.prayer-card-name').textContent;
+            document.getElementById('modalPrayerName').textContent = prayerName;
+            document.getElementById('prayerModal').classList.add('active');
+
+            triggerConfetti();
+
+            // Save to Firestore
+            if (window.trackPrayer) {
+                window.trackPrayer(prayerName.toLowerCase());
+            }
+
+            // Update stats display
+            updatePrayerStats();
+
+            const next = element.nextElementSibling;
+            if (next && next.classList.contains('prayer-card')) {
+                next.classList.add('current');
+            }
+        }
+
+        // Update prayer stats in UI
+        function updatePrayerStats() {
+            const totalPrayersEl = document.querySelector('.header-stat-value');
+            if (totalPrayersEl && window.AppState && window.AppState.profile) {
+                totalPrayersEl.textContent = window.AppState.profile.totalPrayers || 0;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('prayerModal').classList.remove('active');
+        }
+
+        // Video modal
+        function openStory(day) {
+            const story = stories.find(s => s.day === day);
+            if (!story || day > currentDay) return;
+
+            document.getElementById('videoModalTitle').textContent = `Day ${day}: ${story.title}`;
+            document.getElementById('videoStoryTitle').textContent = story.title;
+            document.getElementById('videoStoryDesc').textContent = story.desc;
+            document.getElementById('videoModal').classList.add('active');
+
+            // Track story watched in Firestore
+            if (window.trackStory) {
+                window.trackStory(day);
+            }
+
+            // Update the story card UI to show as watched
+            updateStoryCardUI(day);
+        }
+
+        function updateStoryCardUI(day) {
+            const storyCards = document.querySelectorAll('.story-card');
+            storyCards.forEach(card => {
+                const onclick = card.getAttribute('onclick');
+                if (onclick && onclick.includes(`openStory(${day})`)) {
+                    card.classList.add('watched');
+                }
+            });
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.remove('active');
+        }
+
+        // Celebration confetti - reduced count for better performance
+        function triggerConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.style.display = 'block';
+            container.innerHTML = '';
+
+            const colors = ['#F5B526', '#22C55E', '#14B8A6', '#FF6B6B', '#A78BFA', '#FFE082'];
+
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                container.appendChild(confetti);
+            }
+
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 3000);
+        }
+
+        // Leaderboard tab switching
+        document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.leaderboard-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav-toggle">
+        <div class="nav-items">
+            <div class="mobile-nav-item active" onclick="showScreen('home'); updateMobileNav(this)">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </div>
+            <div class="mobile-nav-item" onclick="showScreen('stories'); updateMobileNav(this)">
+                <span class="nav-icon">📺</span>
+                <span>Stories</span>
+            </div>
+            <div class="mobile-nav-item" onclick="showScreen('dashboard'); updateMobileNav(this)">
+                <span class="nav-icon">📊</span>
+                <span>Progress</span>
+            </div>
+            <div class="mobile-nav-item" onclick="showScreen('leaderboard'); updateMobileNav(this)">
+                <span class="nav-icon">🏆</span>
+                <span>Rank</span>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        function updateMobileNav(element) {
+            document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+        }
+    </script>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal-overlay" style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999;">
+        <div style="background: var(--white); border-radius: var(--radius-lg); padding: var(--spacing-2xl); max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+            <div style="font-size: 64px; margin-bottom: var(--spacing-md);">🌙</div>
+            <h2 style="color: var(--gold); margin-bottom: var(--spacing-sm);">Welcome to Salah Buddy!</h2>
+            <p style="color: var(--dark-soft); margin-bottom: var(--spacing-xl);">Your Ramadan companion for prayers and learning</p>
+
+            <div id="authForm">
+                <div style="margin-bottom: var(--spacing-md);">
+                    <input type="text" id="childName" placeholder="Child's Name"
+                           style="width: 100%; padding: var(--spacing-md); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: var(--font-base); font-family: inherit;">
+                </div>
+                <div style="margin-bottom: var(--spacing-md);">
+                    <input type="email" id="parentEmail" placeholder="Parent's Email"
+                           style="width: 100%; padding: var(--spacing-md); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: var(--font-base); font-family: inherit;">
+                </div>
+                <div style="margin-bottom: var(--spacing-lg);">
+                    <input type="password" id="parentPassword" placeholder="Password (8+ chars, upper, lower, number)"
+                           style="width: 100%; padding: var(--spacing-md); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: var(--font-base); font-family: inherit;">
+                </div>
+                <button onclick="handleAuth('signup')"
+                        style="width: 100%; padding: var(--spacing-md); background: var(--gold); color: var(--dark); border: none; border-radius: var(--radius-sm); font-size: var(--font-base); font-weight: 600; cursor: pointer; margin-bottom: var(--spacing-sm); font-family: inherit;">
+                    Start Ramadan Journey
+                </button>
+                <button onclick="handleAuth('login')"
+                        style="width: 100%; padding: var(--spacing-md); background: transparent; color: var(--dark-soft); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: var(--font-base); font-weight: 500; cursor: pointer; font-family: inherit;">
+                    I already have an account
+                </button>
+                <p id="authError" style="color: var(--coral); margin-top: var(--spacing-md); display: none;"></p>
+            </div>
+
+            <p style="margin-top: var(--spacing-xl); font-size: var(--font-sm); color: var(--dark-soft);">
+                <button onclick="handleGuestMode()" style="background: none; border: none; color: var(--gold); cursor: pointer; font-size: var(--font-sm); text-decoration: underline; font-family: inherit;">
+                    Try as Guest
+                </button>
+            </p>
+        </div>
+    </div>
+
+    <!-- App State Management -->
+    <script type="module">
+        // Wait for Firebase to be ready
+        const waitForFirebase = () => {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (window.firebaseAuth && window.firebaseModules) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 100);
+                    }
+                };
+                check();
+            });
+        };
+
+        // App State - make globally accessible
+        const AppState = {
+            user: null,
+            profile: null,
+            todayPrayers: { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false },
+            watchedStories: [],
+            isGuest: false,
+            bonusTasks: [],
+            completedTaskIds: [],
+            firestoreStories: {} // Stories loaded from Firestore
+        };
+        window.AppState = AppState;
+
+        // DOM Element Cache - cache frequently accessed elements to avoid repeated DOM queries
+        const DOMCache = {
+            // Modals
+            authModal: null,
+            prayerModal: null,
+            videoModal: null,
+            // Screens
+            screens: null,
+            navItems: null,
+            // Dashboard elements
+            dashPrayers: null,
+            dashStreak: null,
+            dashStories: null,
+            dashStars: null,
+            dashboardSubtitle: null,
+            // Prayer elements
+            prayerCards: null,
+            prayerProgressText: null,
+            // Stats elements
+            headerStatValues: null,
+            quickStatValues: null,
+            dashboardStats: null,
+            streakValue: null,
+            streakBest: null,
+            // Sidebar elements
+            sidebarName: null,
+            sidebarStreak: null,
+            greetingName: null,
+            // Leaderboard elements
+            podiumNames: null,
+            podiumPoints: null,
+            // Containers
+            starsContainer: null,
+            confettiContainer: null,
+            storiesGrid: null,
+            achievementsGrid: null,
+            calendarGrid: null
+        };
+
+        // Initialize DOM cache after DOM is ready
+        function initDOMCache() {
+            DOMCache.authModal = document.getElementById('authModal');
+            DOMCache.prayerModal = document.getElementById('prayerModal');
+            DOMCache.videoModal = document.getElementById('videoModal');
+            DOMCache.screens = document.querySelectorAll('.screen');
+            DOMCache.navItems = document.querySelectorAll('.nav-item');
+            DOMCache.dashPrayers = document.getElementById('dashPrayers');
+            DOMCache.dashStreak = document.getElementById('dashStreak');
+            DOMCache.dashStories = document.getElementById('dashStories');
+            DOMCache.dashStars = document.getElementById('dashStars');
+            DOMCache.dashboardSubtitle = document.getElementById('dashboardSubtitle');
+            DOMCache.prayerCards = document.querySelectorAll('.prayer-card');
+            DOMCache.prayerProgressText = document.getElementById('prayerProgressText');
+            DOMCache.headerStatValues = document.querySelectorAll('.header-stat-value');
+            DOMCache.quickStatValues = document.querySelectorAll('.quick-stat-value');
+            DOMCache.dashboardStats = document.querySelectorAll('.dashboard-stat .stat-value');
+            DOMCache.streakValue = document.querySelector('.streak-value');
+            DOMCache.streakBest = document.querySelector('.streak-best');
+            DOMCache.sidebarName = document.querySelector('.sidebar-user-info h4');
+            DOMCache.sidebarStreak = document.querySelector('.sidebar-user-level');
+            DOMCache.greetingName = document.querySelector('.greeting h1 span');
+            DOMCache.podiumNames = document.querySelectorAll('.podium-name');
+            DOMCache.podiumPoints = document.querySelectorAll('.podium-points');
+            DOMCache.starsContainer = document.getElementById('starsContainer');
+            DOMCache.confettiContainer = document.getElementById('confettiContainer');
+            DOMCache.storiesGrid = document.getElementById('storiesGrid');
+            DOMCache.achievementsGrid = document.getElementById('achievementsGrid');
+            DOMCache.calendarGrid = document.getElementById('calendarGrid');
+        }
+        window.DOMCache = DOMCache;
+
+        // Helper function to get today's date in a consistent format
+        // Note: For production, dates should be validated server-side via Cloud Functions
+        // to prevent timezone manipulation. This client-side approach uses UTC for consistency.
+        function getTodayDateString() {
+            // Use UTC date to prevent timezone manipulation
+            const now = new Date();
+            const utcDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+            return utcDate.toISOString().split('T')[0];
+        }
+
+        // Track the current date for midnight reset
+        let currentDate = getTodayDateString();
+
+        // Prayer times state
+        let prayerTimes = {
+            fajr: '5:12 AM',
+            dhuhr: '12:30 PM',
+            asr: '3:45 PM',
+            maghrib: '6:32 PM',
+            isha: '8:00 PM'
+        };
+
+        // Fetch prayer times from Aladhan API
+        async function fetchPrayerTimes() {
+            try {
+                // Try to get user's location
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        async (position) => {
+                            const { latitude, longitude } = position.coords;
+                            await getPrayerTimesFromAPI(latitude, longitude);
+                        },
+                        async () => {
+                            // If location denied, use Riyadh as default (Saudi Arabia)
+                            console.log('Location access denied, using Riyadh as default');
+                            await getPrayerTimesFromAPI(24.7136, 46.6753);
+                        }
+                    );
+                } else {
+                    // Geolocation not supported, use Riyadh
+                    await getPrayerTimesFromAPI(24.7136, 46.6753);
+                }
+            } catch (error) {
+                console.error('Error fetching prayer times:', error);
+            }
+        }
+
+        async function getPrayerTimesFromAPI(latitude, longitude) {
+            try {
+                const today = new Date();
+                const day = today.getDate();
+                const month = today.getMonth() + 1;
+                const year = today.getFullYear();
+
+                const response = await fetch(
+                    `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${latitude}&longitude=${longitude}&method=4`
+                );
+                const data = await response.json();
+
+                if (data.code === 200) {
+                    const timings = data.data.timings;
+                    prayerTimes = {
+                        fajr: formatTime(timings.Fajr),
+                        dhuhr: formatTime(timings.Dhuhr),
+                        asr: formatTime(timings.Asr),
+                        maghrib: formatTime(timings.Maghrib),
+                        isha: formatTime(timings.Isha)
+                    };
+                    updatePrayerTimesUI();
+                    console.log('Prayer times loaded:', prayerTimes);
+                }
+            } catch (error) {
+                console.error('Error fetching prayer times from API:', error);
+            }
+        }
+
+        function formatTime(time24) {
+            // Convert 24hr to 12hr format
+            const [hours, minutes] = time24.split(':');
+            let h = parseInt(hours);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${h}:${minutes} ${ampm}`;
+        }
+
+        function updatePrayerTimesUI() {
+            const cards = DOMCache.prayerCards || document.querySelectorAll('.prayer-card');
+            cards.forEach(card => {
+                const prayerName = card.dataset.prayer;
+                const timeEl = card.querySelector('.prayer-card-time');
+                if (timeEl && prayerTimes[prayerName]) {
+                    timeEl.textContent = prayerTimes[prayerName];
+                }
+            });
+        }
+
+        // Check for midnight reset - called periodically and on visibility change
+        async function checkMidnightReset() {
+            const today = getTodayDateString();
+
+            if (today !== currentDate) {
+                console.log('Date changed from', currentDate, 'to', today, '- resetting prayers');
+                currentDate = today;
+
+                // Reset today's prayers for new day
+                AppState.todayPrayers = {
+                    fajr: false,
+                    dhuhr: false,
+                    asr: false,
+                    maghrib: false,
+                    isha: false
+                };
+
+                // Reload from Firestore if user is logged in
+                if (AppState.user && !AppState.isGuest) {
+                    await loadTodayPrayers(AppState.user.uid);
+                }
+
+                // Update the UI
+                updatePrayerUI();
+                if (window.updateDashboard) {
+                    window.updateDashboard();
+                }
+
+                // Refetch prayer times for the new day
+                fetchPrayerTimes();
+
+                console.log('Midnight reset complete - prayers reset for new day');
+            }
+        }
+
+        // Store interval ID for cleanup
+        let midnightCheckInterval = null;
+
+        // Set up midnight reset checker
+        function setupMidnightReset() {
+            // Clear any existing interval first
+            if (midnightCheckInterval) {
+                clearInterval(midnightCheckInterval);
+            }
+
+            // Check every minute
+            midnightCheckInterval = setInterval(checkMidnightReset, 60000);
+
+            // Also check when tab becomes visible (user returns to app)
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    checkMidnightReset();
+                }
+            });
+
+            // Check on page focus
+            window.addEventListener('focus', checkMidnightReset);
+
+            // Clean up on page unload to prevent memory leaks
+            window.addEventListener('beforeunload', () => {
+                if (midnightCheckInterval) {
+                    clearInterval(midnightCheckInterval);
+                    midnightCheckInterval = null;
+                }
+            });
+        }
+
+        // Initialize app
+        async function initApp() {
+            // Initialize DOM element cache first
+            initDOMCache();
+
+            await waitForFirebase();
+
+            // Set up midnight reset checker
+            setupMidnightReset();
+
+            // Fetch prayer times for user's location
+            fetchPrayerTimes();
+
+            const { onAuthStateChanged } = window.firebaseModules;
+
+            onAuthStateChanged(window.firebaseAuth, async (user) => {
+                if (user) {
+                    AppState.user = user;
+                    // Run all data loading in parallel for faster startup
+                    await Promise.all([
+                        loadUserProfile(user.uid),
+                        loadTodayPrayers(user.uid),
+                        loadWatchedStories(user.uid),
+                        loadBonusTasks(),
+                        loadCompletedTasks(user.uid)
+                    ]);
+                    hideAuthModal();
+                    updateUIWithProfile();
+                    renderBonusTasks();
+                } else if (!AppState.isGuest) {
+                    showAuthModal();
+                }
+            });
+        }
+
+        // Auth handlers
+        window.handleAuth = async function(mode) {
+            const name = document.getElementById('childName').value.trim();
+            const email = document.getElementById('parentEmail').value.trim();
+            const password = document.getElementById('parentPassword').value;
+            const errorEl = document.getElementById('authError');
+
+            errorEl.style.display = 'none';
+
+            try {
+                const { signInWithEmailAndPassword, createUserWithEmailAndPassword, doc, setDoc, serverTimestamp } = window.firebaseModules;
+
+                if (mode === 'signup') {
+                    if (!name) throw new Error('Please enter your child\'s name');
+                    if (!email) throw new Error('Please enter an email');
+                    // Validate password strength
+                    if (password.length < 8) throw new Error('Password must be at least 8 characters');
+                    if (!/[A-Z]/.test(password)) throw new Error('Password must contain at least one uppercase letter');
+                    if (!/[a-z]/.test(password)) throw new Error('Password must contain at least one lowercase letter');
+                    if (!/[0-9]/.test(password)) throw new Error('Password must contain at least one number');
+
+                    const userCred = await createUserWithEmailAndPassword(window.firebaseAuth, email, password);
+
+                    // Create user profile
+                    await setDoc(doc(window.firebaseDb, 'users', userCred.user.uid), {
+                        name: name,
+                        email: email,
+                        createdAt: serverTimestamp(),
+                        totalPrayers: 0,
+                        totalStories: 0,
+                        currentStreak: 0,
+                        longestStreak: 0,
+                        stars: 0,
+                        rank: 0
+                    });
+                } else {
+                    await signInWithEmailAndPassword(window.firebaseAuth, email, password);
+                }
+            } catch (error) {
+                errorEl.textContent = error.message;
+                errorEl.style.display = 'block';
+            }
+        };
+
+        window.handleGuestMode = function() {
+            AppState.isGuest = true;
+            AppState.profile = {
+                name: 'Guest',
+                totalPrayers: 0,
+                totalStories: 0,
+                currentStreak: 0,
+                longestStreak: 0,
+                stars: 0,
+                rank: '-'
+            };
+            hideAuthModal();
+            updateUIWithProfile();
+            // Reset prayers to uncompleted for guests
+            document.getElementById('prayerProgressText').textContent = '0 of 5 completed';
+        };
+
+        async function loadUserProfile(uid) {
+            const { doc, getDoc } = window.firebaseModules;
+
+            try {
+                const userDoc = await getDoc(doc(window.firebaseDb, 'users', uid));
+                if (userDoc.exists()) {
+                    AppState.profile = userDoc.data();
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        async function loadTodayPrayers(uid) {
+            const { doc, getDoc } = window.firebaseModules;
+            const today = getTodayDateString(); // YYYY-MM-DD (UTC)
+
+            try {
+                const prayerDoc = await getDoc(doc(window.firebaseDb, 'users', uid, 'prayers', today));
+                if (prayerDoc.exists()) {
+                    AppState.todayPrayers = prayerDoc.data();
+                    updatePrayerUI();
+                }
+            } catch (error) {
+                console.error('Error loading today prayers:', error);
+            }
+        }
+
+        async function loadWatchedStories(uid) {
+            const { doc, getDoc } = window.firebaseModules;
+
+            try {
+                const storiesDoc = await getDoc(doc(window.firebaseDb, 'users', uid, 'progress', 'stories'));
+                if (storiesDoc.exists()) {
+                    AppState.watchedStories = storiesDoc.data().watched || [];
+                    updateStoryUI();
+                }
+            } catch (error) {
+                console.error('Error loading watched stories:', error);
+            }
+        }
+
+        // Load bonus tasks for current day from Firestore
+        async function loadBonusTasks() {
+            const { collection, query, where, orderBy, getDocs } = window.firebaseModules;
+
+            try {
+                const tasksRef = collection(window.firebaseDb, 'bonusTasks');
+                const q = query(
+                    tasksRef,
+                    where('day', '==', currentDay),
+                    where('isPublished', '==', true),
+                    orderBy('order')
+                );
+
+                const snapshot = await getDocs(q);
+                AppState.bonusTasks = [];
+
+                snapshot.forEach(doc => {
+                    AppState.bonusTasks.push({ id: doc.id, ...doc.data() });
+                });
+
+                console.log(`Loaded ${AppState.bonusTasks.length} bonus tasks for day ${currentDay}`);
+            } catch (error) {
+                console.error('Error loading bonus tasks:', error);
+                AppState.bonusTasks = [];
+            }
+        }
+
+        // Load completed tasks for today
+        async function loadCompletedTasks(uid) {
+            const { collection, query, where, getDocs } = window.firebaseModules;
+
+            try {
+                const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+                const completionsRef = collection(window.firebaseDb, 'users', uid, 'taskCompletions');
+                const q = query(completionsRef, where('completedDate', '==', today));
+
+                const snapshot = await getDocs(q);
+                AppState.completedTaskIds = [];
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.taskId) {
+                        AppState.completedTaskIds.push(data.taskId);
+                    }
+                });
+
+                console.log(`Loaded ${AppState.completedTaskIds.length} completed tasks for today`);
+            } catch (error) {
+                console.error('Error loading completed tasks:', error);
+                AppState.completedTaskIds = [];
+            }
+        }
+
+        // Render bonus tasks in the UI
+        function renderBonusTasks() {
+            const container = document.getElementById('bonusTasksList');
+            const countEl = document.getElementById('bonusTasksCount');
+
+            if (!container) return;
+
+            const tasks = AppState.bonusTasks || [];
+            const completedIds = AppState.completedTaskIds || [];
+
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="bonus-tasks-empty">
+                        <div class="bonus-tasks-empty-icon">📋</div>
+                        <div>No bonus tasks for today</div>
+                    </div>
+                `;
+                countEl.textContent = '0/0 done';
+                return;
+            }
+
+            const completedCount = tasks.filter(t => completedIds.includes(t.id)).length;
+            countEl.textContent = `${completedCount}/${tasks.length} done`;
+
+            container.innerHTML = tasks.map(task => {
+                const isCompleted = completedIds.includes(task.id);
+                return `
+                    <div class="bonus-task-item ${isCompleted ? 'completed' : ''}"
+                         onclick="${isCompleted ? '' : `completeTask('${task.id}')`}">
+                        <div class="bonus-task-emoji">${task.emoji || '⭐'}</div>
+                        <div class="bonus-task-content">
+                            <div class="bonus-task-name">${task.title}</div>
+                            <div class="bonus-task-desc">${task.description || ''}</div>
+                        </div>
+                        <div class="bonus-task-reward">
+                            <span>⭐</span>
+                            <span>${task.starsReward}</span>
+                        </div>
+                        <div class="bonus-task-check">${isCompleted ? '✓' : ''}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Complete a bonus task
+        window.completeTask = async function(taskId) {
+            if (!AppState.user || AppState.completedTaskIds.includes(taskId)) {
+                return;
+            }
+
+            const task = AppState.bonusTasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const { doc, setDoc, updateDoc, increment, serverTimestamp } = window.firebaseModules;
+            const today = new Date().toISOString().split('T')[0];
+            const completionId = `${taskId}_${today}`;
+
+            try {
+                // Save completion record
+                await setDoc(doc(window.firebaseDb, 'users', AppState.user.uid, 'taskCompletions', completionId), {
+                    taskId: taskId,
+                    userId: AppState.user.uid,
+                    completedDate: today,
+                    day: currentDay,
+                    starsEarned: task.starsReward,
+                    completedAt: serverTimestamp()
+                });
+
+                // Update user's star count
+                const userRef = doc(window.firebaseDb, 'users', AppState.user.uid);
+                await updateDoc(userRef, {
+                    stars: increment(task.starsReward)
+                });
+
+                // Update local state
+                AppState.completedTaskIds.push(taskId);
+                if (AppState.profile) {
+                    AppState.profile.stars = (AppState.profile.stars || 0) + task.starsReward;
+                }
+
+                // Update UI
+                renderBonusTasks();
+                updateUIWithProfile();
+
+                // Show celebration toast
+                showToast(`+${task.starsReward} stars! Great job! ⭐`, 'success');
+
+            } catch (error) {
+                console.error('Error completing task:', error);
+                showToast('Oops! Something went wrong.', 'error');
+            }
+        };
+
+        // Simple toast notification
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast-notification');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast-notification toast-${type}`;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                background: ${type === 'success' ? '#22C55E' : '#FF6B6B'};
+                color: white;
+                border-radius: 12px;
+                font-weight: 700;
+                font-size: 16px;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function updatePrayerUI() {
+            const prayers = AppState.todayPrayers;
+            const prayerCards = DOMCache.prayerCards || document.querySelectorAll('.prayer-card');
+            let completed = 0;
+
+            prayerCards.forEach(card => {
+                const prayerName = card.dataset.prayer;
+                if (prayers[prayerName]) {
+                    card.classList.add('completed');
+                    card.classList.remove('current');
+                    completed++;
+                }
+            });
+
+            // Set first uncompleted prayer as current
+            const firstUncompleted = document.querySelector('.prayer-card:not(.completed)');
+            if (firstUncompleted) {
+                firstUncompleted.classList.add('current');
+            }
+
+            const progressText = DOMCache.prayerProgressText || document.getElementById('prayerProgressText');
+            if (progressText) progressText.textContent = completed + ' of 5 completed';
+            window.completedPrayers = completed;
+        }
+
+        function updateStoryUI() {
+            // Regenerate story cards with updated watched status
+            if (window.refreshStoryCards) {
+                window.refreshStoryCards();
+            }
+        }
+
+        function updateUIWithProfile() {
+            const profile = AppState.profile;
+            if (!profile) return;
+
+            // Update name in sidebar (use cached elements)
+            const sidebarName = DOMCache.sidebarName || document.querySelector('.sidebar-user-info h4');
+            if (sidebarName) sidebarName.textContent = profile.name || 'Guest';
+
+            // Update sidebar streak
+            const sidebarStreak = DOMCache.sidebarStreak || document.querySelector('.sidebar-user-level');
+            if (sidebarStreak) sidebarStreak.textContent = (profile.currentStreak || 0) + ' Day Streak!';
+
+            // Update greeting on home screen
+            const greetingName = DOMCache.greetingName || document.querySelector('.greeting h1 span');
+            if (greetingName) greetingName.textContent = (profile.name || 'Guest') + '!';
+
+            // Update header stats
+            const statValues = DOMCache.headerStatValues || document.querySelectorAll('.header-stat-value');
+            if (statValues[0]) statValues[0].textContent = profile.totalPrayers || 0;
+            if (statValues[1]) statValues[1].textContent = profile.rank ? '#' + profile.rank : '-';
+
+            // Update streak card
+            const streakValue = DOMCache.streakValue || document.querySelector('.streak-value');
+            if (streakValue) streakValue.textContent = profile.currentStreak || 0;
+            const streakBest = DOMCache.streakBest || document.querySelector('.streak-best');
+            if (streakBest) streakBest.textContent = 'Personal Best: ' + (profile.longestStreak || 0) + ' days';
+
+            // Update quick stats
+            const quickStatValues = DOMCache.quickStatValues || document.querySelectorAll('.quick-stat-value');
+            if (quickStatValues[0]) quickStatValues[0].textContent = profile.totalStories || 0;
+            if (quickStatValues[1]) quickStatValues[1].textContent = profile.stars || 0;
+
+            // Update progress screen stats
+            const dashboardStats = DOMCache.dashboardStats || document.querySelectorAll('.dashboard-stat .stat-value');
+            if (dashboardStats[0]) dashboardStats[0].textContent = profile.totalPrayers || 0;
+            if (dashboardStats[1]) dashboardStats[1].textContent = profile.currentStreak || 0;
+            if (dashboardStats[2]) dashboardStats[2].textContent = profile.totalStories || 0;
+            if (dashboardStats[3]) dashboardStats[3].textContent = profile.stars || 0;
+
+            // Update prayer progress text
+            const progressText = DOMCache.prayerProgressText || document.getElementById('prayerProgressText');
+            if (progressText) progressText.textContent = '0 of 5 completed';
+
+            // Update dashboard if it's available
+            if (window.updateDashboard) {
+                window.updateDashboard();
+            }
+
+            console.log('UI updated with profile:', profile);
+        }
+
+        function showAuthModal() {
+            const modal = DOMCache.authModal || document.getElementById('authModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function hideAuthModal() {
+            const modal = DOMCache.authModal || document.getElementById('authModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // Track prayer completion using batched writes to prevent race conditions
+        window.trackPrayer = async function(prayerName) {
+            if (AppState.isGuest) {
+                console.log('Guest mode - prayer not saved');
+                return;
+            }
+
+            const { doc, writeBatch, increment, serverTimestamp } = window.firebaseModules;
+            const today = getTodayDateString();
+
+            try {
+                // Create a batch write to ensure atomic updates
+                const batch = writeBatch(window.firebaseDb);
+
+                // Update today's prayers
+                AppState.todayPrayers[prayerName] = true;
+                const prayerRef = doc(window.firebaseDb, 'users', AppState.user.uid, 'prayers', today);
+                batch.set(prayerRef, AppState.todayPrayers, { merge: true });
+
+                // Update user stats atomically
+                const userRef = doc(window.firebaseDb, 'users', AppState.user.uid);
+                batch.update(userRef, {
+                    totalPrayers: increment(1),
+                    stars: increment(10),
+                    lastPrayerAt: serverTimestamp()
+                });
+
+                // Commit all changes atomically
+                await batch.commit();
+
+                // Update local state after successful commit
+                AppState.profile.totalPrayers = (AppState.profile.totalPrayers || 0) + 1;
+                AppState.profile.stars = (AppState.profile.stars || 0) + 10;
+
+                // Check if all 5 prayers are complete - update streak
+                const allComplete = Object.values(AppState.todayPrayers).every(v => v === true);
+                if (allComplete) {
+                    await updateStreak();
+                }
+
+                // Update UI (use cached DOM elements)
+                const statValues = DOMCache.headerStatValues || document.querySelectorAll('.header-stat-value');
+                if (statValues[0]) statValues[0].textContent = AppState.profile.totalPrayers;
+                const quickStatValues = DOMCache.quickStatValues || document.querySelectorAll('.quick-stat-value');
+                if (quickStatValues[1]) quickStatValues[1].textContent = AppState.profile.stars;
+
+                console.log('Prayer tracked:', prayerName);
+            } catch (error) {
+                console.error('Error tracking prayer:', error);
+                // Rollback local state on error
+                AppState.todayPrayers[prayerName] = false;
+            }
+        };
+
+        // Update streak when all prayers complete
+        async function updateStreak() {
+            const { doc, getDoc, updateDoc, serverTimestamp } = window.firebaseModules;
+
+            try {
+                // Get yesterday's date
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+                // Check if yesterday's prayers were all complete
+                const yesterdayDoc = await getDoc(doc(window.firebaseDb, 'users', AppState.user.uid, 'prayers', yesterdayStr));
+                let yesterdayComplete = false;
+
+                if (yesterdayDoc.exists()) {
+                    const yesterdayPrayers = yesterdayDoc.data();
+                    yesterdayComplete = yesterdayPrayers.fajr && yesterdayPrayers.dhuhr &&
+                                        yesterdayPrayers.asr && yesterdayPrayers.maghrib && yesterdayPrayers.isha;
+                }
+
+                // Calculate new streak
+                let newStreak;
+                if (yesterdayComplete) {
+                    // Continue streak
+                    newStreak = (AppState.profile.currentStreak || 0) + 1;
+                } else {
+                    // Start new streak (first day = 1)
+                    newStreak = 1;
+                }
+
+                // Update longest streak if needed
+                const newLongest = Math.max(newStreak, AppState.profile.longestStreak || 0);
+
+                // Save to Firestore
+                await updateDoc(doc(window.firebaseDb, 'users', AppState.user.uid), {
+                    currentStreak: newStreak,
+                    longestStreak: newLongest,
+                    lastStreakDate: getTodayDateString()
+                });
+
+                // Update local state
+                AppState.profile.currentStreak = newStreak;
+                AppState.profile.longestStreak = newLongest;
+
+                // Update UI (use cached DOM elements)
+                const streakValue = DOMCache.streakValue || document.querySelector('.streak-value');
+                if (streakValue) streakValue.textContent = newStreak;
+                const streakBest = DOMCache.streakBest || document.querySelector('.streak-best');
+                if (streakBest) streakBest.textContent = 'Personal Best: ' + newLongest + ' days';
+                const sidebarStreak = DOMCache.sidebarStreak || document.querySelector('.sidebar-user-level');
+                if (sidebarStreak) sidebarStreak.textContent = newStreak + ' Day Streak!';
+
+                // Award bonus stars for streak milestones
+                if (newStreak === 7 || newStreak === 14 || newStreak === 21 || newStreak === 30) {
+                    const bonusStars = newStreak * 10;
+                    await updateDoc(doc(window.firebaseDb, 'users', AppState.user.uid), {
+                        stars: window.firebaseModules.increment(bonusStars)
+                    });
+                    AppState.profile.stars += bonusStars;
+                    console.log(`Streak milestone! ${newStreak} days - bonus ${bonusStars} stars!`);
+                }
+
+                console.log('Streak updated:', newStreak, 'Longest:', newLongest);
+            } catch (error) {
+                console.error('Error updating streak:', error);
+            }
+        }
+
+        // Track story watched
+        window.trackStory = async function(day) {
+            if (AppState.isGuest) {
+                console.log('Guest mode - story not saved');
+                return;
+            }
+
+            if (AppState.watchedStories.includes(day)) return;
+
+            const { doc, setDoc, updateDoc, increment, arrayUnion, serverTimestamp } = window.firebaseModules;
+
+            try {
+                AppState.watchedStories.push(day);
+
+                // Save to stories progress
+                await setDoc(doc(window.firebaseDb, 'users', AppState.user.uid, 'progress', 'stories'), {
+                    watched: AppState.watchedStories,
+                    lastWatchedAt: serverTimestamp()
+                }, { merge: true });
+
+                // Update user stats
+                await updateDoc(doc(window.firebaseDb, 'users', AppState.user.uid), {
+                    totalStories: increment(1),
+                    stars: increment(20)
+                });
+
+                // Update local state
+                AppState.profile.totalStories = (AppState.profile.totalStories || 0) + 1;
+                AppState.profile.stars = (AppState.profile.stars || 0) + 20;
+
+                // Update UI (use cached DOM elements)
+                const quickStatValues = DOMCache.quickStatValues || document.querySelectorAll('.quick-stat-value');
+                if (quickStatValues[0]) quickStatValues[0].textContent = AppState.profile.totalStories;
+                if (quickStatValues[1]) quickStatValues[1].textContent = AppState.profile.stars;
+
+                console.log('Story tracked:', day);
+            } catch (error) {
+                console.error('Error tracking story:', error);
+            }
+        };
+
+        // Load leaderboard
+        window.loadLeaderboard = async function() {
+            const { collection, query, orderBy, limit, getDocs } = window.firebaseModules;
+
+            try {
+                const q = query(collection(window.firebaseDb, 'users'), orderBy('stars', 'desc'), limit(10));
+                const snapshot = await getDocs(q);
+
+                const leaderboard = [];
+                snapshot.forEach(doc => {
+                    leaderboard.push({ id: doc.id, ...doc.data() });
+                });
+
+                updateLeaderboardUI(leaderboard);
+                return leaderboard;
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                return [];
+            }
+        };
+
+        function updateLeaderboardUI(users) {
+            // Update top 3 podium - order is: [0]=2nd place, [1]=1st place, [2]=3rd place in DOM
+            const podiumNames = DOMCache.podiumNames || document.querySelectorAll('.podium-name');
+            const podiumPoints = DOMCache.podiumPoints || document.querySelectorAll('.podium-points');
+
+            // 2nd place (first in DOM - left podium)
+            if (users[1] && podiumNames[0]) {
+                podiumNames[0].textContent = users[1].name || 'Player 2';
+                podiumPoints[0].textContent = (users[1].stars || 0).toLocaleString() + ' ⭐';
+            }
+            // 1st place (middle in DOM - center podium)
+            if (users[0] && podiumNames[1]) {
+                podiumNames[1].textContent = users[0].name || 'Player 1';
+                podiumPoints[1].textContent = (users[0].stars || 0).toLocaleString() + ' ⭐';
+            }
+            // 3rd place (last in DOM - right podium)
+            if (users[2] && podiumNames[2]) {
+                podiumNames[2].textContent = users[2].name || 'Player 3';
+                podiumPoints[2].textContent = (users[2].stars || 0).toLocaleString() + ' ⭐';
+            }
+
+            console.log('Leaderboard updated:', users);
+        }
+
+        // Start the app
+        initApp();
+    </script>
+</body>
+</html>

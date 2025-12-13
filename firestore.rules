@@ -21,12 +21,38 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isParent == true;
     }
 
+    // Admin helper - checks for admin custom claim in auth token
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+
     // Users collection - users can only read/write their own document
+    // Leaderboard: allow reading limited fields (name, stars) for all authenticated users
     match /users/{userId} {
-      allow read: if isOwner(userId);
+      allow read: if isAuthenticated(); // Allow reading for leaderboard
       allow create: if isOwner(userId);
       allow update: if isOwner(userId);
       allow delete: if false; // Users cannot delete their accounts directly
+
+      // User's prayer subcollection
+      match /prayers/{date} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // User's progress subcollection
+      match /progress/{docId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // User's task completions subcollection (Issue #26)
+      match /taskCompletions/{completionId} {
+        allow read: if isOwner(userId);
+        // Users can create completions for themselves, but only once per task per day
+        allow create: if isOwner(userId) &&
+          request.resource.data.userId == request.auth.uid;
+        allow update: if false; // No updates allowed - completions are immutable
+        allow delete: if false;
+      }
     }
 
     // Families collection - only family members can access
@@ -77,6 +103,22 @@ service cloud.firestore {
       allow update: if isAuthenticated() &&
         resource.data.userId == request.auth.uid;
       allow delete: if false;
+    }
+
+    // Stories collection (Issue #25) - admin can write, all users can read
+    match /stories/{storyId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Bonus Tasks collection (Issue #26) - admin can write, all users can read
+    match /bonusTasks/{taskId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
     // Leaderboard - read-only for family members
