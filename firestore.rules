@@ -193,7 +193,40 @@ service cloud.firestore {
     // Contains app-wide configuration like Ramadan dates, gamification values
     match /appSettings/{settingId} {
       allow read: if isAuthenticated();
-      allow create, update: if isAdmin();
+
+      // Validation for ramadan settings
+      allow create, update: if isAdmin() && (
+        // Ramadan settings validation
+        (settingId == 'ramadan' &&
+          request.resource.data.keys().hasOnly(['startDate', 'endDate', 'totalDays']) &&
+          request.resource.data.startDate is string &&
+          request.resource.data.endDate is string &&
+          request.resource.data.totalDays is number &&
+          request.resource.data.totalDays >= 29 &&
+          request.resource.data.totalDays <= 30
+        ) ||
+        // Gamification settings validation
+        (settingId == 'gamification' &&
+          request.resource.data.keys().hasOnly(['starsPerPrayer', 'streakBonus', 'storyBonus', 'maxDailyStars']) &&
+          request.resource.data.starsPerPrayer is number &&
+          request.resource.data.starsPerPrayer >= 1 &&
+          request.resource.data.starsPerPrayer <= 100 &&
+          request.resource.data.streakBonus is number &&
+          request.resource.data.streakBonus >= 0 &&
+          request.resource.data.streakBonus <= 100 &&
+          request.resource.data.storyBonus is number &&
+          request.resource.data.storyBonus >= 0 &&
+          request.resource.data.storyBonus <= 100 &&
+          request.resource.data.maxDailyStars is number &&
+          request.resource.data.maxDailyStars >= 0
+        ) ||
+        // App config validation
+        (settingId == 'appConfig' &&
+          request.resource.data.keys().hasOnly(['isEnabled', 'maintenanceMessage', 'minAppVersion']) &&
+          request.resource.data.isEnabled is bool
+        )
+      );
+
       allow delete: if false; // Settings should not be deleted
     }
 

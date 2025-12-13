@@ -135,11 +135,13 @@ export const getTodayPrayers = async (
 /**
  * Toggle a prayer completion status using a transaction
  * This ensures prayer and stats are updated atomically
+ * @param starsPerPrayer - Stars to award per prayer (from gamification settings)
  */
 export const togglePrayer = async (
   userId: string,
   prayerName: PrayerName,
-  completed: boolean
+  completed: boolean,
+  starsPerPrayer: number = DEFAULT_GAMIFICATION.starsPerPrayer
 ): Promise<void> => {
   if (isDemoMode) return;
 
@@ -189,7 +191,7 @@ export const togglePrayer = async (
     if (completed && statsDoc.exists()) {
       transaction.update(statsRef, {
         totalPrayers: increment(1),
-        stars: increment(10), // 10 points per prayer
+        stars: increment(starsPerPrayer),
         updatedAt: serverTimestamp(),
       });
     }
@@ -198,10 +200,12 @@ export const togglePrayer = async (
 
 /**
  * Mark a story as watched
+ * @param storyBonus - Stars to award for watching story (from gamification settings)
  */
 export const markStoryWatched = async (
   userId: string,
-  storyDay: number
+  storyDay: number,
+  storyBonus: number = DEFAULT_GAMIFICATION.storyBonus
 ): Promise<void> => {
   if (isDemoMode) return;
 
@@ -221,7 +225,7 @@ export const markStoryWatched = async (
   const statsRef = doc(db, 'stats', userId);
   await updateDoc(statsRef, {
     totalStories: increment(1),
-    stars: increment(15), // 15 points per story
+    stars: increment(storyBonus),
     updatedAt: serverTimestamp(),
   });
 };
@@ -336,8 +340,12 @@ export const subscribeToFamilyLeaderboard = (
 
 /**
  * Calculate and update streak using a transaction to prevent duplicate bonuses
+ * @param streakBonus - Stars to award for daily streak (from gamification settings)
  */
-export const updateStreak = async (userId: string): Promise<void> => {
+export const updateStreak = async (
+  userId: string,
+  streakBonus: number = DEFAULT_GAMIFICATION.streakBonus
+): Promise<void> => {
   if (isDemoMode) return;
 
   const db = getFirebaseDb();
@@ -386,7 +394,7 @@ export const updateStreak = async (userId: string): Promise<void> => {
       currentStreak: newStreak,
       longestStreak,
       lastPrayerDate: today,
-      stars: increment(5), // Streak bonus (only awarded once per day)
+      stars: increment(streakBonus),
       updatedAt: serverTimestamp(),
     });
   });
@@ -437,8 +445,9 @@ export const syncLocalDataToCloud = async (
 
 /**
  * Default gamification values (used when not configured in Firestore)
+ * Exported so other modules can use consistent defaults
  */
-const DEFAULT_GAMIFICATION: GamificationSettings = {
+export const DEFAULT_GAMIFICATION: GamificationSettings = {
   starsPerPrayer: 10,
   streakBonus: 5,
   storyBonus: 15,
