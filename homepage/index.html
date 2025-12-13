@@ -14,7 +14,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         /* Reset & Base */
@@ -825,7 +825,7 @@
                         Built for kids who think prayer is boring. Loved by parents who've tried everything else.
                     </p>
 
-                    <form class="signup-form" onsubmit="handleSignup(event)">
+                    <form class="signup-form" id="heroSignupForm">
                         <input
                             type="email"
                             class="signup-input"
@@ -1014,7 +1014,7 @@
                 <h2 class="cta-headline">Start This Ramadan</h2>
                 <p class="cta-subheadline">Join 1,247 families who are transforming prayer time</p>
 
-                <form class="cta-form" onsubmit="handleSignup(event)">
+                <form class="cta-form" id="ctaSignupForm">
                     <input
                         type="email"
                         class="cta-input"
@@ -1048,12 +1048,32 @@
     </footer>
 
     <script>
+        // Email validation regex
+        const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        // SECURITY: Use addEventListener instead of inline handlers (CSP compliant)
         function handleSignup(event) {
             event.preventDefault();
-            const email = event.target.querySelector('input[type="email"]').value;
+            const emailInput = event.target.querySelector('input[type="email"]');
+            const email = emailInput.value.trim();
+
+            // Validate email format before redirecting
+            if (!EMAIL_REGEX.test(email)) {
+                emailInput.setCustomValidity('Please enter a valid email address');
+                emailInput.reportValidity();
+                return;
+            }
+            emailInput.setCustomValidity('');
+
             // Redirect to signup page with email pre-filled
             window.location.href = `signup.html?email=${encodeURIComponent(email)}`;
         }
+
+        // Attach event listeners on DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('heroSignupForm').addEventListener('submit', handleSignup);
+            document.getElementById('ctaSignupForm').addEventListener('submit', handleSignup);
+        });
     </script>
 </body>
 </html>
