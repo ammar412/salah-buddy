@@ -24,13 +24,14 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { getFirebaseAuth, getFirebaseDb, isFirebaseConfigured } from './firebase';
+import { hashPin, verifyPin as verifyPinHash } from '../utils/crypto';
 
 // Types
 export interface ChildProfile {
   id: string;
   name: string;
   avatar: string;
-  pin: string;
+  pinHash: string; // PIN is now stored as a hash
   age: number;
   createdAt: Date;
 }
@@ -139,17 +140,27 @@ export const addChildProfile = async (
 
   const db = getFirebaseDb();
 
+  // Generate a temporary ID for hashing (will be replaced with actual doc ID)
+  const tempId = `${familyId}_${Date.now()}`;
+  const pinHash = await hashPin(pin, tempId);
+
   const childRef = await addDoc(collection(db, 'families', familyId, 'children'), {
     name,
     avatar,
-    pin,
+    pinHash, // Store hashed PIN, not plaintext
     age,
     createdAt: serverTimestamp(),
   });
 
+  // Update the document with the correct hash using actual child ID
+  const correctPinHash = await hashPin(pin, childRef.id);
+  await updateDoc(childRef, { pinHash: correctPinHash });
+
   // Create stats document for the child
   await setDoc(doc(db, 'stats', childRef.id), {
     familyId,
+    childName: name, // Denormalized for leaderboard
+    childAvatar: avatar, // Denormalized for leaderboard
     totalPrayers: 0,
     totalStories: 0,
     currentStreak: 0,
@@ -162,7 +173,7 @@ export const addChildProfile = async (
     id: childRef.id,
     name,
     avatar,
-    pin,
+    pinHash: correctPinHash,
     age,
     createdAt: new Date(),
   };
@@ -180,15 +191,18 @@ export const getChildren = async (familyId: string): Promise<ChildProfile[]> => 
   const childrenRef = collection(db, 'families', familyId, 'children');
   const snapshot = await getDocs(childrenRef);
 
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data(),
-    createdAt: doc.data().createdAt?.toDate() || new Date(),
+  return snapshot.docs.map(docSnapshot => ({
+    id: docSnapshot.id,
+    name: docSnapshot.data().name,
+    avatar: docSnapshot.data().avatar,
+    pinHash: docSnapshot.data().pinHash || docSnapshot.data().pin, // Support legacy plaintext PINs
+    age: docSnapshot.data().age,
+    createdAt: docSnapshot.data().createdAt?.toDate() || new Date(),
   })) as ChildProfile[];
 };
 
 /**
- * Verify child PIN
+ * Verify child PIN against stored hash
  */
 export const verifyChildPin = async (
   familyId: string,
@@ -207,7 +221,27 @@ export const verifyChildPin = async (
     return false;
   }
 
-  return childDoc.data().pin === pin;
+  const data = childDoc.data();
+
+  // Check if PIN is hashed or legacy plaintext
+  if (data.pinHash) {
+    // New hashed PIN - verify securely
+    return verifyPinHash(pin, childId, data.pinHash);
+  } else if (data.pin) {
+    // Legacy plaintext PIN - verify and migrate to hash
+    if (data.pin === pin) {
+      // Migrate to hashed PIN
+      const newPinHash = await hashPin(pin, childId);
+      await updateDoc(childRef, {
+        pinHash: newPinHash,
+        pin: null, // Remove plaintext PIN
+      });
+      return true;
+    }
+    return false;
+  }
+
+  return false;
 };
 
 /**

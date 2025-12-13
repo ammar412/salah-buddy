@@ -21,6 +21,9 @@ import {
   subscribeToAuthState,
 } from '../services/auth';
 
+// Store unsubscribe function for cleanup
+let authUnsubscribe: (() => void) | null = null;
+
 interface AuthState {
   // Auth state
   isAuthenticated: boolean;
@@ -41,6 +44,7 @@ interface AuthState {
 
   // Actions
   initialize: () => Promise<void>;
+  cleanup: () => void; // New: cleanup subscriptions
   signUpAsParent: (email: string, password: string, name: string) => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -67,11 +71,17 @@ export const useAuthStore = create<AuthState>()(
 
       // Initialize auth state
       initialize: async () => {
+        // Clean up any existing subscription first (prevents memory leak)
+        if (authUnsubscribe) {
+          authUnsubscribe();
+          authUnsubscribe = null;
+        }
+
         set({ isLoading: true });
 
         try {
-          // Subscribe to auth state changes
-          subscribeToAuthState(async (user) => {
+          // Subscribe to auth state changes and store unsubscribe function
+          authUnsubscribe = subscribeToAuthState(async (user) => {
             if (user) {
               const userData = await getCurrentUserData(user.uid);
               if (userData) {
@@ -102,6 +112,14 @@ export const useAuthStore = create<AuthState>()(
         } catch (error) {
           console.error('Auth initialization error:', error);
           set({ isLoading: false });
+        }
+      },
+
+      // Cleanup subscriptions (call on app unmount)
+      cleanup: () => {
+        if (authUnsubscribe) {
+          authUnsubscribe();
+          authUnsubscribe = null;
         }
       },
 
@@ -214,7 +232,7 @@ export const useAuthStore = create<AuthState>()(
             id: 'demo-child',
             name: 'Demo Kid',
             avatar: '😊',
-            pin: '1234',
+            pinHash: 'demo-pin-hash', // Demo mode doesn't need real hash
             age: 8,
             createdAt: new Date(),
           },

@@ -1,0 +1,98 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function belongsToFamily(familyId) {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.familyId == familyId;
+    }
+
+    function isParentInFamily(familyId) {
+      return belongsToFamily(familyId) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isParent == true;
+    }
+
+    // Users collection - users can only read/write their own document
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if false; // Users cannot delete their accounts directly
+    }
+
+    // Families collection - only family members can access
+    match /families/{familyId} {
+      allow read: if belongsToFamily(familyId);
+      allow create: if isAuthenticated(); // Any authenticated user can create a family
+      allow update: if isParentInFamily(familyId);
+      allow delete: if false; // Families cannot be deleted
+
+      // Children subcollection - parents can manage, children can read their own
+      match /children/{childId} {
+        allow read: if belongsToFamily(familyId);
+        allow create: if isParentInFamily(familyId);
+        allow update: if isParentInFamily(familyId);
+        allow delete: if isParentInFamily(familyId);
+      }
+    }
+
+    // Prayer records - users can only access their own
+    match /prayers/{odcId} {
+      // Document ID format: {userId}_{date}
+      allow read: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Stats collection - users can only access their own
+    match /stats/{userId} {
+      allow read: if isOwner(userId) ||
+        // Allow family members to read for leaderboard
+        belongsToFamily(resource.data.familyId);
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    // Story progress - users can only access their own
+    match /storyProgress/{odcId} {
+      // Document ID format: {userId}_{storyDay}
+      allow read: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Leaderboard - read-only for family members
+    match /leaderboard/{familyId} {
+      allow read: if belongsToFamily(familyId);
+      allow write: if false; // Updated via Cloud Functions only
+
+      match /entries/{entryId} {
+        allow read: if belongsToFamily(familyId);
+        allow write: if false;
+      }
+    }
+
+    // Deny all other access by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

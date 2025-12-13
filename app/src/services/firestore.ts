@@ -19,9 +19,11 @@ import {
   increment,
   Timestamp,
   writeBatch,
+  runTransaction,
 } from 'firebase/firestore';
 import { getFirebaseDb, isFirebaseConfigured } from './firebase';
 import type { PrayerName } from '../types';
+import { getTodayString } from '../utils/date';
 
 // Types
 export interface PrayerRecord {
@@ -71,11 +73,6 @@ export interface LeaderboardEntry {
 
 const isDemoMode = !isFirebaseConfigured();
 
-// Helper to get today's date string
-const getTodayString = (): string => {
-  return new Date().toISOString().split('T')[0];
-};
-
 /**
  * Get or create today's prayer record
  */
@@ -111,7 +108,8 @@ export const getTodayPrayers = async (
 };
 
 /**
- * Toggle a prayer completion status
+ * Toggle a prayer completion status using a transaction
+ * This ensures prayer and stats are updated atomically
  */
 export const togglePrayer = async (
   userId: string,
@@ -122,61 +120,55 @@ export const togglePrayer = async (
 
   const db = getFirebaseDb();
   const today = getTodayString();
-  const docId = `${today}_${userId}`;
-  const docRef = doc(db, 'prayers', docId);
-
-  const updates: Record<string, unknown> = {
-    [prayerName]: completed,
-    updatedAt: serverTimestamp(),
-  };
-
-  if (completed) {
-    updates[`${prayerName}Time`] = serverTimestamp();
-  }
-
-  await updateDoc(docRef, updates);
-
-  // Update stats
-  await updateStatsOnPrayerChange(userId, completed);
-};
-
-/**
- * Update user stats when prayer changes
- */
-const updateStatsOnPrayerChange = async (
-  userId: string,
-  added: boolean
-): Promise<void> => {
-  const db = getFirebaseDb();
+  const prayerDocId = `${today}_${userId}`;
+  const prayerRef = doc(db, 'prayers', prayerDocId);
   const statsRef = doc(db, 'stats', userId);
 
-  await updateDoc(statsRef, {
-    totalPrayers: increment(added ? 1 : -1),
-    stars: increment(added ? 10 : -10), // 10 points per prayer
-    updatedAt: serverTimestamp(),
+  await runTransaction(db, async (transaction) => {
+    // Read both documents first (required by Firestore transactions)
+    const prayerDoc = await transaction.get(prayerRef);
+    const statsDoc = await transaction.get(statsRef);
+
+    // Prepare prayer updates
+    const prayerUpdates: Record<string, unknown> = {
+      [prayerName]: completed,
+      updatedAt: serverTimestamp(),
+      userId,
+      date: today,
+    };
+
+    if (completed) {
+      prayerUpdates[`${prayerName}Time`] = serverTimestamp();
+    } else {
+      prayerUpdates[`${prayerName}Time`] = null;
+    }
+
+    // Update prayer document
+    if (prayerDoc.exists()) {
+      transaction.update(prayerRef, prayerUpdates);
+    } else {
+      // Create new prayer record if doesn't exist
+      transaction.set(prayerRef, {
+        date: today,
+        userId,
+        fajr: false,
+        dhuhr: false,
+        asr: false,
+        maghrib: false,
+        isha: false,
+        ...prayerUpdates,
+      });
+    }
+
+    // Update stats atomically (only when completing, not when uncompleting)
+    if (completed && statsDoc.exists()) {
+      transaction.update(statsRef, {
+        totalPrayers: increment(1),
+        stars: increment(10), // 10 points per prayer
+        updatedAt: serverTimestamp(),
+      });
+    }
   });
-};
-
-/**
- * Get prayer history for a user
- */
-export const getPrayerHistory = async (
-  userId: string,
-  days: number = 30
-): Promise<PrayerRecord[]> => {
-  if (isDemoMode) return [];
-
-  const db = getFirebaseDb();
-  const prayersRef = collection(db, 'prayers');
-  const q = query(
-    prayersRef,
-    where('userId', '==', userId),
-    orderBy('date', 'desc'),
-    limit(days)
-  );
-
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => doc.data() as PrayerRecord);
 };
 
 /**
@@ -278,6 +270,7 @@ export const getUserStats = async (userId: string): Promise<UserStats | null> =>
 
 /**
  * Subscribe to real-time family leaderboard
+ * Uses denormalized data (childName, childAvatar stored in stats) to avoid N+1 queries
  */
 export const subscribeToFamilyLeaderboard = (
   familyId: string,
@@ -297,52 +290,36 @@ export const subscribeToFamilyLeaderboard = (
     limit(20)
   );
 
-  return onSnapshot(q, async (snapshot) => {
-    const entries: LeaderboardEntry[] = [];
-
-    for (const docSnap of snapshot.docs) {
-      const stats = docSnap.data() as UserStats;
-
-      // Get child profile info
-      const childRef = doc(db, 'families', familyId, 'children', docSnap.id);
-      const childSnap = await getDoc(childRef);
-
-      if (childSnap.exists()) {
-        const childData = childSnap.data();
-        entries.push({
+  // Use denormalized data to avoid N+1 queries
+  return onSnapshot(q, (snapshot) => {
+    const entries: LeaderboardEntry[] = snapshot.docs
+      .map((docSnap) => {
+        const stats = docSnap.data();
+        return {
           userId: docSnap.id,
-          name: childData.name,
-          avatar: childData.avatar,
-          stars: stats.stars,
-          streak: stats.currentStreak,
+          name: stats.childName || 'Unknown', // Denormalized field
+          avatar: stats.childAvatar || '👤', // Denormalized field
+          stars: stats.stars || 0,
+          streak: stats.currentStreak || 0,
           familyId,
-        });
-      }
-    }
+        };
+      });
 
     callback(entries);
   });
 };
 
 /**
- * Calculate and update streak
+ * Calculate and update streak using a transaction to prevent duplicate bonuses
  */
 export const updateStreak = async (userId: string): Promise<void> => {
   if (isDemoMode) return;
 
   const db = getFirebaseDb();
   const statsRef = doc(db, 'stats', userId);
-  const statsSnap = await getDoc(statsRef);
-
-  if (!statsSnap.exists()) return;
-
-  const stats = statsSnap.data() as UserStats;
   const today = getTodayString();
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayString = yesterday.toISOString().split('T')[0];
 
-  // Check if all prayers completed today
+  // Check if all prayers completed today first (outside transaction)
   const todayPrayers = await getTodayPrayers(userId);
   if (!todayPrayers) return;
 
@@ -353,7 +330,24 @@ export const updateStreak = async (userId: string): Promise<void> => {
     todayPrayers.maghrib &&
     todayPrayers.isha;
 
-  if (allCompleted) {
+  if (!allCompleted) return;
+
+  // Use transaction to prevent race conditions and duplicate bonuses
+  await runTransaction(db, async (transaction) => {
+    const statsSnap = await transaction.get(statsRef);
+    if (!statsSnap.exists()) return;
+
+    const stats = statsSnap.data() as UserStats;
+
+    // Already awarded streak bonus for today - don't duplicate
+    if (stats.lastPrayerDate === today) {
+      return;
+    }
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayString = yesterday.toISOString().split('T')[0];
+
     let newStreak = 1;
 
     // Check if continuing streak from yesterday
@@ -363,14 +357,14 @@ export const updateStreak = async (userId: string): Promise<void> => {
 
     const longestStreak = Math.max(newStreak, stats.longestStreak);
 
-    await updateDoc(statsRef, {
+    transaction.update(statsRef, {
       currentStreak: newStreak,
       longestStreak,
       lastPrayerDate: today,
-      stars: increment(5), // Streak bonus
+      stars: increment(5), // Streak bonus (only awarded once per day)
       updatedAt: serverTimestamp(),
     });
-  }
+  });
 };
 
 /**
@@ -419,7 +413,6 @@ export const syncLocalDataToCloud = async (
 export default {
   getTodayPrayers,
   togglePrayer,
-  getPrayerHistory,
   markStoryWatched,
   updateStoryProgress,
   getStoryProgress,

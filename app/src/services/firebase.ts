@@ -20,19 +20,20 @@ import { getReactNativePersistence } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Firebase configuration
+// Firebase configuration from environment variables
+// Set these in .env file (see .env.example)
 const firebaseConfig = {
-  apiKey: "AIzaSyD95yMLj73ZzVAagG1SZZsloZf2efs90Bg",
-  authDomain: "salah-buddy-b3ac8.firebaseapp.com",
-  projectId: "salah-buddy-b3ac8",
-  storageBucket: "salah-buddy-b3ac8.firebasestorage.app",
-  messagingSenderId: "675921169506",
-  appId: "1:675921169506:web:be4ee90b41e8251b8c153b",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY || "",
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || "",
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || "",
 };
 
 // Check if Firebase is configured
 export const isFirebaseConfigured = (): boolean => {
-  return firebaseConfig.apiKey !== "YOUR_API_KEY";
+  return !!(firebaseConfig.apiKey && firebaseConfig.projectId);
 };
 
 // Initialize Firebase

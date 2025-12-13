@@ -24,11 +24,7 @@ import type {
   UserProfile,
   StoryStatus
 } from '../types';
-
-// Helper to get today's date string
-const getTodayString = (): string => {
-  return new Date().toISOString().split('T')[0];
-};
+import { getTodayString } from '../utils/date';
 
 // Helper to get Ramadan day (1-30) based on start date
 const getRamadanDay = (): number => {
@@ -112,6 +108,13 @@ export const useStore = create<StoreState>()(
         const current = get().todayPrayers[prayerId];
         const newValue = !current;
 
+        // Store previous state for rollback
+        const previousState = {
+          todayPrayers: { ...get().todayPrayers },
+          totalPrayersCompleted: get().totalPrayersCompleted,
+          stars: get().stars,
+        };
+
         // Update local state immediately (optimistic update)
         set((state) => ({
           todayPrayers: { ...state.todayPrayers, [prayerId]: newValue },
@@ -138,7 +141,14 @@ export const useStore = create<StoreState>()(
             await togglePrayerInFirestore(authState.currentChild.id, prayerId, newValue);
           } catch (error) {
             console.error('Failed to sync prayer to cloud:', error);
-            // Could revert optimistic update here if needed
+            // Rollback optimistic update on failure
+            set({
+              todayPrayers: previousState.todayPrayers,
+              totalPrayersCompleted: previousState.totalPrayersCompleted,
+              stars: previousState.stars,
+            });
+            // Re-throw so UI can show error
+            throw error;
           }
         }
 

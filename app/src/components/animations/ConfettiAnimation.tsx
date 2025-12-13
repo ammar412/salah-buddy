@@ -3,7 +3,7 @@
  * Shows celebratory confetti when triggered
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 import { View, StyleSheet, Animated, Dimensions, Easing } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -14,7 +14,8 @@ interface ConfettiPieceProps {
   startX: number;
 }
 
-function ConfettiPiece({ delay, color, startX }: ConfettiPieceProps) {
+// Memoize individual confetti pieces to prevent re-renders
+const ConfettiPiece = memo(function ConfettiPiece({ delay, color, startX }: ConfettiPieceProps) {
   const translateY = useRef(new Animated.Value(-50)).current;
   const translateX = useRef(new Animated.Value(startX)).current;
   const rotate = useRef(new Animated.Value(0)).current;
@@ -81,7 +82,7 @@ function ConfettiPiece({ delay, color, startX }: ConfettiPieceProps) {
       ]}
     />
   );
-}
+});
 
 interface ConfettiAnimationProps {
   visible: boolean;
@@ -99,7 +100,8 @@ const COLORS = [
   '#FCBAD3', // Pink
 ];
 
-export function ConfettiAnimation({ visible, onComplete }: ConfettiAnimationProps) {
+// Memoize the main component to prevent unnecessary re-renders
+export const ConfettiAnimation = memo(function ConfettiAnimation({ visible, onComplete }: ConfettiAnimationProps) {
   const [pieces, setPieces] = React.useState<{ id: number; color: string; startX: number; delay: number }[]>([]);
 
   useEffect(() => {
@@ -139,7 +141,7 @@ export function ConfettiAnimation({ visible, onComplete }: ConfettiAnimationProp
       ))}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

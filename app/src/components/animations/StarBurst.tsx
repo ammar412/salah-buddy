@@ -3,7 +3,7 @@
  * Shows animated stars bursting when earning points
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 
 interface StarProps {
@@ -12,7 +12,8 @@ interface StarProps {
   size: number;
 }
 
-function AnimatedStar({ index, totalStars, size }: StarProps) {
+// Memoize individual stars to prevent re-renders
+const AnimatedStar = memo(function AnimatedStar({ index, totalStars, size }: StarProps) {
   const scale = useRef(new Animated.Value(0)).current;
   const translateX = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(0)).current;
@@ -87,7 +88,7 @@ function AnimatedStar({ index, totalStars, size }: StarProps) {
       <Text style={[styles.starEmoji, { fontSize: size }]}>⭐</Text>
     </Animated.View>
   );
-}
+});
 
 interface StarBurstProps {
   visible: boolean;
@@ -95,7 +96,8 @@ interface StarBurstProps {
   onComplete?: () => void;
 }
 
-export function StarBurst({ visible, points = 10, onComplete }: StarBurstProps) {
+// Memoize the main component
+export const StarBurst = memo(function StarBurst({ visible, points = 10, onComplete }: StarBurstProps) {
   const [show, setShow] = React.useState(false);
   const centerScale = useRef(new Animated.Value(0)).current;
   const centerOpacity = useRef(new Animated.Value(0)).current;
@@ -171,7 +173,7 @@ export function StarBurst({ visible, points = 10, onComplete }: StarBurstProps) 
       </Animated.View>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
