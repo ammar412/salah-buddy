@@ -2479,11 +2479,30 @@
             { day: 30, title: "Prayer Forever", desc: "Keeping salah in your heart", emoji: "❤️" }
         ];
 
-        // Calculate current day of Ramadan (2025 Ramadan starts March 1)
+        // Calculate current day of Ramadan using Firestore settings or fallback
         // Made globally accessible for functions outside the IIFE (loadBonusTasks, completeTask)
         function getCurrentRamadanDay() {
-            const ramadanStart = new Date('2025-03-01');
+            // Use Firestore settings if available, otherwise use hardcoded fallback
+            const settings = AppState.ramadanSettings;
+            const ramadanStart = settings?.startDate
+                ? new Date(settings.startDate + 'T00:00:00')
+                : new Date('2025-03-01');
+            const ramadanEnd = settings?.endDate
+                ? new Date(settings.endDate + 'T23:59:59')
+                : null;
+
             const today = new Date();
+
+            // If before Ramadan starts, return 1 (preview mode)
+            if (today < ramadanStart) {
+                return 1;
+            }
+
+            // If after Ramadan ends (if end date set), return 30
+            if (ramadanEnd && today > ramadanEnd) {
+                return 30;
+            }
+
             const diffTime = today - ramadanStart;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
             return Math.min(Math.max(diffDays, 1), 30); // Clamp between 1 and 30
@@ -2886,7 +2905,7 @@
     </script>
 
     <!-- Auth Modal -->
-    <div id="authModal" class="modal-overlay" style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999;">
+    <div id="authModal" class="modal-overlay" style="display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999;">
         <div style="background: var(--white); border-radius: var(--radius-lg); padding: var(--spacing-2xl); max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
             <div style="font-size: 64px; margin-bottom: var(--spacing-md);">🌙</div>
             <h2 style="color: var(--gold); margin-bottom: var(--spacing-sm);">Welcome to Salah Buddy!</h2>
@@ -2981,7 +3000,9 @@
             isGuest: false,
             bonusTasks: [],
             completedTaskIds: [],
-            firestoreStories: {} // Stories loaded from Firestore
+            firestoreStories: {}, // Stories loaded from Firestore
+            ramadanSettings: null, // Ramadan dates from admin settings
+            gamificationSettings: null // Gamification values from admin settings
         };
         window.AppState = AppState;
 
@@ -3243,6 +3264,12 @@
 
             await waitForFirebase();
 
+            // Load app-wide settings immediately (not user-specific)
+            await Promise.all([
+                loadRamadanSettings(), // Load admin-configured Ramadan dates
+                loadGamificationSettings() // Load gamification values from admin
+            ]);
+
             // Set up midnight reset checker
             setupMidnightReset();
 
@@ -3254,7 +3281,7 @@
             onAuthStateChanged(window.firebaseAuth, async (user) => {
                 if (user) {
                     AppState.user = user;
-                    // Run all data loading in parallel for faster startup
+                    // Run user-specific data loading in parallel
                     await Promise.all([
                         loadUserProfile(user.uid),
                         loadTodayPrayers(user.uid),
@@ -3619,6 +3646,61 @@
             if (createdEl) {
                 const created = AppState.profile.createdAt?.toDate?.() || new Date();
                 createdEl.textContent = created.toLocaleDateString();
+            }
+        }
+
+        // Load Ramadan settings from Firestore (admin-configured dates)
+        async function loadRamadanSettings() {
+            const { doc, getDoc } = window.firebaseModules;
+
+            try {
+                const settingsDoc = await getDoc(doc(window.firebaseDb, 'appSettings', 'ramadan'));
+                if (settingsDoc.exists()) {
+                    AppState.ramadanSettings = settingsDoc.data();
+                    // Update the current day now that we have settings
+                    window.currentDay = getCurrentRamadanDay();
+                    // Refresh UI elements that show current day
+                    const currentDayGreeting = document.getElementById('currentDayGreeting');
+                    if (currentDayGreeting) {
+                        currentDayGreeting.textContent = `Day ${window.currentDay} of Ramadan - Keep up the great work!`;
+                    }
+                    const todaysStoryDayBadge = document.getElementById('todaysStoryDayBadge');
+                    if (todaysStoryDayBadge) {
+                        todaysStoryDayBadge.textContent = `Day ${window.currentDay}`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading Ramadan settings:', error);
+                // Continue with fallback hardcoded date
+            }
+        }
+
+        // Load gamification settings from Firestore (admin-configured values)
+        async function loadGamificationSettings() {
+            const { doc, getDoc } = window.firebaseModules;
+
+            try {
+                const settingsDoc = await getDoc(doc(window.firebaseDb, 'appSettings', 'gamification'));
+                if (settingsDoc.exists()) {
+                    AppState.gamificationSettings = settingsDoc.data();
+                    console.log('Gamification settings loaded:', AppState.gamificationSettings);
+                } else {
+                    // Set default values if not configured in admin
+                    AppState.gamificationSettings = {
+                        starsPerPrayer: 10,
+                        streakBonus: 5,
+                        maxDailyStars: 0
+                    };
+                    console.log('Using default gamification settings');
+                }
+            } catch (error) {
+                console.error('Error loading gamification settings:', error);
+                // Set defaults on error
+                AppState.gamificationSettings = {
+                    starsPerPrayer: 10,
+                    streakBonus: 5,
+                    maxDailyStars: 0
+                };
             }
         }
 
