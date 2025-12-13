@@ -21,14 +21,13 @@ import { getFirestore, Firestore } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Firebase configuration
-// TODO: Replace with your actual Firebase config from Firebase Console
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyD95yMLj73ZzVAagG1SZZsloZf2efs90Bg",
+  authDomain: "salah-buddy-b3ac8.firebaseapp.com",
+  projectId: "salah-buddy-b3ac8",
+  storageBucket: "salah-buddy-b3ac8.firebasestorage.app",
+  messagingSenderId: "675921169506",
+  appId: "1:675921169506:web:be4ee90b41e8251b8c153b",
 };
 
 // Check if Firebase is configured
