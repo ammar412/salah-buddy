@@ -3001,7 +3001,8 @@
             bonusTasks: [],
             completedTaskIds: [],
             firestoreStories: {}, // Stories loaded from Firestore
-            ramadanSettings: null // Ramadan dates from admin settings
+            ramadanSettings: null, // Ramadan dates from admin settings
+            gamificationSettings: null // Gamification values from admin settings
         };
         window.AppState = AppState;
 
@@ -3263,6 +3264,12 @@
 
             await waitForFirebase();
 
+            // Load app-wide settings immediately (not user-specific)
+            await Promise.all([
+                loadRamadanSettings(), // Load admin-configured Ramadan dates
+                loadGamificationSettings() // Load gamification values from admin
+            ]);
+
             // Set up midnight reset checker
             setupMidnightReset();
 
@@ -3274,9 +3281,8 @@
             onAuthStateChanged(window.firebaseAuth, async (user) => {
                 if (user) {
                     AppState.user = user;
-                    // Run all data loading in parallel for faster startup
+                    // Run user-specific data loading in parallel
                     await Promise.all([
-                        loadRamadanSettings(), // Load admin-configured dates first
                         loadUserProfile(user.uid),
                         loadTodayPrayers(user.uid),
                         loadWatchedStories(user.uid),
@@ -3666,6 +3672,35 @@
             } catch (error) {
                 console.error('Error loading Ramadan settings:', error);
                 // Continue with fallback hardcoded date
+            }
+        }
+
+        // Load gamification settings from Firestore (admin-configured values)
+        async function loadGamificationSettings() {
+            const { doc, getDoc } = window.firebaseModules;
+
+            try {
+                const settingsDoc = await getDoc(doc(window.firebaseDb, 'appSettings', 'gamification'));
+                if (settingsDoc.exists()) {
+                    AppState.gamificationSettings = settingsDoc.data();
+                    console.log('Gamification settings loaded:', AppState.gamificationSettings);
+                } else {
+                    // Set default values if not configured in admin
+                    AppState.gamificationSettings = {
+                        starsPerPrayer: 10,
+                        streakBonus: 5,
+                        maxDailyStars: 0
+                    };
+                    console.log('Using default gamification settings');
+                }
+            } catch (error) {
+                console.error('Error loading gamification settings:', error);
+                // Set defaults on error
+                AppState.gamificationSettings = {
+                    starsPerPrayer: 10,
+                    streakBonus: 5,
+                    maxDailyStars: 0
+                };
             }
         }
 
