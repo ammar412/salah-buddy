@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Data - Salah Buddy Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: #F5F0E8;
+            color: #1C170D;
+            min-height: 100vh;
+            padding: 32px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #3D3527;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #E8E0CF;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Lexend', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #F5B526;
+            color: #1C170D;
+        }
+
+        .btn-primary:hover {
+            background: #E5A516;
+        }
+
+        .btn-danger {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #E55A5A;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .log {
+            background: #1C170D;
+            color: #22C55E;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+        }
+
+        .log-entry.error {
+            color: #FF6B6B;
+        }
+
+        .log-entry.success {
+            color: #22C55E;
+        }
+
+        .log-entry.info {
+            color: #F5B526;
+        }
+
+        .warning {
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 Seed Data</h1>
+        <p class="subtitle">Initialize stories and bonus tasks for Salah Buddy</p>
+
+        <div class="warning">
+            ⚠️ <strong>Warning:</strong> This will overwrite any existing stories and tasks. Only run this on a fresh setup or if you want to reset all content.
+        </div>
+
+        <div class="card">
+            <div class="card-title">🎬 Stories (30 Days)</div>
+            <p style="margin-bottom: 16px; color: #3D3527;">
+                Creates placeholder stories for all 30 days of Ramadan. Each story will have a title, description, and placeholder video URL that you can update later.
+            </p>
+            <div class="actions">
+                <button id="seedStoriesBtn" class="btn btn-primary">
+                    <span>📝</span>
+                    <span>Seed Stories</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">⭐ Bonus Tasks</div>
+            <p style="margin-bottom: 16px; color: #3D3527;">
+                Creates sample bonus tasks for each day - family activities, charity, prayers, and kindness challenges.
+            </p>
+            <div class="actions">
+                <button id="seedTasksBtn" class="btn btn-primary">
+                    <span>📋</span>
+                    <span>Seed Tasks</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📊 Progress Log</div>
+            <div id="log" class="log">Waiting for action...</div>
+        </div>
+
+        <a href="/admin/index.html" style="color: #3D3527; font-size: 14px;">← Back to Dashboard</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import {
+            getFirestore,
+            collection,
+            doc,
+            setDoc,
+            serverTimestamp
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        // P2-1: Import shared Firebase configuration
+        import { firebaseConfig } from '/js/firebase-config.js';
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        const logEl = document.getElementById('log');
+
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function clearLog() {
+            logEl.innerHTML = '';
+        }
+
+        // Check auth
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            const idTokenResult = await user.getIdTokenResult();
+            if (idTokenResult.claims.admin !== true) {
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            currentUser = user;
+            log('Authenticated as admin: ' + user.email, 'success');
+        });
+
+        // Stories data - Islamic stories and prophets for kids
+        const storiesData = [
+            { day: 1, title: "The Night of Power", description: "Learn about the blessed night when the Quran was first revealed to Prophet Muhammad (PBUH)." },
+            { day: 2, title: "Prophet Adam's Story", description: "The story of the first human and prophet created by Allah." },
+            { day: 3, title: "Prophet Nuh and the Ark", description: "How Prophet Nuh built an ark to save the believers from the great flood." },
+            { day: 4, title: "Prophet Ibrahim's Faith", description: "The story of Ibrahim's unwavering faith and trust in Allah." },
+            { day: 5, title: "Prophet Yusuf's Journey", description: "From being thrown in a well to becoming a ruler - Yusuf's amazing story." },
+            { day: 6, title: "Prophet Musa and Pharaoh", description: "How Allah helped Musa lead his people to freedom." },
+            { day: 7, title: "Prophet Isa's Miracles", description: "The miraculous birth and life of Prophet Isa (Jesus)." },
+            { day: 8, title: "The Cave Companions", description: "The story of the young believers who slept in a cave for hundreds of years." },
+            { day: 9, title: "Prophet Sulaiman's Kingdom", description: "The wise king who could talk to animals and command the wind." },
+            { day: 10, title: "Prophet Dawud's Bravery", description: "How young Dawud defeated the giant Jalut with his slingshot." },
+            { day: 11, title: "Prophet Yunus and the Whale", description: "The prophet who was swallowed by a whale and learned to trust Allah." },
+            { day: 12, title: "Prophet Ayyub's Patience", description: "How Ayyub stayed grateful to Allah through his hardships." },
+            { day: 13, title: "The Elephant Army", description: "The year the elephants came to destroy the Kaaba and what happened." },
+            { day: 14, title: "Prophet Muhammad's Birth", description: "The special year when the best of creation was born." },
+            { day: 15, title: "The First Revelation", description: "When Angel Jibreel first came to Prophet Muhammad in the cave." },
+            { day: 16, title: "The Night Journey", description: "Prophet Muhammad's miraculous journey from Makkah to Jerusalem and the heavens." },
+            { day: 17, title: "The Hijra to Madinah", description: "When the Muslims had to leave their homes for a better place." },
+            { day: 18, title: "The Battle of Badr", description: "How 313 believers defeated a much larger army with Allah's help." },
+            { day: 19, title: "The Conquest of Makkah", description: "When the Prophet peacefully entered Makkah and forgave everyone." },
+            { day: 20, title: "Prophet Muhammad's Kindness", description: "Stories of how kind the Prophet was to children, animals, and everyone." },
+            { day: 21, title: "The Story of Bilal", description: "From being a slave to becoming the first muezzin of Islam." },
+            { day: 22, title: "Khadijah - The First Believer", description: "The amazing story of the Prophet's beloved wife." },
+            { day: 23, title: "Abu Bakr's Friendship", description: "The loyal friend who was always by the Prophet's side." },
+            { day: 24, title: "The Young Companions", description: "Stories of young sahaba who were brave and faithful." },
+            { day: 25, title: "Charity in Islam", description: "Beautiful stories about giving and helping others." },
+            { day: 26, title: "The Value of Prayer", description: "Why prayer is a gift and how to make it special." },
+            { day: 27, title: "Laylatul Qadr", description: "The night better than a thousand months - how to make it special." },
+            { day: 28, title: "Preparing for Eid", description: "Getting ready for the celebration after Ramadan." },
+            { day: 29, title: "The Spirit of Eid", description: "What Eid means and how we celebrate together." },
+            { day: 30, title: "Goodbye Ramadan", description: "Reflecting on our blessed month and what we learned." }
+        ];
+
+        // Bonus tasks data
+        const tasksData = [
+            // Family tasks
+            { title: "Say 'I love you' to your parents", description: "Give your mom and dad a big hug and tell them you love them!", category: "family", emoji: "❤️", starsReward: 5 },
+            { title: "Help set the iftar table", description: "Help your family set up the table for breaking fast.", category: "family", emoji: "🍽️", starsReward: 5 },
+            { title: "Call a grandparent", description: "Make a phone or video call to your grandparents.", category: "family", emoji: "📞", starsReward: 5 },
+            { title: "Share your favorite toy", description: "Let a sibling or friend play with your favorite toy.", category: "family", emoji: "🧸", starsReward: 5 },
+            { title: "Make a card for your parents", description: "Draw or write something special for your parents.", category: "family", emoji: "💌", starsReward: 10 },
+
+            // Charity tasks
+            { title: "Give charity", description: "Put some money in a charity box or give to someone in need.", category: "charity", emoji: "💝", starsReward: 10 },
+            { title: "Donate old toys", description: "Find toys you don't play with and donate them to other kids.", category: "charity", emoji: "🎁", starsReward: 10 },
+            { title: "Share your food", description: "Share part of your iftar meal with a neighbor or friend.", category: "charity", emoji: "🥘", starsReward: 5 },
+            { title: "Help someone carry something", description: "Help carry groceries or something heavy for someone.", category: "charity", emoji: "🛒", starsReward: 5 },
+
+            // Prayer tasks
+            { title: "Pray 2 Sunnah rakah", description: "Pray 2 extra rakah of Sunnah prayer today.", category: "prayer", emoji: "🕌", starsReward: 10 },
+            { title: "Make dua for someone", description: "Make a special dua for a friend, family member, or all Muslims.", category: "prayer", emoji: "🤲", starsReward: 5 },
+            { title: "Learn a new dua", description: "Learn a new dua you didn't know before.", category: "prayer", emoji: "📚", starsReward: 10 },
+            { title: "Pray on time", description: "Pray all your prayers on time today.", category: "prayer", emoji: "⏰", starsReward: 10 },
+
+            // Quran tasks
+            { title: "Read 1 page of Quran", description: "Read at least one page from the Quran.", category: "quran", emoji: "📖", starsReward: 10 },
+            { title: "Learn a new ayah", description: "Memorize a new ayah from the Quran.", category: "quran", emoji: "✨", starsReward: 15 },
+            { title: "Listen to Quran recitation", description: "Listen to beautiful Quran recitation for 10 minutes.", category: "quran", emoji: "🎧", starsReward: 5 },
+
+            // Kindness tasks
+            { title: "Say Salam to 5 people", description: "Spread peace by saying Salam to 5 different people today.", category: "kindness", emoji: "👋", starsReward: 5 },
+            { title: "Smile at everyone", description: "Give everyone you see a big smile today!", category: "kindness", emoji: "😊", starsReward: 3 },
+            { title: "Clean up without being asked", description: "Clean your room or help around the house without being asked.", category: "kindness", emoji: "🧹", starsReward: 10 },
+            { title: "Be patient today", description: "Practice patience - don't get angry or upset!", category: "kindness", emoji: "🧘", starsReward: 10 },
+            { title: "Give a sincere compliment", description: "Tell someone something nice about them.", category: "kindness", emoji: "💬", starsReward: 5 },
+            { title: "Help with younger kids", description: "Help take care of younger siblings or kids at the mosque.", category: "kindness", emoji: "👶", starsReward: 10 },
+            { title: "Write a thank you note", description: "Write a note thanking someone who helped you.", category: "kindness", emoji: "📝", starsReward: 5 },
+            { title: "Feed an animal", description: "Put out food or water for birds or a pet.", category: "kindness", emoji: "🐦", starsReward: 5 }
+        ];
+
+        // Seed Stories
+        document.getElementById('seedStoriesBtn').addEventListener('click', async () => {
+            if (!currentUser) {
+                log('Not authenticated!', 'error');
+                return;
+            }
+
+            if (!confirm('This will overwrite existing stories. Continue?')) {
+                return;
+            }
+
+            clearLog();
+            log('Starting stories seed...', 'info');
+
+            const btn = document.getElementById('seedStoriesBtn');
+            btn.disabled = true;
+
+            try {
+                for (const story of storiesData) {
+                    const docId = `day_${story.day}`;
+                    await setDoc(doc(db, 'stories', docId), {
+                        day: story.day,
+                        title: story.title,
+                        description: story.description,
+                        videoUrl: '', // Admin will add these later
+                        thumbnailUrl: '',
+                        duration: 0,
+                        starsReward: 10,
+                        isPublished: false, // Not published until video is added
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp(),
+                        updatedBy: currentUser.uid
+                    });
+                    log(`Created story for Day ${story.day}: ${story.title}`, 'success');
+                }
+
+                log('✅ All 30 stories created successfully!', 'success');
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+            }
+
+            btn.disabled = false;
+        });
+
+        // Seed Tasks
+        document.getElementById('seedTasksBtn').addEventListener('click', async () => {
+            if (!currentUser) {
+                log('Not authenticated!', 'error');
+                return;
+            }
+
+            if (!confirm('This will add new tasks. Continue?')) {
+                return;
+            }
+
+            clearLog();
+            log('Starting tasks seed...', 'info');
+
+            const btn = document.getElementById('seedTasksBtn');
+            btn.disabled = true;
+
+            try {
+                // Distribute tasks across 30 days (2-3 per day)
+                let taskIndex = 0;
+                for (let day = 1; day <= 30; day++) {
+                    // Each day gets 2-3 tasks from different categories
+                    const tasksForDay = [];
+
+                    // Pick tasks for this day (rotating through the list)
+                    for (let i = 0; i < 3; i++) {
+                        const task = tasksData[(taskIndex + i) % tasksData.length];
+                        tasksForDay.push(task);
+                    }
+                    taskIndex += 3;
+
+                    // Create tasks for this day
+                    for (let i = 0; i < tasksForDay.length; i++) {
+                        const task = tasksForDay[i];
+                        const docRef = doc(collection(db, 'bonusTasks'));
+                        await setDoc(docRef, {
+                            day: day,
+                            title: task.title,
+                            description: task.description,
+                            category: task.category,
+                            emoji: task.emoji,
+                            starsReward: task.starsReward,
+                            order: i + 1,
+                            isPublished: true,
+                            requiresVerification: false,
+                            createdAt: serverTimestamp(),
+                            updatedAt: serverTimestamp(),
+                            updatedBy: currentUser.uid
+                        });
+                    }
+
+                    log(`Created ${tasksForDay.length} tasks for Day ${day}`, 'success');
+                }
+
+                log('✅ All bonus tasks created successfully!', 'success');
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+            }
+
+            btn.disabled = false;
+        });
+    </script>
+</body>
+</html>

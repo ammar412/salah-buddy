@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Salah Buddy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream: #F5F0E8;
+            --cream-dark: #EBE4D8;
+            --gold: #F5B526;
+            --gold-light: #FFE082;
+            --gold-dark: #E5A516;
+            --dark: #1C170D;
+            --dark-soft: #3D3527;
+            --white: #FFFFFF;
+            --border: #E8E0CF;
+            --green: #22C55E;
+            --green-light: #86EFAC;
+            --coral: #FF6B6B;
+            --coral-light: #FF8E8E;
+            --purple: #A78BFA;
+            --teal: #14B8A6;
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: var(--spacing-lg);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .sidebar-logo {
+            font-size: 40px;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: var(--dark-soft);
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-soft);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: var(--cream);
+            color: var(--dark);
+        }
+
+        .nav-item.active {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .sidebar-footer {
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--cream);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--dark-soft);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            width: 100%;
+            padding: var(--spacing-md);
+            background: transparent;
+            border: 2px solid var(--coral);
+            color: var(--coral);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Lexend', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--spacing-xl);
+        }
+
+        .page-header {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .page-description {
+            font-size: 16px;
+            color: var(--dark-soft);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--dark-soft);
+            font-weight: 600;
+        }
+
+        /* Day Selector */
+        .day-selector {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .day-selector-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .day-selector-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: var(--spacing-xs);
+        }
+
+        .day-btn {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Lexend', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--dark-soft);
+        }
+
+        .day-btn:hover {
+            border-color: var(--gold);
+            color: var(--dark);
+        }
+
+        .day-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--dark);
+        }
+
+        .day-btn.has-content {
+            background: var(--green-light);
+            border-color: var(--green);
+            color: var(--dark);
+        }
+
+        .day-btn.has-content.active {
+            background: var(--gold);
+            border-color: var(--gold-dark);
+        }
+
+        /* Form Card */
+        .form-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-card-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--dark-soft);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: var(--spacing-md);
+            font-size: 16px;
+            font-family: 'Lexend', sans-serif;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--cream);
+            color: var(--dark);
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: var(--white);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Lexend', sans-serif;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--cream);
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--dark-soft);
+        }
+
+        .btn-danger {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #E55A5A;
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: var(--green-light);
+            color: var(--dark);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border);
+        }
+
+        /* Bonus Tasks List */
+        .tasks-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--cream);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .task-emoji {
+            font-size: 32px;
+        }
+
+        .task-details {
+            flex: 1;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .task-description {
+            font-size: 14px;
+            color: var(--dark-soft);
+        }
+
+        .task-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .task-stars {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gold-dark);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .task-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .task-btn-edit {
+            background: var(--gold-light);
+            color: var(--dark);
+        }
+
+        .task-btn-edit:hover {
+            background: var(--gold);
+        }
+
+        .task-btn-delete {
+            background: var(--coral-light);
+            color: var(--dark);
+        }
+
+        .task-btn-delete:hover {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        .add-task-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-lg);
+            background: var(--cream);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark-soft);
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .add-task-btn:hover {
+            border-color: var(--gold);
+            color: var(--dark);
+            background: var(--gold-light);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: var(--spacing-lg);
+            right: var(--spacing-lg);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .toast {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast-success {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .toast-error {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(28, 23, 13, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: var(--cream);
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--coral-light);
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(245, 240, 232, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .toggle {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            background: var(--border);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle.active {
+            background: var(--green);
+        }
+
+        .toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: var(--white);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle.active .toggle-knob {
+            left: 26px;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-soft);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-2xl);
+            color: var(--dark-soft);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-md);
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .empty-state-description {
+            font-size: 14px;
+        }
+
+        /* Category Badge */
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .category-family {
+            background: var(--purple);
+            color: var(--white);
+        }
+
+        .category-charity {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .category-prayer {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .category-quran {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .category-kindness {
+            background: var(--coral);
+            color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🌙</div>
+                <div>
+                    <div class="sidebar-title">Salah Buddy</div>
+                    <div class="sidebar-subtitle">Admin Dashboard</div>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <button class="nav-item active" data-section="stories">
+                    <span class="nav-icon">🎬</span>
+                    <span>Daily Stories</span>
+                </button>
+                <button class="nav-item" data-section="tasks">
+                    <span class="nav-icon">⭐</span>
+                    <span>Bonus Tasks</span>
+                </button>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="adminName">Admin</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <span>🚪</span>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stories Section -->
+            <section id="storiesSection" class="content-section active">
+                <div class="page-header">
+                    <h1 class="page-title">🎬 Daily Stories</h1>
+                    <p class="page-description">Manage video content for each day of Ramadan</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📹</div>
+                        <div class="stat-value" id="storiesConfigured">0</div>
+                        <div class="stat-label">Videos Configured</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-value">30</div>
+                        <div class="stat-label">Total Days</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="storiesPublished">0</div>
+                        <div class="stat-label">Published</div>
+                    </div>
+                </div>
+
+                <div class="day-selector">
+                    <div class="day-selector-header">
+                        <div class="day-selector-title">Select Day</div>
+                    </div>
+                    <div class="day-grid" id="storyDayGrid">
+                        <!-- Days will be generated by JS -->
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="form-card-title">
+                            <span>📝</span>
+                            <span>Day <span id="selectedStoryDay">1</span> Story</span>
+                        </div>
+                        <div class="toggle-container">
+                            <div id="storyPublishedToggle" class="toggle">
+                                <div class="toggle-knob"></div>
+                            </div>
+                            <span class="toggle-label">Published</span>
+                        </div>
+                    </div>
+
+                    <form id="storyForm">
+                        <div class="form-group">
+                            <label class="form-label">Story Title</label>
+                            <input type="text" id="storyTitle" class="form-input" placeholder="e.g., The First Revelation">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea id="storyDescription" class="form-textarea" placeholder="Brief description of the story..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Video URL</label>
+                            <div class="form-hint">YouTube, Vimeo, or direct video URL</div>
+                            <input type="url" id="storyVideoUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Thumbnail URL (Optional)</label>
+                            <input type="url" id="storyThumbnailUrl" class="form-input" placeholder="https://...">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Duration (seconds)</label>
+                                <input type="number" id="storyDuration" class="form-input" placeholder="120" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Stars Reward</label>
+                                <input type="number" id="storyStarsReward" class="form-input" placeholder="10" min="1" value="10">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span>💾</span>
+                                <span>Save Story</span>
+                            </button>
+                            <button type="button" id="clearStoryBtn" class="btn btn-secondary">
+                                <span>🗑️</span>
+                                <span>Clear</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Bonus Tasks Section -->
+            <section id="tasksSection" class="content-section">
+                <div class="page-header">
+                    <h1 class="page-title">⭐ Bonus Tasks</h1>
+                    <p class="page-description">Create optional tasks kids can complete for extra stars</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-value" id="totalTasks">0</div>
+                        <div class="stat-label">Total Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="publishedTasks">0</div>
+                        <div class="stat-label">Published</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-value" id="avgStarsReward">0</div>
+                        <div class="stat-label">Avg Stars Reward</div>
+                    </div>
+                </div>
+
+                <div class="day-selector">
+                    <div class="day-selector-header">
+                        <div class="day-selector-title">Select Day</div>
+                    </div>
+                    <div class="day-grid" id="taskDayGrid">
+                        <!-- Days will be generated by JS -->
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="form-card-title">
+                            <span>📋</span>
+                            <span>Day <span id="selectedTaskDay">1</span> Tasks</span>
+                        </div>
+                        <button type="button" id="addTaskBtn" class="btn btn-success">
+                            <span>➕</span>
+                            <span>Add Task</span>
+                        </button>
+                    </div>
+
+                    <div id="tasksList" class="tasks-list">
+                        <!-- Tasks will be loaded here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="taskModalTitle">Add Task</h2>
+                <button type="button" class="modal-close" id="closeTaskModal">&times;</button>
+            </div>
+
+            <form id="taskForm">
+                <input type="hidden" id="taskId">
+                <input type="hidden" id="taskDay">
+
+                <div class="form-group">
+                    <label class="form-label">Task Title</label>
+                    <input type="text" id="taskTitle" class="form-input" placeholder="e.g., Say 'I love you' to your parents" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="taskDescription" class="form-textarea" placeholder="Explain what the child should do..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select id="taskCategory" class="form-select">
+                            <option value="family">👨‍👩‍👧 Family</option>
+                            <option value="charity">💝 Charity</option>
+                            <option value="prayer">🕌 Prayer</option>
+                            <option value="quran">📖 Quran</option>
+                            <option value="kindness">🤝 Kindness</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Emoji</label>
+                        <input type="text" id="taskEmoji" class="form-input" placeholder="❤️" maxlength="4">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Stars Reward</label>
+                        <input type="number" id="taskStarsReward" class="form-input" placeholder="5" min="1" value="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Display Order</label>
+                        <input type="number" id="taskOrder" class="form-input" placeholder="1" min="1" value="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="toggle-container">
+                        <div id="taskPublishedToggle" class="toggle active">
+                            <div class="toggle-knob"></div>
+                        </div>
+                        <span class="toggle-label">Published</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <span>💾</span>
+                        <span>Save Task</span>
+                    </button>
+                    <button type="button" id="cancelTaskBtn" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import {
+            getFirestore,
+            collection,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            deleteDoc,
+            query,
+            where,
+            orderBy,
+            getDocs,
+            serverTimestamp
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        // P2-1: Import shared Firebase configuration
+        import { firebaseConfig } from '/js/firebase-config.js';
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // State
+        let currentUser = null;
+        let selectedStoryDay = 1;
+        let selectedTaskDay = 1;
+        let stories = {};
+        let tasks = {};
+
+        // P1-3: HTML sanitization helper to prevent XSS attacks
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(str);
+            return div.innerHTML;
+        }
+
+        // P2-3: Verify admin claim before sensitive operations
+        async function verifyAdminClaim() {
+            if (!currentUser) {
+                showToast('Not authenticated', 'error');
+                window.location.href = '/admin/login';
+                return false;
+            }
+            try {
+                // Force token refresh to get latest claims
+                const idTokenResult = await currentUser.getIdTokenResult(true);
+                if (idTokenResult.claims.admin !== true) {
+                    showToast('Admin access revoked. Please log in again.', 'error');
+                    await signOut(auth);
+                    window.location.href = '/admin/login';
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Error verifying admin claim:', error);
+                showToast('Authentication error. Please log in again.', 'error');
+                window.location.href = '/admin/login';
+                return false;
+            }
+        }
+
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const toastContainer = document.getElementById('toastContainer');
+        const adminName = document.getElementById('adminName');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        // Story Elements
+        const storyDayGrid = document.getElementById('storyDayGrid');
+        const storyForm = document.getElementById('storyForm');
+        const selectedStoryDayEl = document.getElementById('selectedStoryDay');
+        const storyPublishedToggle = document.getElementById('storyPublishedToggle');
+        const storiesConfigured = document.getElementById('storiesConfigured');
+        const storiesPublished = document.getElementById('storiesPublished');
+
+        // Task Elements
+        const taskDayGrid = document.getElementById('taskDayGrid');
+        const tasksList = document.getElementById('tasksList');
+        const selectedTaskDayEl = document.getElementById('selectedTaskDay');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const taskModal = document.getElementById('taskModal');
+        const taskForm = document.getElementById('taskForm');
+        const taskPublishedToggle = document.getElementById('taskPublishedToggle');
+        const totalTasksEl = document.getElementById('totalTasks');
+        const publishedTasksEl = document.getElementById('publishedTasks');
+        const avgStarsRewardEl = document.getElementById('avgStarsReward');
+
+        // Utility Functions
+        function showLoading() {
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.add('hidden');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <span>${type === 'success' ? '✓' : '✕'}</span>
+                <span>${message}</span>
+            `;
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Authentication
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            // Verify admin claim
+            const idTokenResult = await user.getIdTokenResult();
+            if (idTokenResult.claims.admin !== true) {
+                await signOut(auth);
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            currentUser = user;
+            adminName.textContent = user.email.split('@')[0];
+
+            // Load initial data
+            await loadAllData();
+            hideLoading();
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = '/admin/login.html';
+        });
+
+        // Navigation
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.dataset.section;
+
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+
+                contentSections.forEach(sec => {
+                    sec.classList.remove('active');
+                    if (sec.id === `${section}Section`) {
+                        sec.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Generate Day Grids
+        function generateDayGrid(container, selectedDay, onClick, contentMap = {}) {
+            container.innerHTML = '';
+            for (let i = 1; i <= 30; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'day-btn';
+                btn.textContent = i;
+                if (i === selectedDay) btn.classList.add('active');
+                if (contentMap[i]) btn.classList.add('has-content');
+
+                btn.addEventListener('click', () => {
+                    container.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    onClick(i);
+                });
+
+                container.appendChild(btn);
+            }
+        }
+
+        // Load All Data
+        async function loadAllData() {
+            await Promise.all([
+                loadStories(),
+                loadTasks()
+            ]);
+
+            // Generate day grids
+            generateDayGrid(storyDayGrid, selectedStoryDay, selectStoryDay, stories);
+            generateDayGrid(taskDayGrid, selectedTaskDay, selectTaskDay, getTaskDays());
+
+            // Load initial day data
+            loadStoryForDay(selectedStoryDay);
+            loadTasksForDay(selectedTaskDay);
+        }
+
+        // Stories Functions
+        async function loadStories() {
+            const storiesRef = collection(db, 'stories');
+            const snapshot = await getDocs(storiesRef);
+
+            stories = {};
+            let configuredCount = 0;
+            let publishedCount = 0;
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                stories[data.day] = { id: doc.id, ...data };
+                configuredCount++;
+                if (data.isPublished) publishedCount++;
+            });
+
+            storiesConfigured.textContent = configuredCount;
+            storiesPublished.textContent = publishedCount;
+        }
+
+        function selectStoryDay(day) {
+            selectedStoryDay = day;
+            selectedStoryDayEl.textContent = day;
+            loadStoryForDay(day);
+        }
+
+        function loadStoryForDay(day) {
+            const story = stories[day];
+
+            if (story) {
+                document.getElementById('storyTitle').value = story.title || '';
+                document.getElementById('storyDescription').value = story.description || '';
+                document.getElementById('storyVideoUrl').value = story.videoUrl || '';
+                document.getElementById('storyThumbnailUrl').value = story.thumbnailUrl || '';
+                document.getElementById('storyDuration').value = story.duration || '';
+                document.getElementById('storyStarsReward').value = story.starsReward || 10;
+
+                if (story.isPublished) {
+                    storyPublishedToggle.classList.add('active');
+                } else {
+                    storyPublishedToggle.classList.remove('active');
+                }
+            } else {
+                // Clear form for new story
+                storyForm.reset();
+                document.getElementById('storyStarsReward').value = 10;
+                storyPublishedToggle.classList.remove('active');
+            }
+        }
+
+        // Story Form Submit
+        storyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // P2-3: Verify admin claim before save operation
+            if (!await verifyAdminClaim()) return;
+
+            const storyData = {
+                day: selectedStoryDay,
+                title: document.getElementById('storyTitle').value.trim(),
+                description: document.getElementById('storyDescription').value.trim(),
+                videoUrl: document.getElementById('storyVideoUrl').value.trim(),
+                thumbnailUrl: document.getElementById('storyThumbnailUrl').value.trim(),
+                duration: parseInt(document.getElementById('storyDuration').value) || 0,
+                starsReward: parseInt(document.getElementById('storyStarsReward').value) || 10,
+                isPublished: storyPublishedToggle.classList.contains('active'),
+                updatedAt: serverTimestamp(),
+                updatedBy: currentUser.uid
+            };
+
+            try {
+                const docId = `day_${selectedStoryDay}`;
+                const existingStory = stories[selectedStoryDay];
+
+                if (existingStory) {
+                    await updateDoc(doc(db, 'stories', docId), storyData);
+                } else {
+                    storyData.createdAt = serverTimestamp();
+                    await setDoc(doc(db, 'stories', docId), storyData);
+                }
+
+                // Update local state
+                stories[selectedStoryDay] = { id: docId, ...storyData };
+
+                // Refresh grid and stats
+                await loadStories();
+                generateDayGrid(storyDayGrid, selectedStoryDay, selectStoryDay, stories);
+
+                showToast(`Story for Day ${selectedStoryDay} saved successfully!`);
+            } catch (error) {
+                console.error('Error saving story:', error);
+                showToast('Failed to save story. Please try again.', 'error');
+            }
+        });
+
+        // Clear Story Button
+        document.getElementById('clearStoryBtn').addEventListener('click', async () => {
+            if (!confirm(`Are you sure you want to clear the story for Day ${selectedStoryDay}?`)) {
+                return;
+            }
+
+            const existingStory = stories[selectedStoryDay];
+            if (existingStory) {
+                try {
+                    await deleteDoc(doc(db, 'stories', existingStory.id));
+                    delete stories[selectedStoryDay];
+
+                    // Refresh
+                    await loadStories();
+                    generateDayGrid(storyDayGrid, selectedStoryDay, selectStoryDay, stories);
+                    loadStoryForDay(selectedStoryDay);
+
+                    showToast(`Story for Day ${selectedStoryDay} cleared.`);
+                } catch (error) {
+                    console.error('Error clearing story:', error);
+                    showToast('Failed to clear story.', 'error');
+                }
+            }
+        });
+
+        // Story Published Toggle
+        storyPublishedToggle.addEventListener('click', () => {
+            storyPublishedToggle.classList.toggle('active');
+        });
+
+        // Tasks Functions
+        async function loadTasks() {
+            const tasksRef = collection(db, 'bonusTasks');
+            const snapshot = await getDocs(tasksRef);
+
+            tasks = {};
+            let totalCount = 0;
+            let publishedCount = 0;
+            let totalStars = 0;
+
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                if (!tasks[data.day]) {
+                    tasks[data.day] = [];
+                }
+                tasks[data.day].push({ id: docSnap.id, ...data });
+                totalCount++;
+                if (data.isPublished) publishedCount++;
+                totalStars += data.starsReward || 0;
+            });
+
+            // Sort tasks by order
+            Object.keys(tasks).forEach(day => {
+                tasks[day].sort((a, b) => (a.order || 0) - (b.order || 0));
+            });
+
+            totalTasksEl.textContent = totalCount;
+            publishedTasksEl.textContent = publishedCount;
+            avgStarsRewardEl.textContent = totalCount > 0 ? Math.round(totalStars / totalCount) : 0;
+        }
+
+        function getTaskDays() {
+            const days = {};
+            Object.keys(tasks).forEach(day => {
+                if (tasks[day].length > 0) {
+                    days[day] = true;
+                }
+            });
+            return days;
+        }
+
+        function selectTaskDay(day) {
+            selectedTaskDay = day;
+            selectedTaskDayEl.textContent = day;
+            loadTasksForDay(day);
+        }
+
+        function loadTasksForDay(day) {
+            const dayTasks = tasks[day] || [];
+
+            if (dayTasks.length === 0) {
+                tasksList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <div class="empty-state-title">No tasks for Day ${day}</div>
+                        <div class="empty-state-description">Click "Add Task" to create bonus tasks for this day.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            tasksList.innerHTML = dayTasks.map(task => {
+                // P1-3: Sanitize user-controlled content to prevent XSS
+                const safeTitle = escapeHtml(task.title);
+                const safeDesc = escapeHtml(task.description || '');
+                const safeEmoji = escapeHtml(task.emoji || '⭐');
+                const safeId = escapeHtml(task.id);
+                const safeCategory = escapeHtml(task.category);
+                const safeReward = parseInt(task.starsReward, 10) || 0;
+                return `
+                <div class="task-item" data-task-id="${safeId}">
+                    <div class="task-emoji">${safeEmoji}</div>
+                    <div class="task-details">
+                        <div class="task-title">${safeTitle}</div>
+                        <div class="task-description">${safeDesc}</div>
+                        <div class="task-meta">
+                            <span class="category-badge category-${safeCategory}">${getCategoryLabel(task.category)}</span>
+                            <span class="task-stars">⭐ ${safeReward}</span>
+                            ${!task.isPublished ? '<span style="color: var(--coral); font-size: 12px;">Draft</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-edit" onclick="editTask('${safeId}')">✏️</button>
+                        <button class="task-btn task-btn-delete" onclick="deleteTask('${safeId}')">🗑️</button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function getCategoryLabel(category) {
+            const labels = {
+                family: '👨‍👩‍👧 Family',
+                charity: '💝 Charity',
+                prayer: '🕌 Prayer',
+                quran: '📖 Quran',
+                kindness: '🤝 Kindness'
+            };
+            return labels[category] || category;
+        }
+
+        // Task Modal Functions
+        addTaskBtn.addEventListener('click', () => {
+            document.getElementById('taskModalTitle').textContent = 'Add Task';
+            document.getElementById('taskId').value = '';
+            document.getElementById('taskDay').value = selectedTaskDay;
+            taskForm.reset();
+            document.getElementById('taskStarsReward').value = 5;
+            document.getElementById('taskOrder').value = (tasks[selectedTaskDay]?.length || 0) + 1;
+            taskPublishedToggle.classList.add('active');
+            taskModal.classList.add('show');
+        });
+
+        document.getElementById('closeTaskModal').addEventListener('click', () => {
+            taskModal.classList.remove('show');
+        });
+
+        document.getElementById('cancelTaskBtn').addEventListener('click', () => {
+            taskModal.classList.remove('show');
+        });
+
+        taskPublishedToggle.addEventListener('click', () => {
+            taskPublishedToggle.classList.toggle('active');
+        });
+
+        // Edit Task
+        window.editTask = function(taskId) {
+            const task = findTaskById(taskId);
+            if (!task) return;
+
+            document.getElementById('taskModalTitle').textContent = 'Edit Task';
+            document.getElementById('taskId').value = task.id;
+            document.getElementById('taskDay').value = task.day;
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDescription').value = task.description || '';
+            document.getElementById('taskCategory').value = task.category || 'family';
+            document.getElementById('taskEmoji').value = task.emoji || '';
+            document.getElementById('taskStarsReward').value = task.starsReward || 5;
+            document.getElementById('taskOrder').value = task.order || 1;
+
+            if (task.isPublished) {
+                taskPublishedToggle.classList.add('active');
+            } else {
+                taskPublishedToggle.classList.remove('active');
+            }
+
+            taskModal.classList.add('show');
+        };
+
+        // Delete Task
+        window.deleteTask = async function(taskId) {
+            if (!confirm('Are you sure you want to delete this task?')) {
+                return;
+            }
+
+            // P2-3: Verify admin claim before delete operation
+            if (!await verifyAdminClaim()) return;
+
+            try {
+                await deleteDoc(doc(db, 'bonusTasks', taskId));
+
+                await loadTasks();
+                generateDayGrid(taskDayGrid, selectedTaskDay, selectTaskDay, getTaskDays());
+                loadTasksForDay(selectedTaskDay);
+
+                showToast('Task deleted successfully!');
+            } catch (error) {
+                console.error('Error deleting task:', error);
+                showToast('Failed to delete task.', 'error');
+            }
+        };
+
+        function findTaskById(taskId) {
+            for (const day of Object.keys(tasks)) {
+                const task = tasks[day].find(t => t.id === taskId);
+                if (task) return task;
+            }
+            return null;
+        }
+
+        // Task Form Submit
+        taskForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // P2-3: Verify admin claim before save operation
+            if (!await verifyAdminClaim()) return;
+
+            const taskId = document.getElementById('taskId').value;
+            const taskDay = parseInt(document.getElementById('taskDay').value) || selectedTaskDay;
+
+            const taskData = {
+                day: taskDay,
+                title: document.getElementById('taskTitle').value.trim(),
+                description: document.getElementById('taskDescription').value.trim(),
+                category: document.getElementById('taskCategory').value,
+                emoji: document.getElementById('taskEmoji').value.trim() || '⭐',
+                starsReward: parseInt(document.getElementById('taskStarsReward').value) || 5,
+                order: parseInt(document.getElementById('taskOrder').value) || 1,
+                isPublished: taskPublishedToggle.classList.contains('active'),
+                updatedAt: serverTimestamp(),
+                updatedBy: currentUser.uid
+            };
+
+            try {
+                if (taskId) {
+                    // Update existing task
+                    await updateDoc(doc(db, 'bonusTasks', taskId), taskData);
+                } else {
+                    // Create new task
+                    taskData.createdAt = serverTimestamp();
+                    const newDocRef = doc(collection(db, 'bonusTasks'));
+                    await setDoc(newDocRef, taskData);
+                }
+
+                // Refresh
+                await loadTasks();
+                generateDayGrid(taskDayGrid, selectedTaskDay, selectTaskDay, getTaskDays());
+                loadTasksForDay(selectedTaskDay);
+
+                taskModal.classList.remove('show');
+                showToast(taskId ? 'Task updated successfully!' : 'Task created successfully!');
+            } catch (error) {
+                console.error('Error saving task:', error);
+                showToast('Failed to save task.', 'error');
+            }
+        });
+
+        // Close modal on overlay click
+        taskModal.addEventListener('click', (e) => {
+            if (e.target === taskModal) {
+                taskModal.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
