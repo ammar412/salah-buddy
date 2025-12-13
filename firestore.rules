@@ -43,7 +43,7 @@ service cloud.firestore {
       let allowedFields = ['name', 'email', 'stars', 'totalPrayers', 'currentStreak',
                            'longestStreak', 'lastPrayerDate', 'familyId', 'isParent',
                            'parentalConsentGiven', 'parentalConsentDate', 'privacyPolicyVersion',
-                           'createdAt', 'updatedAt'];
+                           'createdAt', 'updatedAt', 'children', 'totalStories', 'rank'];
 
       // Ensure only allowed fields are being updated
       let onlyAllowedFields = request.resource.data.keys().hasOnly(allowedFields);
@@ -88,6 +88,21 @@ service cloud.firestore {
       // User's progress subcollection
       match /progress/{docId} {
         allow read, write: if isOwner(userId);
+      }
+
+      // User's children subcollection - parents can manage their children
+      // This is used by the signup flow to add children directly under the parent's user document
+      match /children/{childId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          // Validate required fields
+          request.resource.data.name is string &&
+          request.resource.data.name.size() > 0 &&
+          request.resource.data.age is number &&
+          request.resource.data.age >= 4 &&
+          request.resource.data.age <= 17;
+        allow update: if isOwner(userId);
+        allow delete: if isOwner(userId);
       }
 
       // User's task completions subcollection (Issue #26)
