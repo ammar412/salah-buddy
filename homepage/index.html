@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salah Buddy - Your Child Will Pray All 5 Prayers This Ramadan</title>
+    <meta name="description" content="Help your kids build a lifelong prayer habit this Ramadan. Free for families. Built for kids who think prayer is boring.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Salah Buddy - Prayer Made Fun for Kids">
+    <meta property="og:description" content="Your child will pray all 5 prayers this Ramadan. Free for families.">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Reset & Base */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Brand Colors */
+            --gold: #F5B526;
+            --gold-dark: #E5A516;
+            --gold-light: #FFE082;
+            --cream: #F5F0E8;
+            --cream-dark: #EBE4D8;
+            --dark: #1C170D;
+            --dark-soft: #3D3527;
+            --white: #FFFFFF;
+
+            /* Supporting */
+            --success: #2AAF2D;
+            --coral: #E76F51;
+
+            /* Typography */
+            --font-hero: clamp(40px, 8vw, 72px);
+            --font-display: clamp(32px, 5vw, 48px);
+            --font-headline: clamp(24px, 4vw, 32px);
+            --font-body-lg: clamp(18px, 2.5vw, 24px);
+            --font-body: clamp(16px, 2vw, 18px);
+            --font-caption: 14px;
+
+            /* Spacing */
+            --space-xs: 8px;
+            --space-sm: 12px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+            --space-3xl: 64px;
+            --space-4xl: 96px;
+
+            /* Radius */
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Lexend', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: var(--font-body);
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--cream);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-lg);
+        }
+
+        /* ===== SECTION 1: HERO ===== */
+        .hero {
+            background: var(--white);
+            padding: var(--space-3xl) 0 var(--space-4xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "صلاة";
+            position: absolute;
+            font-size: clamp(150px, 30vw, 400px);
+            font-weight: 900;
+            color: var(--cream);
+            opacity: 0.5;
+            top: 50%;
+            right: -5%;
+            transform: translateY(-50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-2xl);
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .hero-grid {
+                grid-template-columns: 1.2fr 1fr;
+                gap: var(--space-3xl);
+            }
+        }
+
+        .hero-content {
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .hero-content {
+                text-align: left;
+            }
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--dark);
+            font-size: var(--font-caption);
+            font-weight: 700;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-full);
+            margin-bottom: var(--space-lg);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 15px rgba(245, 181, 38, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .badge-icon {
+            font-size: 18px;
+        }
+
+        /* Headline */
+        .hero-headline {
+            font-size: var(--font-hero);
+            font-weight: 900;
+            line-height: 1.05;
+            color: var(--dark);
+            margin-bottom: var(--space-lg);
+            letter-spacing: -0.02em;
+        }
+
+        .hero-headline .highlight {
+            color: var(--gold);
+            position: relative;
+        }
+
+        .hero-subheadline {
+            font-size: var(--font-body-lg);
+            font-weight: 400;
+            color: var(--dark-soft);
+            margin-bottom: var(--space-xl);
+            max-width: 500px;
+        }
+
+        @media (min-width: 768px) {
+            .hero-subheadline {
+                margin-left: 0;
+                margin-right: auto;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .hero-subheadline {
+                margin: 0 auto var(--space-xl);
+            }
+        }
+
+        /* Signup Form */
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            max-width: 480px;
+        }
+
+        @media (min-width: 768px) {
+            .signup-form {
+                flex-direction: row;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .signup-form {
+                margin: 0 auto;
+            }
+        }
+
+        .signup-input {
+            flex: 1;
+            padding: var(--space-md) var(--space-lg);
+            font-size: var(--font-body);
+            font-family: inherit;
+            border: 3px solid var(--cream-dark);
+            border-radius: var(--radius-md);
+            background: var(--cream);
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+
+        .signup-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: var(--white);
+        }
+
+        .signup-input::placeholder {
+            color: var(--dark-soft);
+            opacity: 0.6;
+        }
+
+        .signup-button {
+            padding: var(--space-md) var(--space-xl);
+            font-size: var(--font-body);
+            font-weight: 700;
+            font-family: inherit;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--dark);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .signup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 181, 38, 0.4);
+        }
+
+        .signup-button:active {
+            transform: translateY(0);
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-mockup {
+            position: relative;
+            width: 280px;
+            max-width: 100%;
+        }
+
+        .phone-frame {
+            background: var(--dark);
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow:
+                0 25px 50px rgba(28, 23, 13, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        }
+
+        .phone-screen {
+            background: var(--cream);
+            border-radius: 32px;
+            overflow: hidden;
+            aspect-ratio: 9/19;
+        }
+
+        .phone-content {
+            padding: var(--space-md);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-header {
+            text-align: center;
+            padding: var(--space-md) 0;
+        }
+
+        .phone-greeting {
+            font-size: 12px;
+            color: var(--dark-soft);
+            margin-bottom: 4px;
+        }
+
+        .phone-name {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .phone-streak {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: var(--white);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            margin: var(--space-md) 0;
+            border: 2px solid var(--gold);
+        }
+
+        .streak-fire {
+            font-size: 20px;
+        }
+
+        .streak-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .streak-count {
+            color: var(--gold);
+        }
+
+        .prayer-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .prayer-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .prayer-card.completed {
+            border-color: var(--gold);
+        }
+
+        .prayer-emoji {
+            font-size: 24px;
+        }
+
+        .prayer-info {
+            flex: 1;
+        }
+
+        .prayer-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .prayer-time {
+            font-size: 11px;
+            color: var(--dark-soft);
+        }
+
+        .prayer-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .prayer-check.done {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .prayer-check.pending {
+            background: var(--cream-dark);
+        }
+
+        /* Floating elements */
+        .float-star {
+            position: absolute;
+            font-size: 32px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .float-star:nth-child(1) {
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .float-star:nth-child(2) {
+            bottom: 20%;
+            right: 5%;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(10deg); }
+        }
+
+        /* ===== SECTION 2: PROOF ===== */
+        .proof {
+            background: var(--cream);
+            padding: var(--space-4xl) 0;
+        }
+
+        .proof-header {
+            text-align: center;
+            margin-bottom: var(--space-3xl);
+        }
+
+        .proof-label {
+            font-size: var(--font-caption);
+            font-weight: 700;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-sm);
+        }
+
+        .proof-headline {
+            font-size: var(--font-display);
+            font-weight: 800;
+            color: var(--dark);
+            line-height: 1.2;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .proof-headline .name {
+            color: var(--gold);
+        }
+
+        /* Steps */
+        .steps {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-lg);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .steps {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--space-xl);
+            }
+        }
+
+        .step-card {
+            background: var(--white);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            border: 3px solid var(--cream-dark);
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(245, 181, 38, 0.15);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            color: var(--dark);
+            font-size: 18px;
+            font-weight: 900;
+            border-radius: 50%;
+            margin-bottom: var(--space-md);
+        }
+
+        .step-emoji {
+            font-size: 56px;
+            margin-bottom: var(--space-md);
+            display: block;
+        }
+
+        .step-title {
+            font-size: var(--font-headline);
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: var(--space-sm);
+        }
+
+        .step-desc {
+            font-size: var(--font-body);
+            color: var(--dark-soft);
+            line-height: 1.5;
+        }
+
+        .step-example {
+            margin-top: var(--space-md);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--cream);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-caption);
+            font-style: italic;
+            color: var(--dark-soft);
+        }
+
+        /* ===== SECTION 3: TRUST + CTA ===== */
+        .trust {
+            background: var(--white);
+            padding: var(--space-4xl) 0;
+        }
+
+        .trust-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .trust-label {
+            font-size: var(--font-caption);
+            font-weight: 700;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-sm);
+        }
+
+        .trust-headline {
+            font-size: var(--font-display);
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-3xl);
+        }
+
+        @media (min-width: 768px) {
+            .testimonials {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .testimonial-card {
+            background: var(--cream);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            position: relative;
+        }
+
+        .testimonial-quote {
+            font-size: var(--font-body-lg);
+            font-weight: 500;
+            color: var(--dark);
+            line-height: 1.5;
+            margin-bottom: var(--space-lg);
+        }
+
+        .testimonial-quote::before {
+            content: '"';
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--gold);
+            line-height: 0;
+            position: absolute;
+            top: var(--space-xl);
+            left: var(--space-lg);
+            opacity: 0.3;
+        }
+
+        .testimonial-stat {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--dark);
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-caption);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-size: var(--font-body);
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .author-location {
+            font-size: var(--font-caption);
+            color: var(--dark-soft);
+        }
+
+        /* Final CTA */
+        .final-cta {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            padding: var(--space-3xl);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta::before {
+            content: "🌙";
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            top: -50px;
+            right: -30px;
+        }
+
+        .cta-headline {
+            font-size: var(--font-display);
+            font-weight: 900;
+            color: var(--dark);
+            margin-bottom: var(--space-sm);
+            position: relative;
+        }
+
+        .cta-subheadline {
+            font-size: var(--font-body-lg);
+            color: var(--dark);
+            opacity: 0.8;
+            margin-bottom: var(--space-xl);
+            position: relative;
+        }
+
+        .cta-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        @media (min-width: 640px) {
+            .cta-form {
+                flex-direction: row;
+            }
+        }
+
+        .cta-input {
+            flex: 1;
+            padding: var(--space-md) var(--space-lg);
+            font-size: var(--font-body);
+            font-family: inherit;
+            border: 3px solid transparent;
+            border-radius: var(--radius-md);
+            background: var(--white);
+            color: var(--dark);
+        }
+
+        .cta-input:focus {
+            outline: none;
+            border-color: var(--dark);
+        }
+
+        .cta-button {
+            padding: var(--space-md) var(--space-xl);
+            font-size: var(--font-body);
+            font-weight: 700;
+            font-family: inherit;
+            background: var(--dark);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(28, 23, 13, 0.3);
+        }
+
+        .cta-note {
+            font-size: var(--font-caption);
+            color: var(--dark);
+            opacity: 0.7;
+            margin-top: var(--space-md);
+            position: relative;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--dark);
+            color: var(--cream);
+            padding: var(--space-xl) 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        @media (min-width: 640px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .footer-brand {
+            font-size: var(--font-body-lg);
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--space-lg);
+        }
+
+        .footer-links a {
+            color: var(--cream);
+            text-decoration: none;
+            font-size: var(--font-caption);
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Memorable Moment Banner */
+        .moment-banner {
+            background: var(--cream);
+            padding: var(--space-2xl) 0;
+            text-align: center;
+            border-top: 4px solid var(--gold);
+            border-bottom: 4px solid var(--gold);
+        }
+
+        .moment-text {
+            font-size: var(--font-body-lg);
+            font-weight: 500;
+            color: var(--dark);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .moment-highlight {
+            color: var(--gold);
+            font-weight: 700;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <!-- SECTION 1: HERO -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <span class="badge">
+                        <span class="badge-icon">🌙</span>
+                        Free for Ramadan
+                    </span>
+
+                    <h1 class="hero-headline">
+                        Your Child Will Pray All 5 Prayers <span class="highlight">This Ramadan</span>
+                    </h1>
+
+                    <p class="hero-subheadline">
+                        Built for kids who think prayer is boring. Loved by parents who've tried everything else.
+                    </p>
+
+                    <form class="signup-form" onsubmit="handleSignup(event)">
+                        <input
+                            type="email"
+                            class="signup-input"
+                            placeholder="your@email.com"
+                            required
+                        >
+                        <button type="submit" class="signup-button">
+                            Get Started Free
+                        </button>
+                    </form>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="phone-mockup">
+                        <span class="float-star">⭐</span>
+                        <span class="float-star">🌟</span>
+                        <div class="phone-frame">
+                            <div class="phone-screen">
+                                <div class="phone-content">
+                                    <div class="phone-header">
+                                        <p class="phone-greeting">Assalamu Alaikum</p>
+                                        <p class="phone-name">Ahmad! ⭐</p>
+                                    </div>
+
+                                    <div class="phone-streak">
+                                        <span class="streak-fire">🔥</span>
+                                        <span class="streak-text"><span class="streak-count">12</span> day streak!</span>
+                                    </div>
+
+                                    <div class="prayer-cards">
+                                        <div class="prayer-card completed">
+                                            <span class="prayer-emoji">🌅</span>
+                                            <div class="prayer-info">
+                                                <p class="prayer-name">Fajr</p>
+                                                <p class="prayer-time">5:12 AM</p>
+                                            </div>
+                                            <span class="prayer-check done">✓</span>
+                                        </div>
+                                        <div class="prayer-card completed">
+                                            <span class="prayer-emoji">☀️</span>
+                                            <div class="prayer-info">
+                                                <p class="prayer-name">Dhuhr</p>
+                                                <p class="prayer-time">12:30 PM</p>
+                                            </div>
+                                            <span class="prayer-check done">✓</span>
+                                        </div>
+                                        <div class="prayer-card completed">
+                                            <span class="prayer-emoji">🌤️</span>
+                                            <div class="prayer-info">
+                                                <p class="prayer-name">Asr</p>
+                                                <p class="prayer-time">3:45 PM</p>
+                                            </div>
+                                            <span class="prayer-check done">✓</span>
+                                        </div>
+                                        <div class="prayer-card">
+                                            <span class="prayer-emoji">🌅</span>
+                                            <div class="prayer-info">
+                                                <p class="prayer-name">Maghrib</p>
+                                                <p class="prayer-time">6:15 PM</p>
+                                            </div>
+                                            <span class="prayer-check pending"></span>
+                                        </div>
+                                        <div class="prayer-card">
+                                            <span class="prayer-emoji">🌙</span>
+                                            <div class="prayer-info">
+                                                <p class="prayer-name">Isha</p>
+                                                <p class="prayer-time">7:45 PM</p>
+                                            </div>
+                                            <span class="prayer-check pending"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: PROOF -->
+    <section class="proof">
+        <div class="container">
+            <div class="proof-header">
+                <p class="proof-label">How It Works</p>
+                <h2 class="proof-headline">
+                    How <span class="name">Ahmad (age 9)</span> went from 0 prayers to 5 daily prayers in 2 weeks
+                </h2>
+            </div>
+
+            <div class="steps">
+                <div class="step-card">
+                    <span class="step-number">1</span>
+                    <span class="step-emoji">🌅</span>
+                    <h3 class="step-title">Tap the Prayer</h3>
+                    <p class="step-desc">
+                        Fajr lights up at prayer time. One tap to mark it done. No complicated tracking.
+                    </p>
+                    <p class="step-example">"It's like a game—I want to tap them all!"</p>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">2</span>
+                    <span class="step-emoji">📖</span>
+                    <h3 class="step-title">Unlock the Story</h3>
+                    <p class="step-desc">
+                        Each prayer unlocks a piece of the daily Ramadan story. Kids can't wait to find out what happens next.
+                    </p>
+                    <p class="step-example">"Why did the Prophet ﷺ love Fajr?"</p>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">3</span>
+                    <span class="step-emoji">🏆</span>
+                    <h3 class="step-title">Beat the Family</h3>
+                    <p class="step-desc">
+                        Siblings compete on the family leaderboard. Suddenly, everyone wants to pray first.
+                    </p>
+                    <p class="step-example">"Ahmad is #1 with a 14-day streak!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Memorable Moment -->
+    <section class="moment-banner">
+        <div class="container">
+            <p class="moment-text">
+                The last thing you'll say to them tonight:<br>
+                <span class="moment-highlight">"I'm so proud of you."</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- SECTION 3: TRUST + CTA -->
+    <section class="trust">
+        <div class="container">
+            <div class="trust-header">
+                <p class="trust-label">What Parents Say</p>
+                <h2 class="trust-headline">Real Families, Real Results</h2>
+            </div>
+
+            <div class="testimonials">
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        Maryam hasn't missed Fajr in <span class="testimonial-stat">28 days</span>. She wakes up before me now. I never thought I'd see this day.
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👩</div>
+                        <div class="author-info">
+                            <p class="author-name">Umm Maryam</p>
+                            <p class="author-location">London, UK</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        My son asks ME when it's prayer time now. The leaderboard with his cousins changed everything. They're <span class="testimonial-stat">competing to pray!</span>
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👨</div>
+                        <div class="author-info">
+                            <p class="author-name">Abu Yusuf</p>
+                            <p class="author-location">Toronto, Canada</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        I can't believe this is working. We tried stickers, rewards, everything. This is the only thing that stuck. <span class="testimonial-stat">3 kids, all praying.</span>
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👩</div>
+                        <div class="author-info">
+                            <p class="author-name">Umm Ibrahim</p>
+                            <p class="author-location">Dubai, UAE</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final CTA -->
+            <div class="final-cta">
+                <h2 class="cta-headline">Start This Ramadan</h2>
+                <p class="cta-subheadline">Join 1,247 families who are transforming prayer time</p>
+
+                <form class="cta-form" onsubmit="handleSignup(event)">
+                    <input
+                        type="email"
+                        class="cta-input"
+                        placeholder="your@email.com"
+                        required
+                    >
+                    <button type="submit" class="cta-button">
+                        Get Started Free
+                    </button>
+                </form>
+
+                <p class="cta-note">
+                    ✓ Free for all of Ramadan &nbsp;&nbsp; ✓ No credit card required &nbsp;&nbsp; ✓ Cancel anytime
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-brand">Salah Buddy 🌙</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function handleSignup(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            // Redirect to signup page with email pre-filled
+            window.location.href = `signup.html?email=${encodeURIComponent(email)}`;
+        }
+    </script>
+</body>
+</html>
