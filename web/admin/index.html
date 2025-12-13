@@ -1036,9 +1036,12 @@
                                 <input type="date" id="ramadanStartDate" class="form-input" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Ramadan End Date</label>
-                                <div class="form-hint">Last day of Ramadan (Day 29 or 30)</div>
-                                <input type="date" id="ramadanEndDate" class="form-input" required>
+                                <label class="form-label">Ramadan Length</label>
+                                <div class="form-hint">Usually 29 or 30 days</div>
+                                <select id="ramadanLength" class="form-input">
+                                    <option value="30">30 days</option>
+                                    <option value="29">29 days</option>
+                                </select>
                             </div>
                         </div>
 
@@ -1399,8 +1402,43 @@
                         sec.classList.add('active');
                     }
                 });
+
+                // Update URL hash without triggering scroll (Issue #38)
+                if (section) {
+                    history.replaceState(null, '', `#${section}`);
+                }
             });
         });
+
+        // Hash-based navigation (Issue #38)
+        // Allows direct linking to tabs via URL hash (e.g., /admin/index.html#settings)
+        function handleHashNavigation() {
+            const hash = window.location.hash.replace('#', '');
+            const validTabs = ['stories', 'tasks', 'settings'];
+
+            if (hash && validTabs.includes(hash)) {
+                // Find the nav item with matching data-section
+                const targetNavItem = document.querySelector(`.nav-item[data-section="${hash}"]`);
+                if (targetNavItem) {
+                    // Update nav items
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    targetNavItem.classList.add('active');
+
+                    // Update content sections
+                    contentSections.forEach(sec => sec.classList.remove('active'));
+                    const targetSection = document.getElementById(`${hash}Section`);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+                }
+            }
+        }
+
+        // Handle hash on page load
+        handleHashNavigation();
+
+        // Handle hash changes (e.g., browser back/forward)
+        window.addEventListener('hashchange', handleHashNavigation);
 
         // Generate Day Grids
         function generateDayGrid(container, selectedDay, onClick, contentMap = {}) {
@@ -1812,7 +1850,7 @@
         const gamificationForm = document.getElementById('gamificationForm');
         const appConfigForm = document.getElementById('appConfigForm');
         const ramadanStartDate = document.getElementById('ramadanStartDate');
-        const ramadanEndDate = document.getElementById('ramadanEndDate');
+        const ramadanLength = document.getElementById('ramadanLength');
         const currentRamadanDay = document.getElementById('currentRamadanDay');
         const ramadanStatus = document.getElementById('ramadanStatus');
         const appEnabledToggle = document.getElementById('appEnabledToggle');
@@ -1866,8 +1904,12 @@
             if (data.startDate) {
                 ramadanStartDate.value = data.startDate;
             }
-            if (data.endDate) {
-                ramadanEndDate.value = data.endDate;
+            // Calculate length from start and end dates
+            if (data.startDate && data.endDate) {
+                const start = new Date(data.startDate);
+                const end = new Date(data.endDate);
+                const days = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                ramadanLength.value = days <= 29 ? '29' : '30';
             }
             updateRamadanStatus();
         }
@@ -1895,12 +1937,20 @@
             document.getElementById('minAppVersion').value = data.minAppVersion || '';
         }
 
+        // Calculate end date from start date and length
+        function calculateEndDate(startDateVal, length) {
+            const startDate = new Date(startDateVal + 'T00:00:00');
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + parseInt(length) - 1);
+            return endDate;
+        }
+
         // Update Ramadan status display
         function updateRamadanStatus() {
             const startDateVal = ramadanStartDate.value;
-            const endDateVal = ramadanEndDate.value;
+            const length = ramadanLength.value;
 
-            if (!startDateVal || !endDateVal) {
+            if (!startDateVal) {
                 ramadanStatus.textContent = 'Not Set';
                 ramadanStatus.className = 'category-badge category-prayer';
                 currentRamadanDay.textContent = '--';
@@ -1910,7 +1960,7 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             const startDate = new Date(startDateVal + 'T00:00:00');
-            const endDate = new Date(endDateVal + 'T00:00:00');
+            const endDate = calculateEndDate(startDateVal, length);
 
             if (today < startDate) {
                 const daysUntil = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
@@ -1934,7 +1984,7 @@
 
         // Ramadan dates change handlers
         ramadanStartDate.addEventListener('change', updateRamadanStatus);
-        ramadanEndDate.addEventListener('change', updateRamadanStatus);
+        ramadanLength.addEventListener('change', updateRamadanStatus);
 
         // App Enabled Toggle
         appEnabledToggle.addEventListener('click', () => {
@@ -1949,25 +1999,22 @@
             if (!await verifyAdminClaim()) return;
 
             const startDateVal = ramadanStartDate.value;
-            const endDateVal = ramadanEndDate.value;
+            const length = parseInt(ramadanLength.value);
 
-            // Validate dates
-            if (new Date(endDateVal) <= new Date(startDateVal)) {
-                showToast('End date must be after start date', 'error');
+            if (!startDateVal) {
+                showToast('Please select a start date', 'error');
                 return;
             }
 
-            const daysDiff = Math.ceil((new Date(endDateVal) - new Date(startDateVal)) / (1000 * 60 * 60 * 24)) + 1;
-            if (daysDiff < 29 || daysDiff > 30) {
-                showToast('Ramadan should be 29 or 30 days', 'error');
-                return;
-            }
+            // Calculate end date from start date + length
+            const endDate = calculateEndDate(startDateVal, length);
+            const endDateVal = endDate.toISOString().split('T')[0];
 
             try {
                 await setDoc(doc(db, 'appSettings', 'ramadan'), {
                     startDate: startDateVal,
                     endDate: endDateVal,
-                    totalDays: daysDiff,
+                    totalDays: length,
                     updatedAt: serverTimestamp(),
                     updatedBy: currentUser.uid
                 });

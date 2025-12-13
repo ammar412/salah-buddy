@@ -198,7 +198,7 @@ service cloud.firestore {
       allow create, update: if isAdmin() && (
         // Ramadan settings validation
         (settingId == 'ramadan' &&
-          request.resource.data.keys().hasOnly(['startDate', 'endDate', 'totalDays']) &&
+          request.resource.data.keys().hasOnly(['startDate', 'endDate', 'totalDays', 'updatedAt', 'updatedBy']) &&
           request.resource.data.startDate is string &&
           request.resource.data.endDate is string &&
           request.resource.data.totalDays is number &&
@@ -207,7 +207,7 @@ service cloud.firestore {
         ) ||
         // Gamification settings validation
         (settingId == 'gamification' &&
-          request.resource.data.keys().hasOnly(['starsPerPrayer', 'streakBonus', 'storyBonus', 'maxDailyStars']) &&
+          request.resource.data.keys().hasOnly(['starsPerPrayer', 'streakBonus', 'storyBonus', 'maxDailyStars', 'updatedAt', 'updatedBy']) &&
           request.resource.data.starsPerPrayer is number &&
           request.resource.data.starsPerPrayer >= 1 &&
           request.resource.data.starsPerPrayer <= 100 &&
@@ -222,7 +222,7 @@ service cloud.firestore {
         ) ||
         // App config validation
         (settingId == 'appConfig' &&
-          request.resource.data.keys().hasOnly(['isEnabled', 'maintenanceMessage', 'minAppVersion']) &&
+          request.resource.data.keys().hasOnly(['isEnabled', 'maintenanceMessage', 'minAppVersion', 'updatedAt', 'updatedBy']) &&
           request.resource.data.isEnabled is bool
         )
       );
