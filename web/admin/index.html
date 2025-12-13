@@ -837,6 +837,10 @@
                     <span class="nav-icon">⭐</span>
                     <span>Bonus Tasks</span>
                 </button>
+                <button class="nav-item" data-section="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </button>
                 <a href="/admin/users.html" class="nav-item">
                     <span class="nav-icon">👥</span>
                     <span>Users</span>
@@ -1003,6 +1007,164 @@
 
                     <div id="tasksList" class="tasks-list">
                         <!-- Tasks will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settingsSection" class="content-section">
+                <div class="page-header">
+                    <h1 class="page-title">⚙️ App Settings</h1>
+                    <p class="page-description">Configure Ramadan dates, gamification values, and app-wide settings</p>
+                </div>
+
+                <!-- Ramadan Dates Card -->
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="form-card-title">
+                            <span>🌙</span>
+                            <span>Ramadan Dates</span>
+                        </div>
+                        <div id="ramadanStatus" class="category-badge category-prayer">Not Set</div>
+                    </div>
+
+                    <form id="ramadanDatesForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Ramadan Start Date</label>
+                                <div class="form-hint">First day of Ramadan (local time)</div>
+                                <input type="date" id="ramadanStartDate" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ramadan Length</label>
+                                <div class="form-hint">Usually 29 or 30 days</div>
+                                <select id="ramadanLength" class="form-input">
+                                    <option value="30">30 days</option>
+                                    <option value="29">29 days</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Current Ramadan Day</label>
+                            <div class="form-hint">Calculated automatically based on today's date</div>
+                            <div id="currentRamadanDay" style="font-size: 24px; font-weight: 800; color: var(--gold-dark); padding: 8px 0;">
+                                --
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span>💾</span>
+                                <span>Save Ramadan Dates</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Gamification Settings Card -->
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="form-card-title">
+                            <span>⭐</span>
+                            <span>Gamification Values</span>
+                        </div>
+                    </div>
+
+                    <form id="gamificationForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Stars per Prayer</label>
+                                <div class="form-hint">Stars earned when completing each prayer</div>
+                                <input type="number" id="starsPerPrayer" class="form-input" min="1" max="100" value="10">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Streak Bonus</label>
+                                <div class="form-hint">Bonus stars for completing all 5 prayers</div>
+                                <input type="number" id="streakBonus" class="form-input" min="0" max="100" value="5">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Story Watch Bonus</label>
+                                <div class="form-hint">Stars earned for watching daily story</div>
+                                <input type="number" id="storyBonus" class="form-input" min="1" max="100" value="15">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Max Daily Stars</label>
+                                <div class="form-hint">Maximum stars a child can earn per day (0 = unlimited)</div>
+                                <input type="number" id="maxDailyStars" class="form-input" min="0" max="1000" value="0">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span>💾</span>
+                                <span>Save Gamification Settings</span>
+                            </button>
+                            <button type="button" id="resetGamificationBtn" class="btn btn-secondary">
+                                <span>↩️</span>
+                                <span>Reset to Defaults</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- App Configuration Card -->
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="form-card-title">
+                            <span>📱</span>
+                            <span>App Configuration</span>
+                        </div>
+                    </div>
+
+                    <form id="appConfigForm">
+                        <div class="form-group">
+                            <label class="form-label">App Status</label>
+                            <div class="form-hint">Enable or disable the app for all users</div>
+                            <div class="toggle-container">
+                                <div id="appEnabledToggle" class="toggle active">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                                <span class="toggle-label" id="appEnabledLabel">App Enabled</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Maintenance Message (Optional)</label>
+                            <div class="form-hint">Message to show when app is disabled</div>
+                            <textarea id="maintenanceMessage" class="form-textarea" placeholder="We're making some improvements. Check back soon!"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Minimum App Version</label>
+                            <div class="form-hint">Users below this version will be prompted to update</div>
+                            <input type="text" id="minAppVersion" class="form-input" placeholder="1.0.0">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span>💾</span>
+                                <span>Save App Configuration</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Settings Info -->
+                <div style="background: var(--cream); border-radius: var(--radius-md); padding: var(--spacing-lg); margin-top: var(--spacing-lg);">
+                    <div style="display: flex; align-items: flex-start; gap: var(--spacing-md);">
+                        <span style="font-size: 24px;">💡</span>
+                        <div>
+                            <div style="font-weight: 700; margin-bottom: 4px;">About Settings</div>
+                            <div style="font-size: 14px; color: var(--dark-soft);">
+                                Changes to these settings take effect immediately for all users.
+                                The mobile app reads these values from Firestore on launch and refreshes them periodically.
+                                Ramadan dates should be set before Ramadan begins each year.
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1240,8 +1402,43 @@
                         sec.classList.add('active');
                     }
                 });
+
+                // Update URL hash without triggering scroll (Issue #38)
+                if (section) {
+                    history.replaceState(null, '', `#${section}`);
+                }
             });
         });
+
+        // Hash-based navigation (Issue #38)
+        // Allows direct linking to tabs via URL hash (e.g., /admin/index.html#settings)
+        function handleHashNavigation() {
+            const hash = window.location.hash.replace('#', '');
+            const validTabs = ['stories', 'tasks', 'settings'];
+
+            if (hash && validTabs.includes(hash)) {
+                // Find the nav item with matching data-section
+                const targetNavItem = document.querySelector(`.nav-item[data-section="${hash}"]`);
+                if (targetNavItem) {
+                    // Update nav items
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    targetNavItem.classList.add('active');
+
+                    // Update content sections
+                    contentSections.forEach(sec => sec.classList.remove('active'));
+                    const targetSection = document.getElementById(`${hash}Section`);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+                }
+            }
+        }
+
+        // Handle hash on page load
+        handleHashNavigation();
+
+        // Handle hash changes (e.g., browser back/forward)
+        window.addEventListener('hashchange', handleHashNavigation);
 
         // Generate Day Grids
         function generateDayGrid(container, selectedDay, onClick, contentMap = {}) {
@@ -1636,6 +1833,266 @@
                 taskModal.classList.remove('show');
             }
         });
+
+        // =====================================================
+        // SETTINGS SECTION
+        // =====================================================
+
+        // Settings State
+        let appSettings = {
+            ramadan: null,
+            gamification: null,
+            appConfig: null
+        };
+
+        // Settings DOM Elements
+        const ramadanDatesForm = document.getElementById('ramadanDatesForm');
+        const gamificationForm = document.getElementById('gamificationForm');
+        const appConfigForm = document.getElementById('appConfigForm');
+        const ramadanStartDate = document.getElementById('ramadanStartDate');
+        const ramadanLength = document.getElementById('ramadanLength');
+        const currentRamadanDay = document.getElementById('currentRamadanDay');
+        const ramadanStatus = document.getElementById('ramadanStatus');
+        const appEnabledToggle = document.getElementById('appEnabledToggle');
+        const appEnabledLabel = document.getElementById('appEnabledLabel');
+
+        // Default gamification values
+        const DEFAULT_GAMIFICATION = {
+            starsPerPrayer: 10,
+            streakBonus: 5,
+            storyBonus: 15,
+            maxDailyStars: 0
+        };
+
+        // Load Settings
+        async function loadSettings() {
+            try {
+                // Load all settings documents
+                const [ramadanDoc, gamificationDoc, appConfigDoc] = await Promise.all([
+                    getDoc(doc(db, 'appSettings', 'ramadan')),
+                    getDoc(doc(db, 'appSettings', 'gamification')),
+                    getDoc(doc(db, 'appSettings', 'appConfig'))
+                ]);
+
+                // Ramadan dates
+                if (ramadanDoc.exists()) {
+                    appSettings.ramadan = ramadanDoc.data();
+                    loadRamadanSettings(appSettings.ramadan);
+                }
+
+                // Gamification
+                if (gamificationDoc.exists()) {
+                    appSettings.gamification = gamificationDoc.data();
+                    loadGamificationSettings(appSettings.gamification);
+                } else {
+                    loadGamificationSettings(DEFAULT_GAMIFICATION);
+                }
+
+                // App config
+                if (appConfigDoc.exists()) {
+                    appSettings.appConfig = appConfigDoc.data();
+                    loadAppConfigSettings(appSettings.appConfig);
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                showToast('Failed to load settings', 'error');
+            }
+        }
+
+        // Load Ramadan settings into form
+        function loadRamadanSettings(data) {
+            if (data.startDate) {
+                ramadanStartDate.value = data.startDate;
+            }
+            // Calculate length from start and end dates
+            if (data.startDate && data.endDate) {
+                const start = new Date(data.startDate);
+                const end = new Date(data.endDate);
+                const days = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                ramadanLength.value = days <= 29 ? '29' : '30';
+            }
+            updateRamadanStatus();
+        }
+
+        // Load Gamification settings into form
+        function loadGamificationSettings(data) {
+            document.getElementById('starsPerPrayer').value = data.starsPerPrayer ?? DEFAULT_GAMIFICATION.starsPerPrayer;
+            document.getElementById('streakBonus').value = data.streakBonus ?? DEFAULT_GAMIFICATION.streakBonus;
+            document.getElementById('storyBonus').value = data.storyBonus ?? DEFAULT_GAMIFICATION.storyBonus;
+            document.getElementById('maxDailyStars').value = data.maxDailyStars ?? DEFAULT_GAMIFICATION.maxDailyStars;
+        }
+
+        // Load App Config settings into form
+        function loadAppConfigSettings(data) {
+            if (data.isEnabled !== undefined) {
+                if (data.isEnabled) {
+                    appEnabledToggle.classList.add('active');
+                    appEnabledLabel.textContent = 'App Enabled';
+                } else {
+                    appEnabledToggle.classList.remove('active');
+                    appEnabledLabel.textContent = 'App Disabled';
+                }
+            }
+            document.getElementById('maintenanceMessage').value = data.maintenanceMessage || '';
+            document.getElementById('minAppVersion').value = data.minAppVersion || '';
+        }
+
+        // Calculate end date from start date and length
+        function calculateEndDate(startDateVal, length) {
+            const startDate = new Date(startDateVal + 'T00:00:00');
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + parseInt(length) - 1);
+            return endDate;
+        }
+
+        // Update Ramadan status display
+        function updateRamadanStatus() {
+            const startDateVal = ramadanStartDate.value;
+            const length = ramadanLength.value;
+
+            if (!startDateVal) {
+                ramadanStatus.textContent = 'Not Set';
+                ramadanStatus.className = 'category-badge category-prayer';
+                currentRamadanDay.textContent = '--';
+                return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const startDate = new Date(startDateVal + 'T00:00:00');
+            const endDate = calculateEndDate(startDateVal, length);
+
+            if (today < startDate) {
+                const daysUntil = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+                ramadanStatus.textContent = `Starts in ${daysUntil} days`;
+                ramadanStatus.className = 'category-badge category-quran';
+                currentRamadanDay.textContent = 'Ramadan has not started yet';
+                currentRamadanDay.style.fontSize = '16px';
+            } else if (today > endDate) {
+                ramadanStatus.textContent = 'Ended';
+                ramadanStatus.className = 'category-badge category-kindness';
+                currentRamadanDay.textContent = 'Ramadan has ended';
+                currentRamadanDay.style.fontSize = '16px';
+            } else {
+                const dayNum = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                ramadanStatus.textContent = 'Active';
+                ramadanStatus.className = 'category-badge category-charity';
+                currentRamadanDay.textContent = `Day ${dayNum} of Ramadan`;
+                currentRamadanDay.style.fontSize = '24px';
+            }
+        }
+
+        // Ramadan dates change handlers
+        ramadanStartDate.addEventListener('change', updateRamadanStatus);
+        ramadanLength.addEventListener('change', updateRamadanStatus);
+
+        // App Enabled Toggle
+        appEnabledToggle.addEventListener('click', () => {
+            appEnabledToggle.classList.toggle('active');
+            appEnabledLabel.textContent = appEnabledToggle.classList.contains('active') ? 'App Enabled' : 'App Disabled';
+        });
+
+        // Save Ramadan Dates
+        ramadanDatesForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!await verifyAdminClaim()) return;
+
+            const startDateVal = ramadanStartDate.value;
+            const length = parseInt(ramadanLength.value);
+
+            if (!startDateVal) {
+                showToast('Please select a start date', 'error');
+                return;
+            }
+
+            // Calculate end date from start date + length
+            const endDate = calculateEndDate(startDateVal, length);
+            const endDateVal = endDate.toISOString().split('T')[0];
+
+            try {
+                await setDoc(doc(db, 'appSettings', 'ramadan'), {
+                    startDate: startDateVal,
+                    endDate: endDateVal,
+                    totalDays: length,
+                    updatedAt: serverTimestamp(),
+                    updatedBy: currentUser.uid
+                });
+
+                appSettings.ramadan = { startDate: startDateVal, endDate: endDateVal };
+                updateRamadanStatus();
+                showToast('Ramadan dates saved successfully!');
+            } catch (error) {
+                console.error('Error saving Ramadan dates:', error);
+                showToast('Failed to save Ramadan dates', 'error');
+            }
+        });
+
+        // Save Gamification Settings
+        gamificationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!await verifyAdminClaim()) return;
+
+            const gamificationData = {
+                starsPerPrayer: parseInt(document.getElementById('starsPerPrayer').value) || DEFAULT_GAMIFICATION.starsPerPrayer,
+                streakBonus: parseInt(document.getElementById('streakBonus').value) || DEFAULT_GAMIFICATION.streakBonus,
+                storyBonus: parseInt(document.getElementById('storyBonus').value) || DEFAULT_GAMIFICATION.storyBonus,
+                maxDailyStars: parseInt(document.getElementById('maxDailyStars').value) || 0,
+                updatedAt: serverTimestamp(),
+                updatedBy: currentUser.uid
+            };
+
+            try {
+                await setDoc(doc(db, 'appSettings', 'gamification'), gamificationData);
+                appSettings.gamification = gamificationData;
+                showToast('Gamification settings saved successfully!');
+            } catch (error) {
+                console.error('Error saving gamification settings:', error);
+                showToast('Failed to save gamification settings', 'error');
+            }
+        });
+
+        // Reset Gamification to Defaults
+        document.getElementById('resetGamificationBtn').addEventListener('click', () => {
+            if (confirm('Reset gamification settings to defaults?')) {
+                loadGamificationSettings(DEFAULT_GAMIFICATION);
+                showToast('Reset to defaults. Click Save to apply.');
+            }
+        });
+
+        // Save App Config
+        appConfigForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!await verifyAdminClaim()) return;
+
+            const appConfigData = {
+                isEnabled: appEnabledToggle.classList.contains('active'),
+                maintenanceMessage: document.getElementById('maintenanceMessage').value.trim(),
+                minAppVersion: document.getElementById('minAppVersion').value.trim(),
+                updatedAt: serverTimestamp(),
+                updatedBy: currentUser.uid
+            };
+
+            try {
+                await setDoc(doc(db, 'appSettings', 'appConfig'), appConfigData);
+                appSettings.appConfig = appConfigData;
+                showToast('App configuration saved successfully!');
+            } catch (error) {
+                console.error('Error saving app config:', error);
+                showToast('Failed to save app configuration', 'error');
+            }
+        });
+
+        // Update loadAllData to include settings
+        const originalLoadAllData = loadAllData;
+        loadAllData = async function() {
+            await Promise.all([
+                originalLoadAllData.call(this),
+                loadSettings()
+            ]);
+        };
     </script>
 </body>
 </html>
