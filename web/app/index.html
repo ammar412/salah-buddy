@@ -3002,7 +3002,8 @@
             completedTaskIds: [],
             firestoreStories: {}, // Stories loaded from Firestore
             ramadanSettings: null, // Ramadan dates from admin settings
-            gamificationSettings: null // Gamification values from admin settings
+            gamificationSettings: null, // Gamification values from admin settings
+            appConfig: null // App configuration from admin settings
         };
         window.AppState = AppState;
 
@@ -3267,7 +3268,8 @@
             // Load app-wide settings immediately (not user-specific)
             await Promise.all([
                 loadRamadanSettings(), // Load admin-configured Ramadan dates
-                loadGamificationSettings() // Load gamification values from admin
+                loadGamificationSettings(), // Load gamification values from admin
+                loadAppConfig() // Load app configuration from admin
             ]);
 
             // Set up midnight reset checker
@@ -3700,6 +3702,35 @@
                     starsPerPrayer: 10,
                     streakBonus: 5,
                     maxDailyStars: 0
+                };
+            }
+        }
+
+        // Load app configuration from Firestore (admin-configured values)
+        async function loadAppConfig() {
+            const { doc, getDoc } = window.firebaseModules;
+
+            try {
+                const settingsDoc = await getDoc(doc(window.firebaseDb, 'appSettings', 'appConfig'));
+                if (settingsDoc.exists()) {
+                    AppState.appConfig = settingsDoc.data();
+                    console.log('App config loaded:', AppState.appConfig);
+                } else {
+                    // Set default values if not configured in admin
+                    AppState.appConfig = {
+                        isEnabled: true,
+                        maintenanceMessage: '',
+                        minAppVersion: '1.0.0'
+                    };
+                    console.log('Using default app config');
+                }
+            } catch (error) {
+                console.error('Error loading app config:', error);
+                // Set defaults on error - app should be enabled by default
+                AppState.appConfig = {
+                    isEnabled: true,
+                    maintenanceMessage: '',
+                    minAppVersion: '1.0.0'
                 };
             }
         }
