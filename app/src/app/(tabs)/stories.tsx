@@ -1,9 +1,9 @@
 /**
  * Stories Screen
- * Grid of 30 daily Ramadan story cards
+ * Grid of 30 daily Ramadan story cards with video player
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,43 +12,45 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import { StoryCard } from '../../components/stories';
+import { StoryCard, VideoPlayerModal } from '../../components/stories';
 import { useStore } from '../../store';
+import { useAuthStore } from '../../store/useAuthStore';
+import { updateStoryProgress } from '../../services/firestore';
 import { Colors, Spacing, FontFamily, FontSize, BorderRadius } from '../../constants';
 import type { StoryStatus } from '../../types';
 
-// Story titles for 30 days
-const STORY_TITLES = [
-  "The Night Journey",
-  "The First Revelation",
-  "Building the Kaaba",
-  "Prophet Yusuf's Dream",
-  "The Spider's Web",
-  "Splitting the Moon",
-  "The Sleepers of the Cave",
-  "Prophet Musa and Khidr",
-  "The Story of Luqman",
-  "Prophet Ibrahim's Test",
-  "The Queen of Sheba",
-  "Prophet Yunus and the Whale",
-  "The Boy and the King",
-  "The People of the Elephant",
-  "Prophet Dawud's Wisdom",
-  "The Ant's Warning",
-  "Prophet Sulaiman's Kingdom",
-  "The Companions of the Garden",
-  "Prophet Nuh's Ark",
-  "The Patience of Ayyub",
-  "Prophet Isa's Miracles",
-  "The Story of Maryam",
-  "Dhul-Qarnayn's Journey",
-  "The People of the Ditch",
-  "Prophet Salih and the Camel",
-  "The Story of Hud",
-  "Prophet Shuaib's Message",
-  "The Conquest of Makkah",
-  "The Farewell Sermon",
-  "Laylatul Qadr",
+// Story data for 30 days
+const STORIES = [
+  { title: "The Night Journey", videoUrl: "" },
+  { title: "The First Revelation", videoUrl: "" },
+  { title: "Building the Kaaba", videoUrl: "" },
+  { title: "Prophet Yusuf's Dream", videoUrl: "" },
+  { title: "The Spider's Web", videoUrl: "" },
+  { title: "Splitting the Moon", videoUrl: "" },
+  { title: "The Sleepers of the Cave", videoUrl: "" },
+  { title: "Prophet Musa and Khidr", videoUrl: "" },
+  { title: "The Story of Luqman", videoUrl: "" },
+  { title: "Prophet Ibrahim's Test", videoUrl: "" },
+  { title: "The Queen of Sheba", videoUrl: "" },
+  { title: "Prophet Yunus and the Whale", videoUrl: "" },
+  { title: "The Boy and the King", videoUrl: "" },
+  { title: "The People of the Elephant", videoUrl: "" },
+  { title: "Prophet Dawud's Wisdom", videoUrl: "" },
+  { title: "The Ant's Warning", videoUrl: "" },
+  { title: "Prophet Sulaiman's Kingdom", videoUrl: "" },
+  { title: "The Companions of the Garden", videoUrl: "" },
+  { title: "Prophet Nuh's Ark", videoUrl: "" },
+  { title: "The Patience of Ayyub", videoUrl: "" },
+  { title: "Prophet Isa's Miracles", videoUrl: "" },
+  { title: "The Story of Maryam", videoUrl: "" },
+  { title: "Dhul-Qarnayn's Journey", videoUrl: "" },
+  { title: "The People of the Ditch", videoUrl: "" },
+  { title: "Prophet Salih and the Camel", videoUrl: "" },
+  { title: "The Story of Hud", videoUrl: "" },
+  { title: "Prophet Shuaib's Message", videoUrl: "" },
+  { title: "The Conquest of Makkah", videoUrl: "" },
+  { title: "The Farewell Sermon", videoUrl: "" },
+  { title: "Laylatul Qadr", videoUrl: "" },
 ];
 
 // Gradient colors for each day
@@ -86,7 +88,14 @@ const GRADIENT_COLORS: [string, string][] = [
 ];
 
 export default function StoriesScreen() {
-  const { currentDay, getStoryStatus, watchStory, totalStoriesWatched } = useStore();
+  const [selectedStory, setSelectedStory] = useState<{
+    dayNumber: number;
+    title: string;
+    videoUrl: string;
+  } | null>(null);
+
+  const { currentDay, getStoryStatus, watchStory, totalStoriesWatched, stars } = useStore();
+  const { currentChild, isDemoMode } = useAuthStore();
 
   const handleStoryPress = (dayNumber: number, status: StoryStatus) => {
     if (status === 'locked') {
@@ -98,13 +107,36 @@ export default function StoriesScreen() {
       return;
     }
 
-    // Mark as watched and show the story
-    watchStory(dayNumber);
-    Alert.alert(
-      STORY_TITLES[dayNumber - 1],
-      `Day ${dayNumber} story would play here. In the full app, this would open a video player.`,
-      [{ text: 'Done' }]
-    );
+    // Open video player
+    const story = STORIES[dayNumber - 1];
+    setSelectedStory({
+      dayNumber,
+      title: story.title,
+      videoUrl: story.videoUrl,
+    });
+  };
+
+  const handleVideoClose = () => {
+    setSelectedStory(null);
+  };
+
+  const handleVideoComplete = () => {
+    if (selectedStory) {
+      watchStory(selectedStory.dayNumber);
+    }
+  };
+
+  const handleVideoProgress = async (progress: number) => {
+    if (!selectedStory || isDemoMode || !currentChild) return;
+
+    // Update progress in Firestore (debounced, only update every 10%)
+    if (progress % 10 < 1) {
+      try {
+        await updateStoryProgress(currentChild.id, selectedStory.dayNumber, progress);
+      } catch (error) {
+        console.error('Failed to update story progress:', error);
+      }
+    }
   };
 
   return (
@@ -135,10 +167,19 @@ export default function StoriesScreen() {
           </View>
           <View style={styles.progressDivider} />
           <View style={styles.progressItem}>
-            <Text style={styles.progressValue}>Day {currentDay}</Text>
-            <Text style={styles.progressLabel}>Current</Text>
+            <Text style={styles.progressValue}>{stars}</Text>
+            <Text style={styles.progressLabel}>Stars</Text>
           </View>
         </View>
+
+        {/* Today's Story Highlight */}
+        {getStoryStatus(currentDay) !== 'watched' && (
+          <View style={styles.todayCard}>
+            <Text style={styles.todayLabel}>Today's Story</Text>
+            <Text style={styles.todayTitle}>{STORIES[currentDay - 1]?.title}</Text>
+            <Text style={styles.todayEmoji}>📖</Text>
+          </View>
+        )}
 
         {/* Story Grid */}
         <View style={styles.grid}>
@@ -148,7 +189,7 @@ export default function StoriesScreen() {
               <StoryCard
                 key={dayNumber}
                 dayNumber={dayNumber}
-                title={STORY_TITLES[dayNumber - 1]}
+                title={STORIES[dayNumber - 1]?.title || 'Coming Soon'}
                 status={status}
                 gradientColors={GRADIENT_COLORS[dayNumber - 1]}
                 onPress={() => handleStoryPress(dayNumber, status)}
@@ -157,6 +198,19 @@ export default function StoriesScreen() {
           })}
         </View>
       </ScrollView>
+
+      {/* Video Player Modal */}
+      {selectedStory && (
+        <VideoPlayerModal
+          visible={true}
+          videoUrl={selectedStory.videoUrl}
+          title={selectedStory.title}
+          dayNumber={selectedStory.dayNumber}
+          onClose={handleVideoClose}
+          onComplete={handleVideoComplete}
+          onProgress={handleVideoProgress}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -213,6 +267,29 @@ const styles = StyleSheet.create({
     width: 1,
     backgroundColor: Colors.border,
     marginHorizontal: Spacing.sm,
+  },
+  todayCard: {
+    backgroundColor: Colors.gold,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.lg,
+    marginBottom: Spacing.lg,
+    alignItems: 'center',
+  },
+  todayLabel: {
+    fontFamily: FontFamily.medium,
+    fontSize: FontSize.xs,
+    color: 'rgba(255,255,255,0.8)',
+    marginBottom: Spacing.xs,
+  },
+  todayTitle: {
+    fontFamily: FontFamily.bold,
+    fontSize: FontSize.lg,
+    color: '#FFF',
+    textAlign: 'center',
+  },
+  todayEmoji: {
+    fontSize: 40,
+    marginTop: Spacing.sm,
   },
   grid: {
     flexDirection: 'row',

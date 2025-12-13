@@ -3,9 +3,11 @@
  * Fast, encrypted key-value storage for React Native
  */
 
+// @ts-ignore - MMKV types may not resolve correctly in all environments
 import { MMKV } from 'react-native-mmkv';
 
 // Create MMKV instance
+// @ts-ignore - MMKV constructor is available at runtime
 export const storage = new MMKV({
   id: 'salah-buddy-storage',
   encryptionKey: 'salah-buddy-2024', // In production, use secure key management

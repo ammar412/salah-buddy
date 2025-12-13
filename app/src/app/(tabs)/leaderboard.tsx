@@ -1,9 +1,9 @@
 /**
  * Leaderboard Screen
- * Shows rankings of friends/family based on prayer completion
+ * Shows real-time rankings of family members based on stars earned
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,48 +11,73 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { LeaderboardRow } from '../../components/leaderboard';
 import { useStore } from '../../store';
+import { useAuthStore } from '../../store/useAuthStore';
+import { subscribeToFamilyLeaderboard, LeaderboardEntry } from '../../services/firestore';
 import { Colors, Spacing, FontFamily, FontSize, BorderRadius, Shadow } from '../../constants';
 
-// Mock leaderboard data (would come from backend in production)
-const MOCK_LEADERBOARD = [
-  { id: '1', name: 'Ahmed', score: 145, streak: 15, avatar: '👦' },
-  { id: '2', name: 'Fatima', score: 142, streak: 14, avatar: '👧' },
-  { id: '3', name: 'Omar', score: 138, streak: 12, avatar: '👦' },
-  { id: '4', name: 'Aisha', score: 130, streak: 10, avatar: '👧' },
-  { id: 'current', name: 'You', score: 125, streak: 8, avatar: '⭐' },
-  { id: '5', name: 'Yusuf', score: 120, streak: 7, avatar: '👦' },
-  { id: '6', name: 'Mariam', score: 115, streak: 6, avatar: '👧' },
-  { id: '7', name: 'Ibrahim', score: 108, streak: 5, avatar: '👦' },
-  { id: '8', name: 'Khadijah', score: 100, streak: 4, avatar: '👧' },
-  { id: '9', name: 'Hassan', score: 95, streak: 3, avatar: '👦' },
+// Demo leaderboard data (used when Firebase not configured)
+const DEMO_LEADERBOARD = [
+  { userId: '1', name: 'Ahmed', stars: 145, streak: 15, avatar: '👦', familyId: 'demo' },
+  { userId: '2', name: 'Fatima', stars: 142, streak: 14, avatar: '👧', familyId: 'demo' },
+  { userId: '3', name: 'Omar', stars: 138, streak: 12, avatar: '👦', familyId: 'demo' },
+  { userId: '4', name: 'Aisha', stars: 130, streak: 10, avatar: '👧', familyId: 'demo' },
+  { userId: 'demo-child', name: 'Demo Kid', stars: 125, streak: 8, avatar: '😊', familyId: 'demo' },
+  { userId: '5', name: 'Yusuf', stars: 120, streak: 7, avatar: '👦', familyId: 'demo' },
 ];
 
-type LeaderboardTab = 'friends' | 'family' | 'global';
+type LeaderboardTab = 'family' | 'global';
 
 export default function LeaderboardScreen() {
-  const [activeTab, setActiveTab] = useState<LeaderboardTab>('friends');
-  const { currentStreak, totalPrayersCompleted, totalStoriesWatched } = useStore();
+  const [activeTab, setActiveTab] = useState<LeaderboardTab>('family');
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Calculate current user's score
-  const userScore = totalPrayersCompleted * 2 + totalStoriesWatched * 5 + currentStreak * 3;
+  const { currentStreak, stars } = useStore();
+  const { familyId, currentChild, isDemoMode } = useAuthStore();
 
-  // Update mock data with real user score
-  const leaderboardData = MOCK_LEADERBOARD.map((entry) => {
-    if (entry.id === 'current') {
-      return {
-        ...entry,
-        score: userScore,
-        streak: currentStreak,
-      };
+  // Subscribe to real-time leaderboard
+  useEffect(() => {
+    if (isDemoMode) {
+      // Use demo data with user's actual stats
+      const demoData = DEMO_LEADERBOARD.map((entry) => {
+        if (entry.userId === 'demo-child') {
+          return { ...entry, stars, streak: currentStreak };
+        }
+        return entry;
+      }).sort((a, b) => b.stars - a.stars);
+
+      setLeaderboard(demoData);
+      setIsLoading(false);
+      return;
     }
-    return entry;
-  }).sort((a, b) => b.score - a.score);
 
-  // Find current user's rank
-  const userRank = leaderboardData.findIndex((e) => e.id === 'current') + 1;
+    if (!familyId) {
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+
+    const unsubscribe = subscribeToFamilyLeaderboard(familyId, (entries) => {
+      setLeaderboard(entries);
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [familyId, isDemoMode, stars, currentStreak]);
+
+  // Calculate user's rank
+  const userRank = currentChild
+    ? leaderboard.findIndex((e) => e.userId === currentChild.id) + 1
+    : 0;
+
+  const userStars = currentChild
+    ? leaderboard.find((e) => e.userId === currentChild.id)?.stars || stars
+    : stars;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,7 +89,7 @@ export default function LeaderboardScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Leaderboard</Text>
-          <Text style={styles.subtitle}>Compete with friends & family</Text>
+          <Text style={styles.subtitle}>Compete with your family</Text>
         </View>
 
         {/* User Rank Card */}
@@ -73,22 +98,24 @@ export default function LeaderboardScreen() {
             <Text style={styles.rankCardEmoji}>🏆</Text>
             <View style={styles.rankCardInfo}>
               <Text style={styles.rankCardTitle}>Your Rank</Text>
-              <Text style={styles.rankCardValue}>#{userRank}</Text>
+              <Text style={styles.rankCardValue}>
+                {userRank > 0 ? `#${userRank}` : '-'}
+              </Text>
             </View>
           </View>
           <View style={styles.rankCardDivider} />
           <View style={styles.rankCardContent}>
             <Text style={styles.rankCardEmoji}>⭐</Text>
             <View style={styles.rankCardInfo}>
-              <Text style={styles.rankCardTitle}>Your Score</Text>
-              <Text style={styles.rankCardValue}>{userScore} pts</Text>
+              <Text style={styles.rankCardTitle}>Your Stars</Text>
+              <Text style={styles.rankCardValue}>{userStars}</Text>
             </View>
           </View>
         </View>
 
         {/* Tabs */}
         <View style={styles.tabs}>
-          {(['friends', 'family', 'global'] as LeaderboardTab[]).map((tab) => (
+          {(['family', 'global'] as LeaderboardTab[]).map((tab) => (
             <TouchableOpacity
               key={tab}
               onPress={() => setActiveTab(tab)}
@@ -103,33 +130,59 @@ export default function LeaderboardScreen() {
 
         {/* Scoring Info */}
         <View style={styles.scoringInfo}>
-          <Text style={styles.scoringTitle}>How points work:</Text>
+          <Text style={styles.scoringTitle}>How to earn stars:</Text>
           <View style={styles.scoringRow}>
-            <Text style={styles.scoringItem}>🕌 Each prayer = 2 pts</Text>
-            <Text style={styles.scoringItem}>📖 Each story = 5 pts</Text>
-            <Text style={styles.scoringItem}>🔥 Streak bonus = 3 pts/day</Text>
+            <Text style={styles.scoringItem}>🕌 Each prayer = 10 stars</Text>
+            <Text style={styles.scoringItem}>📖 Each story = 15 stars</Text>
+            <Text style={styles.scoringItem}>🔥 All 5 prayers = +5 bonus</Text>
           </View>
         </View>
 
         {/* Leaderboard List */}
-        <View style={styles.leaderboardList}>
-          {leaderboardData.map((entry, index) => (
-            <LeaderboardRow
-              key={entry.id}
-              rank={index + 1}
-              name={entry.name}
-              score={entry.score}
-              streak={entry.streak}
-              isCurrentUser={entry.id === 'current'}
-              avatar={entry.avatar}
-            />
-          ))}
-        </View>
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={Colors.gold} />
+            <Text style={styles.loadingText}>Loading leaderboard...</Text>
+          </View>
+        ) : leaderboard.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyEmoji}>👨‍👩‍👧‍👦</Text>
+            <Text style={styles.emptyTitle}>No Family Members Yet</Text>
+            <Text style={styles.emptyText}>
+              Add more children to your family to see them on the leaderboard!
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.leaderboardList}>
+            {leaderboard.map((entry, index) => (
+              <LeaderboardRow
+                key={entry.userId}
+                rank={index + 1}
+                name={entry.name}
+                score={entry.stars}
+                streak={entry.streak}
+                isCurrentUser={currentChild?.id === entry.userId}
+                avatar={entry.avatar}
+              />
+            ))}
+          </View>
+        )}
 
-        {/* Invite Friends */}
+        {/* Global Tab Coming Soon */}
+        {activeTab === 'global' && (
+          <View style={styles.comingSoon}>
+            <Text style={styles.comingSoonEmoji}>🌍</Text>
+            <Text style={styles.comingSoonTitle}>Coming Soon!</Text>
+            <Text style={styles.comingSoonText}>
+              Global leaderboard will be available in a future update.
+            </Text>
+          </View>
+        )}
+
+        {/* Invite Family */}
         <TouchableOpacity style={styles.inviteButton}>
           <Text style={styles.inviteIcon}>👋</Text>
-          <Text style={styles.inviteText}>Invite Friends to Compete</Text>
+          <Text style={styles.inviteText}>Invite Family Members</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -244,8 +297,62 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.textSecondary,
   },
+  loadingContainer: {
+    alignItems: 'center',
+    paddingVertical: Spacing.xxl,
+  },
+  loadingText: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    marginTop: Spacing.md,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: Spacing.xxl,
+  },
+  emptyEmoji: {
+    fontSize: 48,
+    marginBottom: Spacing.md,
+  },
+  emptyTitle: {
+    fontFamily: FontFamily.semibold,
+    fontSize: FontSize.lg,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.xs,
+  },
+  emptyText: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    maxWidth: 280,
+  },
   leaderboardList: {
     marginBottom: Spacing.lg,
+  },
+  comingSoon: {
+    alignItems: 'center',
+    paddingVertical: Spacing.xl,
+    backgroundColor: Colors.surfaceLight,
+    borderRadius: BorderRadius.lg,
+    marginBottom: Spacing.lg,
+  },
+  comingSoonEmoji: {
+    fontSize: 40,
+    marginBottom: Spacing.sm,
+  },
+  comingSoonTitle: {
+    fontFamily: FontFamily.semibold,
+    fontSize: FontSize.lg,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.xs,
+  },
+  comingSoonText: {
+    fontFamily: FontFamily.regular,
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    textAlign: 'center',
   },
   inviteButton: {
     flexDirection: 'row',

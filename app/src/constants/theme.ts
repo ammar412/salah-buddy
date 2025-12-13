@@ -49,6 +49,12 @@ export const FontFamily = {
   bold: 'Lexend_700Bold',
 } as const;
 
+// Typography alias for consistency across components
+export const Typography = {
+  fonts: FontFamily,
+  sizes: FontSize,
+} as const;
+
 export const Shadow = {
   sm: {
     shadowColor: '#000',

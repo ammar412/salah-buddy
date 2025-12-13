@@ -7,8 +7,10 @@ export const Colors = {
   // Primary brand colors
   cream: '#F5F0E8',
   gold: '#F5B526',
+  primary: '#F5B526', // Alias for gold
 
   // Text colors
+  text: '#1a1a1a', // Alias for textPrimary
   textPrimary: '#1a1a1a',
   textSecondary: '#666666',
   textMuted: '#888888',
