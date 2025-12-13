@@ -1936,7 +1936,7 @@
          */
 
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, orderBy, limit, getDocs, onSnapshot, serverTimestamp, increment, writeBatch, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         // P2-1: Import shared Firebase configuration
         import { firebaseConfig } from '/js/firebase-config.js';
@@ -1972,6 +1972,11 @@
             increment,
             writeBatch,
             arrayUnion
+        };
+        // Auth modules for re-authentication (Issue #10 - account deletion security)
+        window.firebaseAuthModules = {
+            EmailAuthProvider,
+            reauthenticateWithCredential
         };
 
         console.log('Firebase initialized successfully');
@@ -3408,12 +3413,32 @@
         // COPPA Compliance: Delete account and all data (Issue #10)
         // P1-2: Fixed batch limit (>500 docs) with chunked deletions
         // P1-3: Fixed incomplete deletion by including all user data collections
+        // Fixed: Added re-authentication for security (prevents stale session attacks)
         async function deleteAccount() {
             if (!AppState.user) return;
 
             try {
                 const { collection, getDocs, doc, deleteDoc, writeBatch, query, where } = window.firebaseModules;
+                const { EmailAuthProvider, reauthenticateWithCredential } = window.firebaseAuthModules;
                 const uid = AppState.user.uid;
+
+                // Step 1: Re-authenticate user (required by Firebase for sensitive operations)
+                const password = prompt('For security, please enter your password to confirm deletion:');
+                if (!password) {
+                    showToast('Account deletion cancelled', 'info');
+                    return;
+                }
+
+                try {
+                    const credential = EmailAuthProvider.credential(AppState.user.email, password);
+                    await reauthenticateWithCredential(AppState.user, credential);
+                } catch (authError) {
+                    console.error('Re-authentication failed:', authError);
+                    showToast('Incorrect password. Please try again.', 'error');
+                    return;
+                }
+
+                // Step 2: Delete all user data from Firestore
                 const BATCH_SIZE = 450; // Firestore limit is 500, leave margin for safety
 
                 // Helper function to delete documents in batches
@@ -3479,11 +3504,7 @@
                 showScreen('home');
             } catch (error) {
                 console.error('Error deleting account:', error);
-                if (error.code === 'auth/requires-recent-login') {
-                    showToast('Please sign out and sign back in, then try again.', 'error');
-                } else {
-                    showToast('Error deleting account. Please contact support.', 'error');
-                }
+                showToast('Error deleting account. Please contact support.', 'error');
             }
         }
 
