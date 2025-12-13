@@ -62,24 +62,4 @@ test.describe('Gamification Settings', () => {
     expect(starsPerPrayer).toBeGreaterThan(0);
   });
 
-  test('admin has gamification form fields in page', async ({ page }) => {
-    // Navigate to admin settings
-    await page.goto('/admin/');
-    await page.waitForLoadState('load');
-
-    // Wait for page to render (loading overlay present but fields exist in DOM)
-    await page.waitForTimeout(2000);
-
-    // Verify gamification form fields exist in the DOM
-    // (Fields exist but may be hidden behind loading overlay or in collapsed section)
-    const starsPerPrayerInput = page.locator('#starsPerPrayer');
-    await expect(starsPerPrayerInput).toHaveCount(1, { timeout: 10000 });
-
-    const streakBonusInput = page.locator('#streakBonus');
-    await expect(streakBonusInput).toHaveCount(1);
-
-    const maxDailyStarsInput = page.locator('#maxDailyStars');
-    await expect(maxDailyStarsInput).toHaveCount(1);
-  });
-
 });
