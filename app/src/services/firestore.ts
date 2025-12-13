@@ -71,6 +71,31 @@ export interface LeaderboardEntry {
   familyId: string;
 }
 
+export interface RamadanSettings {
+  startDate: string;
+  endDate: string;
+  totalDays: number;
+}
+
+export interface GamificationSettings {
+  starsPerPrayer: number;
+  streakBonus: number;
+  storyBonus: number;
+  maxDailyStars: number;
+}
+
+export interface AppConfig {
+  isEnabled: boolean;
+  maintenanceMessage?: string;
+  minAppVersion?: string;
+}
+
+export interface AppSettings {
+  ramadan: RamadanSettings | null;
+  gamification: GamificationSettings;
+  appConfig: AppConfig | null;
+}
+
 const isDemoMode = !isFirebaseConfigured();
 
 /**
@@ -410,6 +435,86 @@ export const syncLocalDataToCloud = async (
   await batch.commit();
 };
 
+/**
+ * Default gamification values (used when not configured in Firestore)
+ */
+const DEFAULT_GAMIFICATION: GamificationSettings = {
+  starsPerPrayer: 10,
+  streakBonus: 5,
+  storyBonus: 15,
+  maxDailyStars: 0,
+};
+
+/**
+ * Fetch app settings from Firestore
+ * Returns Ramadan dates, gamification values, and app config
+ */
+export const getAppSettings = async (): Promise<AppSettings> => {
+  if (isDemoMode) {
+    return {
+      ramadan: null,
+      gamification: DEFAULT_GAMIFICATION,
+      appConfig: null,
+    };
+  }
+
+  const db = getFirebaseDb();
+
+  try {
+    const [ramadanDoc, gamificationDoc, appConfigDoc] = await Promise.all([
+      getDoc(doc(db, 'appSettings', 'ramadan')),
+      getDoc(doc(db, 'appSettings', 'gamification')),
+      getDoc(doc(db, 'appSettings', 'appConfig')),
+    ]);
+
+    return {
+      ramadan: ramadanDoc.exists() ? ramadanDoc.data() as RamadanSettings : null,
+      gamification: gamificationDoc.exists()
+        ? gamificationDoc.data() as GamificationSettings
+        : DEFAULT_GAMIFICATION,
+      appConfig: appConfigDoc.exists() ? appConfigDoc.data() as AppConfig : null,
+    };
+  } catch (error) {
+    console.error('Error fetching app settings:', error);
+    // Return defaults on error
+    return {
+      ramadan: null,
+      gamification: DEFAULT_GAMIFICATION,
+      appConfig: null,
+    };
+  }
+};
+
+/**
+ * Calculate the current Ramadan day based on settings
+ * Returns 1-30 or 0 if outside Ramadan period
+ */
+export const getRamadanDayFromSettings = (settings: RamadanSettings | null): number => {
+  if (!settings) {
+    // Fallback to hardcoded date for backwards compatibility
+    const fallbackStart = new Date('2025-03-01');
+    const today = new Date();
+    const diffTime = today.getTime() - fallbackStart.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return Math.min(Math.max(diffDays, 1), 30);
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const startDate = new Date(settings.startDate + 'T00:00:00');
+  const endDate = new Date(settings.endDate + 'T00:00:00');
+
+  if (today < startDate) {
+    return 0; // Ramadan hasn't started
+  }
+
+  if (today > endDate) {
+    return settings.totalDays; // Show last day after Ramadan ends
+  }
+
+  return Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+};
+
 export default {
   getTodayPrayers,
   togglePrayer,
@@ -420,4 +525,6 @@ export default {
   subscribeToFamilyLeaderboard,
   updateStreak,
   syncLocalDataToCloud,
+  getAppSettings,
+  getRamadanDayFromSettings,
 };

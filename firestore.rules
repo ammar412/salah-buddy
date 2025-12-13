@@ -189,6 +189,14 @@ service cloud.firestore {
       allow update, delete: if false; // Audit trail is immutable
     }
 
+    // App Settings collection - admin can write, all authenticated users can read
+    // Contains app-wide configuration like Ramadan dates, gamification values
+    match /appSettings/{settingId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAdmin();
+      allow delete: if false; // Settings should not be deleted
+    }
+
     // Leaderboard - read-only for family members
     match /leaderboard/{familyId} {
       allow read: if belongsToFamily(familyId);
