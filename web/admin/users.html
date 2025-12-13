@@ -1059,6 +1059,117 @@
             font-size: 14px;
         }
 
+        .empty-children-text {
+            color: var(--dark-soft);
+            font-size: 14px;
+        }
+
+        /* Validation states */
+        .form-input.error,
+        .form-select.error {
+            border-color: var(--coral);
+            background-color: rgba(255, 107, 107, 0.1);
+        }
+
+        .form-input.success,
+        .form-select.success {
+            border-color: var(--green);
+        }
+
+        /* Skip to main content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--gold);
+            color: var(--dark);
+            padding: var(--spacing-sm) var(--spacing-md);
+            z-index: 100;
+            font-weight: 600;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Focus styles for accessibility */
+        .btn:focus,
+        .action-btn:focus,
+        .nav-item:focus,
+        .form-input:focus,
+        .form-select:focus,
+        .pagination-btn:focus {
+            outline: 2px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        /* Password input inline styles moved to class */
+        .password-field-container {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .password-field-input {
+            flex: 1;
+        }
+
+        .password-generate-btn {
+            white-space: nowrap;
+        }
+
+        /* Modal content inline styles moved to class */
+        .reset-modal-description {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .reset-modal-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .reset-modal-divider {
+            text-align: center;
+            color: var(--dark-soft);
+            font-size: 12px;
+        }
+
+        .temp-password-container {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .temp-password-input {
+            flex: 1;
+        }
+
+        /* Delete warning styles */
+        .delete-warning-text {
+            color: var(--coral);
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .delete-warning-list {
+            margin-bottom: var(--spacing-lg);
+            padding-left: var(--spacing-lg);
+        }
+
+        /* Children form spacing */
+        .children-form-optional-text {
+            margin-top: var(--spacing-lg);
+        }
+
+        /* Full width buttons */
+        .btn-full-width {
+            width: 100%;
+        }
+
+        /* Hidden utility class */
+        .hidden {
+            display: none !important;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -1106,36 +1217,39 @@
     </style>
 </head>
 <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner"></div>
+    <div id="loadingOverlay" class="loading-overlay" role="status" aria-live="polite" aria-label="Loading">
+        <div class="loading-spinner" aria-hidden="true"></div>
     </div>
 
     <!-- Toast Container -->
-    <div id="toastContainer" class="toast-container"></div>
+    <div id="toastContainer" class="toast-container" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
     <div class="admin-layout">
         <!-- Sidebar -->
-        <nav class="sidebar">
+        <nav class="sidebar" role="navigation" aria-label="Main navigation">
             <div class="sidebar-header">
-                <div class="sidebar-logo">🌙</div>
+                <div class="sidebar-logo" aria-hidden="true">🌙</div>
                 <div>
                     <div class="sidebar-title">Salah Buddy</div>
                     <div class="sidebar-subtitle">Admin Dashboard</div>
                 </div>
             </div>
 
-            <div class="nav-menu">
-                <a href="/admin/index.html" class="nav-item">
-                    <span class="nav-icon">🎬</span>
+            <div class="nav-menu" role="menubar">
+                <a href="/admin/index.html" class="nav-item" role="menuitem">
+                    <span class="nav-icon" aria-hidden="true">🎬</span>
                     <span>Daily Stories</span>
                 </a>
-                <a href="/admin/index.html" class="nav-item">
-                    <span class="nav-icon">⭐</span>
+                <a href="/admin/index.html" class="nav-item" role="menuitem">
+                    <span class="nav-icon" aria-hidden="true">⭐</span>
                     <span>Bonus Tasks</span>
                 </a>
-                <a href="/admin/users.html" class="nav-item active">
-                    <span class="nav-icon">👥</span>
+                <a href="/admin/users.html" class="nav-item active" role="menuitem" aria-current="page">
+                    <span class="nav-icon" aria-hidden="true">👥</span>
                     <span>Users</span>
                 </a>
             </div>
@@ -1156,7 +1270,7 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="main-content">
+        <main id="main-content" class="main-content" role="main">
             <div class="page-header">
                 <div class="page-header-left">
                     <h1 class="page-title">👥 User Management</h1>
@@ -1199,19 +1313,19 @@
             </div>
 
             <!-- Search and Filters -->
-            <div class="search-filters">
+            <div class="search-filters" role="search" aria-label="Search and filter users">
                 <div class="search-input-wrapper">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search by name or email...">
+                    <span class="search-icon" aria-hidden="true">🔍</span>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by name or email..." aria-label="Search users by name or email">
                 </div>
-                <select id="sortSelect" class="filter-select">
+                <select id="sortSelect" class="filter-select" aria-label="Sort users by">
                     <option value="createdAt-desc">Newest First</option>
                     <option value="createdAt-asc">Oldest First</option>
                     <option value="displayName-asc">Name (A-Z)</option>
                     <option value="displayName-desc">Name (Z-A)</option>
                 </select>
-                <button id="refreshBtn" class="btn btn-secondary">
-                    <span>🔄</span>
+                <button id="refreshBtn" class="btn btn-secondary" aria-label="Refresh user list">
+                    <span aria-hidden="true">🔄</span>
                     <span>Refresh</span>
                 </button>
             </div>
@@ -1252,11 +1366,11 @@
     </div>
 
     <!-- User Detail Modal -->
-    <div id="userDetailModal" class="modal-overlay">
+    <div id="userDetailModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="userDetailModalTitle">
         <div class="modal modal-lg">
             <div class="modal-header">
-                <h2 class="modal-title">👤 User Details</h2>
-                <button type="button" class="modal-close" id="closeDetailModal">&times;</button>
+                <h2 class="modal-title" id="userDetailModalTitle"><span aria-hidden="true">👤</span> User Details</h2>
+                <button type="button" class="modal-close" id="closeDetailModal" aria-label="Close user details">&times;</button>
             </div>
 
             <div id="userDetailContent">
@@ -1266,11 +1380,11 @@
     </div>
 
     <!-- Add User Modal -->
-    <div id="addUserModal" class="modal-overlay">
+    <div id="addUserModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="addUserModalTitle">
         <div class="modal modal-lg">
             <div class="modal-header">
-                <h2 class="modal-title">➕ Add New User</h2>
-                <button type="button" class="modal-close" id="closeAddModal">&times;</button>
+                <h2 class="modal-title" id="addUserModalTitle"><span aria-hidden="true">➕</span> Add New User</h2>
+                <button type="button" class="modal-close" id="closeAddModal" aria-label="Close add user form">&times;</button>
             </div>
 
             <form id="addUserForm">
@@ -1326,38 +1440,38 @@
     </div>
 
     <!-- Password Reset Modal -->
-    <div id="passwordResetModal" class="modal-overlay">
+    <div id="passwordResetModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="passwordResetModalTitle">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title">🔑 Reset Password</h2>
-                <button type="button" class="modal-close" id="closeResetModal">&times;</button>
+                <h2 class="modal-title" id="passwordResetModalTitle"><span aria-hidden="true">🔑</span> Reset Password</h2>
+                <button type="button" class="modal-close" id="closeResetModal" aria-label="Close password reset">&times;</button>
             </div>
 
             <div id="resetModalContent">
-                <p style="margin-bottom: var(--spacing-lg);">Choose how to reset the password for <strong id="resetUserEmail"></strong>:</p>
+                <p class="reset-modal-description">Choose how to reset the password for <strong id="resetUserEmail"></strong>:</p>
 
-                <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
-                    <button id="sendResetEmailBtn" class="btn btn-primary" style="width: 100%;">
-                        <span>📧</span>
+                <div class="reset-modal-options">
+                    <button id="sendResetEmailBtn" class="btn btn-primary btn-full-width">
+                        <span aria-hidden="true">📧</span>
                         <span>Send Password Reset Email</span>
                     </button>
-                    <div style="text-align: center; color: var(--dark-soft); font-size: 12px;">or</div>
-                    <button id="setTempPasswordBtn" class="btn btn-secondary" style="width: 100%;">
-                        <span>🔑</span>
+                    <div class="reset-modal-divider">or</div>
+                    <button id="setTempPasswordBtn" class="btn btn-secondary btn-full-width">
+                        <span aria-hidden="true">🔑</span>
                         <span>Set Temporary Password</span>
                     </button>
                 </div>
             </div>
 
-            <div id="tempPasswordContent" style="display: none;">
+            <div id="tempPasswordContent" class="hidden">
                 <div class="form-group">
-                    <label class="form-label">New Temporary Password</label>
-                    <div style="display: flex; gap: var(--spacing-sm);">
-                        <input type="text" id="tempPassword" class="form-input" style="flex: 1;">
-                        <button type="button" id="generateTempPasswordBtn" class="btn btn-secondary">🎲</button>
-                        <button type="button" id="copyPasswordBtn" class="btn btn-secondary">📋</button>
+                    <label class="form-label" for="tempPassword">New Temporary Password</label>
+                    <div class="temp-password-container">
+                        <input type="text" id="tempPassword" class="form-input temp-password-input" aria-describedby="tempPasswordHint">
+                        <button type="button" id="generateTempPasswordBtn" class="btn btn-secondary" aria-label="Generate random password"><span aria-hidden="true">🎲</span></button>
+                        <button type="button" id="copyPasswordBtn" class="btn btn-secondary" aria-label="Copy password to clipboard"><span aria-hidden="true">📋</span></button>
                     </div>
-                    <div class="form-hint">User will be required to change this on next login</div>
+                    <div class="form-hint" id="tempPasswordHint">User will be required to change this on next login</div>
                 </div>
                 <div class="form-actions">
                     <button type="button" id="confirmTempPasswordBtn" class="btn btn-primary">Set Password</button>
@@ -1368,30 +1482,32 @@
     </div>
 
     <!-- Confirm Delete Modal -->
-    <div id="deleteModal" class="modal-overlay">
+    <div id="deleteModal" class="modal-overlay" role="alertdialog" aria-modal="true" aria-labelledby="deleteModalTitle" aria-describedby="deleteModalDescription">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title">⚠️ Delete User</h2>
-                <button type="button" class="modal-close" id="closeDeleteModal">&times;</button>
+                <h2 class="modal-title" id="deleteModalTitle"><span aria-hidden="true">⚠️</span> Delete User</h2>
+                <button type="button" class="modal-close" id="closeDeleteModal" aria-label="Close delete confirmation">&times;</button>
             </div>
 
-            <p style="margin-bottom: var(--spacing-lg);">
-                Are you sure you want to delete <strong id="deleteUserEmail"></strong>?
-                <br><br>
-                This will permanently remove:
-            </p>
-            <ul style="margin-bottom: var(--spacing-lg); padding-left: var(--spacing-lg);">
-                <li>The parent account</li>
-                <li>All associated child profiles</li>
-                <li>All prayer records and progress</li>
-            </ul>
-            <p style="color: var(--coral); font-weight: 600; margin-bottom: var(--spacing-lg);">
-                This action cannot be undone.
-            </p>
+            <div id="deleteModalDescription">
+                <p class="reset-modal-description">
+                    Are you sure you want to delete <strong id="deleteUserEmail"></strong>?
+                    <br><br>
+                    This will permanently remove:
+                </p>
+                <ul class="delete-warning-list">
+                    <li>The parent account</li>
+                    <li>All associated child profiles</li>
+                    <li>All prayer records and progress</li>
+                </ul>
+                <p class="delete-warning-text">
+                    This action cannot be undone.
+                </p>
+            </div>
 
             <div class="form-actions">
                 <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
-                    <span>🗑️</span>
+                    <span aria-hidden="true">🗑️</span>
                     <span>Delete User</span>
                 </button>
                 <button type="button" id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
@@ -1692,7 +1808,7 @@
             emptyState.style.display = 'none';
             pagination.style.display = 'flex';
 
-            // Render table rows
+            // Render table rows using data attributes instead of inline onclick (XSS prevention)
             usersTableBody.innerHTML = paginatedUsers.map(user => {
                 const family = families[user.familyId] || {};
                 const childCount = family.children ? family.children.length : 0;
@@ -1720,14 +1836,17 @@
                         <td class="date-cell">${formatDate(user.createdAt)}</td>
                         <td>
                             <div class="action-btns">
-                                <button class="action-btn action-btn-view" onclick="viewUser('${escapeHtml(user.id)}')" title="View Details">👁️</button>
-                                <button class="action-btn action-btn-reset" onclick="resetPassword('${escapeHtml(user.id)}')" title="Reset Password">🔑</button>
-                                <button class="action-btn action-btn-delete" onclick="deleteUser('${escapeHtml(user.id)}')" title="Delete User">🗑️</button>
+                                <button class="action-btn action-btn-view" data-action="view" data-user-id="${escapeHtml(user.id)}" title="View Details">👁️</button>
+                                <button class="action-btn action-btn-reset" data-action="reset" data-user-id="${escapeHtml(user.id)}" title="Reset Password">🔑</button>
+                                <button class="action-btn action-btn-delete" data-action="delete" data-user-id="${escapeHtml(user.id)}" title="Delete User">🗑️</button>
                             </div>
                         </td>
                     </tr>
                 `;
             }).join('');
+
+            // Setup event delegation for action buttons (replaces inline onclick)
+            setupTableEventDelegation();
 
             // Update pagination info
             paginationInfo.textContent = `Showing ${startIdx + 1}-${Math.min(endIdx, filteredUsers.length)} of ${filteredUsers.length} users`;
@@ -1771,10 +1890,94 @@
             }
         }
 
-        // Search and Sort handlers
+        // Event delegation for table actions (XSS-safe: no inline handlers)
+        function setupTableEventDelegation() {
+            // Remove previous listeners by using a single delegated listener on the table body
+            usersTableBody.onclick = function(e) {
+                const button = e.target.closest('[data-action]');
+                if (!button) return;
+
+                const action = button.dataset.action;
+                const userId = button.dataset.userId;
+                if (!userId) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                switch (action) {
+                    case 'view':
+                        handleViewUser(userId);
+                        break;
+                    case 'reset':
+                        handleResetPassword(userId);
+                        break;
+                    case 'delete':
+                        handleDeleteUser(userId);
+                        break;
+                }
+            };
+        }
+
+        // Event delegation for user detail modal actions
+        function setupDetailModalEventDelegation() {
+            const content = document.getElementById('userDetailContent');
+            content.onclick = function(e) {
+                const button = e.target.closest('[data-action]');
+                if (!button) return;
+
+                const action = button.dataset.action;
+                const userId = button.dataset.userId;
+                if (!userId) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                switch (action) {
+                    case 'reset':
+                        handleResetPassword(userId);
+                        break;
+                    case 'email':
+                        handleSendTestEmail(userId);
+                        break;
+                    case 'audit':
+                        handleShowAuditLog(userId);
+                        break;
+                    case 'delete':
+                        handleDeleteUser(userId);
+                        break;
+                }
+            };
+        }
+
+        // Handler functions (secure - no user input in function calls)
+        function handleViewUser(userId) {
+            viewUserById(userId);
+        }
+
+        function handleResetPassword(userId) {
+            resetPasswordById(userId);
+        }
+
+        function handleDeleteUser(userId) {
+            deleteUserById(userId);
+        }
+
+        function handleSendTestEmail(userId) {
+            showToast('Email functionality requires Cloud Functions setup', 'info');
+        }
+
+        function handleShowAuditLog(userId) {
+            showToast('Audit log view coming soon', 'info');
+        }
+
+        // Search and Sort handlers with debouncing
+        let searchDebounceTimer = null;
         searchInput.addEventListener('input', () => {
-            currentPage = 1;
-            renderUsersTable();
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                currentPage = 1;
+                renderUsersTable();
+            }, 300);
         });
 
         sortSelect.addEventListener('change', () => {
@@ -1784,8 +1987,8 @@
 
         refreshBtn.addEventListener('click', loadAllData);
 
-        // View User Details
-        window.viewUser = async function(userId) {
+        // View User Details (secure version with data attributes)
+        function viewUserById(userId) {
             selectedUserId = userId;
             const user = users.find(u => u.id === userId);
             if (!user) return;
@@ -1838,49 +2041,55 @@
                                 </div>
                             `).join('')}
                         </div>
-                    ` : '<p style="color: var(--dark-soft); font-size: 14px;">No children added yet</p>'}
+                    ` : '<p class="empty-children-text">No children added yet</p>'}
                 </div>
 
                 <div class="user-actions-grid">
-                    <button class="user-action-btn" onclick="resetPassword('${escapeHtml(userId)}')">
+                    <button class="user-action-btn" data-action="reset" data-user-id="${escapeHtml(userId)}">
                         <span class="user-action-icon">🔑</span>
                         <span class="user-action-label">Reset Password</span>
                     </button>
-                    <button class="user-action-btn" onclick="sendTestEmail('${escapeHtml(userId)}')">
+                    <button class="user-action-btn" data-action="email" data-user-id="${escapeHtml(userId)}">
                         <span class="user-action-icon">📧</span>
                         <span class="user-action-label">Send Email</span>
                     </button>
-                    <button class="user-action-btn" onclick="showAuditLog('${escapeHtml(userId)}')">
+                    <button class="user-action-btn" data-action="audit" data-user-id="${escapeHtml(userId)}">
                         <span class="user-action-icon">📋</span>
                         <span class="user-action-label">View Activity</span>
                     </button>
-                    <button class="user-action-btn danger" onclick="deleteUser('${escapeHtml(userId)}')">
+                    <button class="user-action-btn danger" data-action="delete" data-user-id="${escapeHtml(userId)}">
                         <span class="user-action-icon">🗑️</span>
                         <span class="user-action-label">Delete User</span>
                     </button>
                 </div>
             `;
 
+            // Setup event delegation for the detail modal
+            setupDetailModalEventDelegation();
             userDetailModal.classList.add('show');
-        };
+        }
+
+        // Legacy window functions for backward compatibility (redirect to secure versions)
+        window.viewUser = viewUserById;
 
         document.getElementById('closeDetailModal').addEventListener('click', () => {
             userDetailModal.classList.remove('show');
         });
 
-        // Reset Password
-        window.resetPassword = function(userId) {
+        // Reset Password (secure version)
+        function resetPasswordById(userId) {
             selectedUserId = userId;
             const user = users.find(u => u.id === userId);
             if (!user) return;
 
             document.getElementById('resetUserEmail').textContent = user.email;
-            document.getElementById('resetModalContent').style.display = 'block';
-            document.getElementById('tempPasswordContent').style.display = 'none';
+            document.getElementById('resetModalContent').classList.remove('hidden');
+            document.getElementById('tempPasswordContent').classList.add('hidden');
 
             userDetailModal.classList.remove('show');
             passwordResetModal.classList.add('show');
-        };
+        }
+        window.resetPassword = resetPasswordById;
 
         document.getElementById('closeResetModal').addEventListener('click', () => {
             passwordResetModal.classList.remove('show');
@@ -1910,8 +2119,8 @@
         });
 
         document.getElementById('setTempPasswordBtn').addEventListener('click', () => {
-            document.getElementById('resetModalContent').style.display = 'none';
-            document.getElementById('tempPasswordContent').style.display = 'block';
+            document.getElementById('resetModalContent').classList.add('hidden');
+            document.getElementById('tempPasswordContent').classList.remove('hidden');
             document.getElementById('tempPassword').value = generatePassword();
         });
 
@@ -1926,8 +2135,8 @@
         });
 
         document.getElementById('backToResetOptions').addEventListener('click', () => {
-            document.getElementById('resetModalContent').style.display = 'block';
-            document.getElementById('tempPasswordContent').style.display = 'none';
+            document.getElementById('resetModalContent').classList.remove('hidden');
+            document.getElementById('tempPasswordContent').classList.add('hidden');
         });
 
         document.getElementById('confirmTempPasswordBtn').addEventListener('click', async () => {
@@ -1937,8 +2146,8 @@
             passwordResetModal.classList.remove('show');
         });
 
-        // Delete User
-        window.deleteUser = function(userId) {
+        // Delete User (secure version)
+        function deleteUserById(userId) {
             selectedUserId = userId;
             const user = users.find(u => u.id === userId);
             if (!user) return;
@@ -1946,7 +2155,8 @@
             document.getElementById('deleteUserEmail').textContent = user.email;
             userDetailModal.classList.remove('show');
             deleteModal.classList.add('show');
-        };
+        }
+        window.deleteUser = deleteUserById;
 
         document.getElementById('closeDeleteModal').addEventListener('click', () => {
             deleteModal.classList.remove('show');
@@ -1962,23 +2172,88 @@
             const user = users.find(u => u.id === selectedUserId);
             if (!user) return;
 
-            try {
-                // Delete user document from Firestore
-                // Note: Deleting Firebase Auth user requires Cloud Functions
-                await deleteDoc(doc(db, 'users', selectedUserId));
+            showLoading();
+            const deleteButton = document.getElementById('confirmDeleteBtn');
+            deleteButton.disabled = true;
+            deleteButton.innerHTML = '<span>⏳</span><span>Deleting...</span>';
 
-                // Delete family if it exists
+            try {
+                // Cascading delete for complete data removal
+                // 1. Delete user's prayers subcollection
+                const prayersSnapshot = await getDocs(collection(db, 'users', selectedUserId, 'prayers'));
+                const prayerDeletePromises = prayersSnapshot.docs.map(d => deleteDoc(d.ref));
+                await Promise.all(prayerDeletePromises);
+
+                // 2. Delete user's progress subcollection
+                const progressSnapshot = await getDocs(collection(db, 'users', selectedUserId, 'progress'));
+                const progressDeletePromises = progressSnapshot.docs.map(d => deleteDoc(d.ref));
+                await Promise.all(progressDeletePromises);
+
+                // 3. Delete user's taskCompletions subcollection
+                const taskCompletionsSnapshot = await getDocs(collection(db, 'users', selectedUserId, 'taskCompletions'));
+                const taskCompletionDeletePromises = taskCompletionsSnapshot.docs.map(d => deleteDoc(d.ref));
+                await Promise.all(taskCompletionDeletePromises);
+
+                // 4. Delete user's top-level prayers documents (format: {userId}_{date})
+                const topLevelPrayersQuery = query(
+                    collection(db, 'prayers'),
+                    where('userId', '==', selectedUserId)
+                );
+                const topLevelPrayersSnapshot = await getDocs(topLevelPrayersQuery);
+                const topLevelPrayerDeletePromises = topLevelPrayersSnapshot.docs.map(d => deleteDoc(d.ref));
+                await Promise.all(topLevelPrayerDeletePromises);
+
+                // 5. Delete user's stats document
+                try {
+                    await deleteDoc(doc(db, 'stats', selectedUserId));
+                } catch (e) {
+                    // Stats doc might not exist, that's OK
+                    console.log('No stats document to delete');
+                }
+
+                // 6. Delete user's story progress documents
+                const storyProgressQuery = query(
+                    collection(db, 'storyProgress'),
+                    where('userId', '==', selectedUserId)
+                );
+                const storyProgressSnapshot = await getDocs(storyProgressQuery);
+                const storyProgressDeletePromises = storyProgressSnapshot.docs.map(d => deleteDoc(d.ref));
+                await Promise.all(storyProgressDeletePromises);
+
+                // 7. Delete family document if user is a parent
                 if (user.familyId) {
+                    // First delete family's children subcollection
+                    const childrenSnapshot = await getDocs(collection(db, 'families', user.familyId, 'children'));
+                    const childrenDeletePromises = childrenSnapshot.docs.map(d => deleteDoc(d.ref));
+                    await Promise.all(childrenDeletePromises);
+
+                    // Then delete the family document
                     await deleteDoc(doc(db, 'families', user.familyId));
                 }
 
-                // Log the action
+                // 8. Delete the user document itself
+                await deleteDoc(doc(db, 'users', selectedUserId));
+
+                // Log the action with full details
                 await logAdminAction('user_deleted', selectedUserId, user.email, {
                     familyId: user.familyId,
-                    displayName: user.displayName
+                    displayName: user.displayName,
+                    deletedCollections: [
+                        'users/{userId}/prayers',
+                        'users/{userId}/progress',
+                        'users/{userId}/taskCompletions',
+                        'prayers (where userId)',
+                        'stats/{userId}',
+                        'storyProgress (where userId)',
+                        'families/{familyId}/children',
+                        'families/{familyId}',
+                        'users/{userId}'
+                    ]
                 });
 
-                showToast('User deleted successfully');
+                // Note: Firebase Auth user deletion requires Cloud Functions
+                // The Auth user will need to be deleted separately via admin SDK
+                showToast('User and all associated data deleted successfully. Note: Firebase Auth user requires Cloud Functions to delete.');
                 deleteModal.classList.remove('show');
 
                 // Reload data
@@ -1986,6 +2261,10 @@
             } catch (error) {
                 console.error('Error deleting user:', error);
                 showToast('Failed to delete user: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+                deleteButton.disabled = false;
+                deleteButton.innerHTML = '<span>🗑️</span><span>Delete User</span>';
             }
         });
 
@@ -2046,6 +2325,20 @@
             const email = document.getElementById('newUserEmail').value.trim();
             const name = document.getElementById('newUserName').value.trim();
             const password = document.getElementById('newUserPassword').value.trim();
+
+            // Validate email
+            if (!isValidEmail(email)) {
+                showToast('Please enter a valid email address', 'error');
+                document.getElementById('newUserEmail').focus();
+                return;
+            }
+
+            // Validate name
+            if (!isValidName(name)) {
+                showToast('Please enter a valid name (2-50 characters, letters only)', 'error');
+                document.getElementById('newUserName').focus();
+                return;
+            }
 
             // Collect children data
             const childRows = document.querySelectorAll('.child-form-row');
@@ -2114,8 +2407,15 @@
             }
         });
 
-        // Export CSV
+        // Export CSV with confirmation
         exportBtn.addEventListener('click', () => {
+            const userCount = users.length;
+            const confirmed = confirm(`Export ${userCount} user${userCount !== 1 ? 's' : ''} to CSV?\n\nThis will download a file containing user emails, names, and other profile information.`);
+
+            if (!confirmed) {
+                return;
+            }
+
             const headers = ['Email', 'Name', 'Family ID', 'Children Count', 'Joined Date'];
             const rows = users.map(user => {
                 const family = families[user.familyId] || {};
@@ -2142,7 +2442,7 @@
             a.click();
             window.URL.revokeObjectURL(url);
 
-            showToast('Users exported to CSV');
+            showToast(`${userCount} users exported to CSV`);
         });
 
         // Audit Logging
@@ -2162,14 +2462,18 @@
             }
         }
 
-        // Placeholder functions
-        window.sendTestEmail = function(userId) {
-            showToast('Email functionality requires Cloud Functions setup', 'info');
-        };
+        // Email validation helper
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
 
-        window.showAuditLog = function(userId) {
-            showToast('Audit log view coming soon', 'info');
-        };
+        // Name validation helper
+        function isValidName(name) {
+            // Name must be at least 2 characters and contain only letters, spaces, hyphens
+            const nameRegex = /^[a-zA-Z\u0600-\u06FF\s'-]{2,50}$/;
+            return nameRegex.test(name.trim());
+        }
 
         // Close modals on overlay click
         [userDetailModal, addUserModal, passwordResetModal, deleteModal].forEach(modal => {
