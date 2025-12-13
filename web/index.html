@@ -1901,8 +1901,8 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, orderBy, limit, getDocs, onSnapshot, serverTimestamp, increment, writeBatch } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, orderBy, limit, getDocs, onSnapshot, serverTimestamp, increment, writeBatch, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         // P2-1: Import shared Firebase configuration
         import { firebaseConfig } from '/js/firebase-config.js';
 
@@ -1920,10 +1920,12 @@
             onAuthStateChanged,
             signInWithEmailAndPassword,
             createUserWithEmailAndPassword,
+            signOut,  // Issue #10 - COPPA sign out
             doc,
             getDoc,
             setDoc,
             updateDoc,
+            deleteDoc,  // Issue #10 - COPPA data deletion
             collection,
             query,
             where,
@@ -1933,7 +1935,8 @@
             onSnapshot,
             serverTimestamp,
             increment,
-            writeBatch
+            writeBatch,
+            arrayUnion
         };
 
         console.log('Firebase initialized successfully');
@@ -1967,6 +1970,10 @@
                 <div class="nav-item" onclick="showScreen('leaderboard')">
                     <span class="nav-icon">🏆</span>
                     <span>Leaderboard</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
                 </div>
             </div>
 
@@ -2268,6 +2275,79 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ==================== SETTINGS SCREEN (Issue #10 - COPPA Compliance) ==================== -->
+            <div class="screen" id="settingsScreen">
+                <div class="page-header">
+                    <div class="greeting">
+                        <h1>Settings & <span>Privacy</span></h1>
+                        <p>Manage your account and data preferences</p>
+                    </div>
+                </div>
+
+                <div class="settings-container" style="display: flex; flex-direction: column; gap: var(--spacing-lg); max-width: 600px;">
+                    <!-- Account Section -->
+                    <div class="story-card" style="cursor: default;">
+                        <h3 style="margin-bottom: var(--spacing-md); color: var(--dark);">👤 Account</h3>
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <div style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--border);">
+                                <span style="color: var(--dark-soft);">Child's Name</span>
+                                <span id="settingsChildName" style="font-weight: 600;">Loading...</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--border);">
+                                <span style="color: var(--dark-soft);">Parent Email</span>
+                                <span id="settingsEmail" style="font-weight: 600;">Loading...</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0;">
+                                <span style="color: var(--dark-soft);">Account Created</span>
+                                <span id="settingsCreatedAt" style="font-weight: 600;">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Section -->
+                    <div class="story-card" style="cursor: default;">
+                        <h3 style="margin-bottom: var(--spacing-md); color: var(--dark);">🔒 Privacy</h3>
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                            <a href="/privacy.html" target="_blank" style="display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-md); background: var(--cream); border-radius: var(--radius-sm); text-decoration: none; color: var(--dark);">
+                                <span>📄 View Privacy Policy</span>
+                                <span style="color: var(--gold);">→</span>
+                            </a>
+                            <div style="padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--border);">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: var(--dark-soft);">Parental Consent</span>
+                                    <span style="color: var(--green); font-weight: 600;">✓ Given</span>
+                                </div>
+                                <p style="font-size: 12px; color: var(--dark-soft); margin-top: 4px;">Privacy Policy Version: 2024-12-13</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Management Section -->
+                    <div class="story-card" style="cursor: default; border: 2px solid var(--coral);">
+                        <h3 style="margin-bottom: var(--spacing-md); color: var(--coral);">⚠️ Data Management</h3>
+                        <p style="color: var(--dark-soft); margin-bottom: var(--spacing-lg); font-size: 14px;">
+                            As a parent, you have the right to download or delete all data associated with your child's account.
+                        </p>
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <button onclick="downloadMyData()" style="padding: var(--spacing-md); background: var(--cream); border: 2px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                📥 Download My Data
+                            </button>
+                            <button onclick="confirmDeleteAccount()" style="padding: var(--spacing-md); background: #FFF0F0; border: 2px solid var(--coral); border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-weight: 600; color: var(--coral); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                🗑️ Delete Account & All Data
+                            </button>
+                        </div>
+                        <p style="font-size: 12px; color: var(--dark-soft); margin-top: var(--spacing-md); text-align: center;">
+                            Deletion is permanent and cannot be undone.
+                        </p>
+                    </div>
+
+                    <!-- Sign Out -->
+                    <button onclick="handleSignOut()" style="padding: var(--spacing-md); background: var(--dark); color: var(--white); border: none; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-weight: 600; font-size: var(--font-base);">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -2519,6 +2599,11 @@
             if (screenName === 'dashboard' && window.updateDashboard) {
                 window.updateDashboard();
             }
+
+            // Update settings screen when navigating to it (Issue #10 - COPPA)
+            if (screenName === 'settings' && typeof updateSettingsUI === 'function') {
+                updateSettingsUI();
+            }
         }
 
         // Prayer toggle - now saves to Firestore
@@ -2697,6 +2782,15 @@
                         style="width: 100%; padding: var(--spacing-md); background: transparent; color: var(--dark-soft); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: var(--font-base); font-weight: 500; cursor: pointer; font-family: inherit;">
                     I already have an account
                 </button>
+
+                <!-- COPPA Compliance: Parental Consent Checkbox (Issue #10) -->
+                <div id="consentCheckbox" style="margin-top: var(--spacing-md); text-align: left; display: flex; align-items: flex-start; gap: 8px;">
+                    <input type="checkbox" id="parentalConsent" style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
+                    <label for="parentalConsent" style="font-size: 13px; color: var(--dark-soft); cursor: pointer; line-height: 1.4;">
+                        I am the parent/guardian and consent to my child using this app. I have read and agree to the <a href="/privacy.html" target="_blank" style="color: var(--gold);">Privacy Policy</a>.
+                    </label>
+                </div>
+
                 <p id="authError" style="color: var(--coral); margin-top: var(--spacing-md); display: none;"></p>
             </div>
 
@@ -2704,6 +2798,8 @@
                 <button onclick="handleGuestMode()" style="background: none; border: none; color: var(--gold); cursor: pointer; font-size: var(--font-sm); text-decoration: underline; font-family: inherit;">
                     Try as Guest
                 </button>
+                <span style="margin: 0 8px;">|</span>
+                <a href="/privacy.html" target="_blank" style="color: var(--gold); font-size: var(--font-sm);">Privacy Policy</a>
             </p>
         </div>
     </div>
@@ -3020,6 +3116,7 @@
             const name = document.getElementById('childName').value.trim();
             const email = document.getElementById('parentEmail').value.trim();
             const password = document.getElementById('parentPassword').value;
+            const consentCheckbox = document.getElementById('parentalConsent');
             const errorEl = document.getElementById('authError');
 
             errorEl.style.display = 'none';
@@ -3028,6 +3125,8 @@
                 const { signInWithEmailAndPassword, createUserWithEmailAndPassword, doc, setDoc, serverTimestamp } = window.firebaseModules;
 
                 if (mode === 'signup') {
+                    // COPPA Compliance: Require parental consent for signup (Issue #10)
+                    if (!consentCheckbox.checked) throw new Error('Please confirm parental consent to continue');
                     if (!name) throw new Error('Please enter your child\'s name');
                     if (!email) throw new Error('Please enter an email');
                     // Validate password strength
@@ -3038,7 +3137,7 @@
 
                     const userCred = await createUserWithEmailAndPassword(window.firebaseAuth, email, password);
 
-                    // Create user profile
+                    // Create user profile with COPPA consent record (Issue #10)
                     await setDoc(doc(window.firebaseDb, 'users', userCred.user.uid), {
                         name: name,
                         email: email,
@@ -3048,7 +3147,11 @@
                         currentStreak: 0,
                         longestStreak: 0,
                         stars: 0,
-                        rank: 0
+                        rank: 0,
+                        // COPPA compliance fields
+                        parentalConsentGiven: true,
+                        parentalConsentDate: serverTimestamp(),
+                        privacyPolicyVersion: '2024-12-13'
                     });
                 } else {
                     await signInWithEmailAndPassword(window.firebaseAuth, email, password);
@@ -3075,6 +3178,178 @@
             // Reset prayers to uncompleted for guests
             document.getElementById('prayerProgressText').textContent = '0 of 5 completed';
         };
+
+        // COPPA Compliance: Sign out handler (Issue #10)
+        window.handleSignOut = async function() {
+            try {
+                const { signOut } = window.firebaseModules;
+                await signOut(window.firebaseAuth);
+                AppState.user = null;
+                AppState.profile = null;
+                AppState.isGuest = false;
+                showAuthModal();
+                showScreen('home');
+            } catch (error) {
+                console.error('Error signing out:', error);
+                showToast('Error signing out. Please try again.', 'error');
+            }
+        };
+
+        // COPPA Compliance: Download user data (Issue #10)
+        window.downloadMyData = async function() {
+            if (!AppState.user) {
+                showToast('Please sign in to download your data', 'error');
+                return;
+            }
+
+            try {
+                const { collection, getDocs, doc, getDoc } = window.firebaseModules;
+                const uid = AppState.user.uid;
+
+                // Gather all user data
+                const userData = {
+                    exportDate: new Date().toISOString(),
+                    profile: AppState.profile,
+                    prayers: [],
+                    taskCompletions: [],
+                    progress: {}
+                };
+
+                // Get prayers
+                const prayersSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'prayers'));
+                prayersSnapshot.forEach(doc => {
+                    userData.prayers.push({ date: doc.id, ...doc.data() });
+                });
+
+                // Get task completions
+                const completionsSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'taskCompletions'));
+                completionsSnapshot.forEach(doc => {
+                    userData.taskCompletions.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Get progress
+                const progressDoc = await getDoc(doc(window.firebaseDb, 'users', uid, 'progress', 'stories'));
+                if (progressDoc.exists()) {
+                    userData.progress.stories = progressDoc.data();
+                }
+
+                // Download as JSON
+                const dataStr = JSON.stringify(userData, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `salah-buddy-data-${getTodayDateString()}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showToast('Your data has been downloaded!', 'success');
+            } catch (error) {
+                console.error('Error downloading data:', error);
+                showToast('Error downloading data. Please try again.', 'error');
+            }
+        };
+
+        // COPPA Compliance: Delete account confirmation (Issue #10)
+        window.confirmDeleteAccount = function() {
+            const confirmed = confirm(
+                'Are you sure you want to delete your account?\n\n' +
+                'This will permanently delete:\n' +
+                '• Your child\'s profile\n' +
+                '• All prayer history\n' +
+                '• All progress and stars\n' +
+                '• All task completions\n\n' +
+                'This action cannot be undone.'
+            );
+
+            if (confirmed) {
+                const doubleConfirm = confirm(
+                    'This is your final warning.\n\n' +
+                    'Type "DELETE" in the next prompt to confirm account deletion.'
+                );
+
+                if (doubleConfirm) {
+                    const input = prompt('Type DELETE to confirm:');
+                    if (input === 'DELETE') {
+                        deleteAccount();
+                    } else {
+                        showToast('Account deletion cancelled', 'info');
+                    }
+                }
+            }
+        };
+
+        // COPPA Compliance: Delete account and all data (Issue #10)
+        async function deleteAccount() {
+            if (!AppState.user) return;
+
+            try {
+                const { collection, getDocs, doc, deleteDoc, writeBatch } = window.firebaseModules;
+                const uid = AppState.user.uid;
+                const batch = writeBatch(window.firebaseDb);
+
+                // Delete prayers subcollection
+                const prayersSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'prayers'));
+                prayersSnapshot.forEach(docSnapshot => {
+                    batch.delete(docSnapshot.ref);
+                });
+
+                // Delete task completions subcollection
+                const completionsSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'taskCompletions'));
+                completionsSnapshot.forEach(docSnapshot => {
+                    batch.delete(docSnapshot.ref);
+                });
+
+                // Delete progress subcollection
+                const progressSnapshot = await getDocs(collection(window.firebaseDb, 'users', uid, 'progress'));
+                progressSnapshot.forEach(docSnapshot => {
+                    batch.delete(docSnapshot.ref);
+                });
+
+                // Commit subcollection deletions
+                await batch.commit();
+
+                // Delete the main user document
+                await deleteDoc(doc(window.firebaseDb, 'users', uid));
+
+                // Delete the Firebase Auth user
+                await AppState.user.delete();
+
+                // Clear local state
+                AppState.user = null;
+                AppState.profile = null;
+                AppState.isGuest = false;
+
+                showToast('Account deleted successfully', 'success');
+                showAuthModal();
+                showScreen('home');
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                if (error.code === 'auth/requires-recent-login') {
+                    showToast('Please sign out and sign back in, then try again.', 'error');
+                } else {
+                    showToast('Error deleting account. Please contact support.', 'error');
+                }
+            }
+        }
+
+        // Update settings screen with user data
+        function updateSettingsUI() {
+            if (!AppState.profile) return;
+
+            const nameEl = document.getElementById('settingsChildName');
+            const emailEl = document.getElementById('settingsEmail');
+            const createdEl = document.getElementById('settingsCreatedAt');
+
+            if (nameEl) nameEl.textContent = AppState.profile.name || 'Unknown';
+            if (emailEl) emailEl.textContent = AppState.profile.email || AppState.user?.email || 'Unknown';
+            if (createdEl) {
+                const created = AppState.profile.createdAt?.toDate?.() || new Date();
+                createdEl.textContent = created.toLocaleDateString();
+            }
+        }
 
         async function loadUserProfile(uid) {
             const { doc, getDoc } = window.firebaseModules;
@@ -3150,7 +3425,7 @@
             const { collection, query, where, getDocs } = window.firebaseModules;
 
             try {
-                const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+                const today = getTodayDateString(); // YYYY-MM-DD (UTC) - Issue #16 fix
                 const completionsRef = collection(window.firebaseDb, 'users', uid, 'taskCompletions');
                 const q = query(completionsRef, where('completedDate', '==', today));
 
@@ -3231,7 +3506,7 @@
             if (!task) return;
 
             const { doc, getDoc, writeBatch, increment, serverTimestamp } = window.firebaseModules;
-            const today = new Date().toISOString().split('T')[0];
+            const today = getTodayDateString(); // YYYY-MM-DD (UTC) - Issue #16 fix
             const completionId = `${taskId}_${today}`;
             const completionRef = doc(window.firebaseDb, 'users', AppState.user.uid, 'taskCompletions', completionId);
             const userRef = doc(window.firebaseDb, 'users', AppState.user.uid);
@@ -3473,10 +3748,10 @@
             const { doc, getDoc, updateDoc, serverTimestamp } = window.firebaseModules;
 
             try {
-                // Get yesterday's date
-                const yesterday = new Date();
-                yesterday.setDate(yesterday.getDate() - 1);
-                const yesterdayStr = yesterday.toISOString().split('T')[0];
+                // Get yesterday's date (UTC to prevent timezone manipulation - Issue #16 fix)
+                const now = new Date();
+                const yesterdayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1));
+                const yesterdayStr = yesterdayUTC.toISOString().split('T')[0];
 
                 // Check if yesterday's prayers were all complete
                 const yesterdayDoc = await getDoc(doc(window.firebaseDb, 'users', AppState.user.uid, 'prayers', yesterdayStr));

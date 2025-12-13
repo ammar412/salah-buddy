@@ -26,12 +26,47 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.token.admin == true;
     }
 
+    // Validation helper - checks if a field is being incremented by at most maxIncrement
+    function isValidIncrement(field, maxIncrement) {
+      return request.resource.data[field] <= resource.data[field] + maxIncrement;
+    }
+
+    // Validation helper - checks if a field is unchanged
+    function isUnchanged(field) {
+      return request.resource.data[field] == resource.data[field];
+    }
+
+    // Validation helper - checks if stats update is valid (prevents manipulation)
+    function isValidStatsUpdate() {
+      // Stars can only increase by max 100 per operation (5 prayers * 10 stars + bonus)
+      let validStars = !('stars' in request.resource.data) ||
+        request.resource.data.stars <= resource.data.stars + 100;
+
+      // Total prayers can only increase by max 5 per operation (5 daily prayers)
+      let validPrayers = !('totalPrayers' in request.resource.data) ||
+        request.resource.data.totalPrayers <= resource.data.totalPrayers + 5;
+
+      // Streak can only increase by 1 or reset to 0-1
+      let validStreak = !('currentStreak' in request.resource.data) ||
+        request.resource.data.currentStreak <= resource.data.currentStreak + 1 ||
+        request.resource.data.currentStreak <= 1;
+
+      // Cannot decrease values (except streak reset)
+      let noDecrease =
+        (!('stars' in request.resource.data) || request.resource.data.stars >= resource.data.stars) &&
+        (!('totalPrayers' in request.resource.data) || request.resource.data.totalPrayers >= resource.data.totalPrayers);
+
+      return validStars && validPrayers && validStreak && noDecrease;
+    }
+
     // Users collection - users can only read/write their own document
     // Leaderboard: allow reading limited fields (name, stars) for all authenticated users
+    // Issue #12: Added validation to prevent stat manipulation
     match /users/{userId} {
       allow read: if isAuthenticated(); // Allow reading for leaderboard
       allow create: if isOwner(userId);
-      allow update: if isOwner(userId);
+      // Update requires ownership AND valid stat changes (prevents manipulation)
+      allow update: if isOwner(userId) && isValidStatsUpdate();
       allow delete: if false; // Users cannot delete their accounts directly
 
       // User's prayer subcollection
@@ -96,12 +131,14 @@ service cloud.firestore {
     }
 
     // Stats collection - users can only access their own
+    // Issue #12: Added validation to prevent stat manipulation
     match /stats/{userId} {
       allow read: if isOwner(userId) ||
         // Allow family members to read for leaderboard
         belongsToFamily(resource.data.familyId);
       allow create: if isOwner(userId);
-      allow update: if isOwner(userId);
+      // Update requires ownership AND valid stat changes (prevents manipulation)
+      allow update: if isOwner(userId) && isValidStatsUpdate();
       allow delete: if false;
     }
 
