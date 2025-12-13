@@ -37,7 +37,17 @@ service cloud.firestore {
     }
 
     // Validation helper - checks if stats update is valid (prevents manipulation)
+    // Fixed: Added field whitelist to prevent bypassing validation
     function isValidStatsUpdate() {
+      // Allowed fields that can be updated on user documents
+      let allowedFields = ['name', 'email', 'stars', 'totalPrayers', 'currentStreak',
+                           'longestStreak', 'lastPrayerDate', 'familyId', 'isParent',
+                           'parentalConsentGiven', 'parentalConsentDate', 'privacyPolicyVersion',
+                           'createdAt', 'updatedAt'];
+
+      // Ensure only allowed fields are being updated
+      let onlyAllowedFields = request.resource.data.keys().hasOnly(allowedFields);
+
       // Stars can only increase by max 100 per operation (5 prayers * 10 stars + bonus)
       let validStars = !('stars' in request.resource.data) ||
         request.resource.data.stars <= resource.data.stars + 100;
@@ -56,14 +66,15 @@ service cloud.firestore {
         (!('stars' in request.resource.data) || request.resource.data.stars >= resource.data.stars) &&
         (!('totalPrayers' in request.resource.data) || request.resource.data.totalPrayers >= resource.data.totalPrayers);
 
-      return validStars && validPrayers && validStreak && noDecrease;
+      return onlyAllowedFields && validStars && validPrayers && validStreak && noDecrease;
     }
 
     // Users collection - users can only read/write their own document
-    // Leaderboard: allow reading limited fields (name, stars) for all authenticated users
     // Issue #12: Added validation to prevent stat manipulation
+    // Fixed: Restricted reads to own document only (COPPA compliance - don't expose parent emails)
+    // Leaderboard uses dedicated /leaderboard collection with limited data
     match /users/{userId} {
-      allow read: if isAuthenticated(); // Allow reading for leaderboard
+      allow read: if isOwner(userId); // Only read own document (COPPA: protects parent emails)
       allow create: if isOwner(userId);
       // Update requires ownership AND valid stat changes (prevents manipulation)
       allow update: if isOwner(userId) && isValidStatsUpdate();
